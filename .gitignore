@@ -4,3 +4,8 @@
 *.jar
 *.war
 *.ear
+
+# Directories #
+.settings/*
+target/*
+test-output/*
