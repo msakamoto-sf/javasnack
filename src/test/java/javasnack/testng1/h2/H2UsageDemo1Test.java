@@ -24,7 +24,7 @@ public class H2UsageDemo1Test {
     @BeforeTest
     public void prepareDb() throws Exception {
         Class.forName("org.h2.Driver");
-        conn = DriverManager.getConnection("jdbc:h2:mem:test1￼", "sa", "");
+        conn = DriverManager.getConnection("jdbc:h2:mem:test1", "sa", "");
         PreparedStatement ps = conn
                 .prepareStatement("create table t1(id integer auto_increment primary key, name varchar, age int)");
         ps.execute();
