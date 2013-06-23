@@ -2,14 +2,12 @@ package javasnack.testng1.h2;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javasnack.tool.CharsetTool;
 import javasnack.tool.UnsignedByte;
 
 import org.testng.Assert;
@@ -75,15 +73,7 @@ public class H2UsageDemo1Test {
         PreparedStatement ps = conn
                 .prepareStatement("insert into t1(name, age) values(?, ?)");
 
-        // create Latin-1 string from 0x00 to 0xFF
-        ByteBuffer bf = ByteBuffer.allocate(256);
-        for (int d = 0x00; d <= 0xFF; d++) {
-            bf.put(UnsignedByte.from(d));
-        }
-        bf.flip();
-        byte[] src = new byte[bf.limit()];
-        bf.get(src);
-        String s = new String(src, CharsetTool.BINARY);
+        String s = UnsignedByte.create0x00to0xFFString();
 
         // insert Latin-1 0x00 to 0xFF String
         ps.setString(1, s);
@@ -107,17 +97,10 @@ public class H2UsageDemo1Test {
                 .prepareStatement("insert into t2(name, data) values(?, ?)");
         ps.setString(1, "clob1");
 
-        // create clob data from 0x00 to 0xFF
-        ByteBuffer bf = ByteBuffer.allocate(0xFF);
-        for (int d = 0x00; d < 0xFF; d++) {
-            bf.put(UnsignedByte.from(d));
-        }
-        bf.flip();
-        byte[] src = new byte[bf.limit()];
-        bf.get(src);
+        byte[] src = UnsignedByte.create0x00to0xFF();
         // insert clob data
         ByteArrayInputStream bais = new ByteArrayInputStream(src);
-        ps.setAsciiStream(2, bais, 0xFF);
+        ps.setAsciiStream(2, bais, 0x100);
         int r = ps.executeUpdate();
         Assert.assertEquals(r, 1);
 
@@ -126,13 +109,14 @@ public class H2UsageDemo1Test {
         ps.setString(1, "clob1");
         ResultSet rs = ps.executeQuery();
         rs.first();
-        BufferedInputStream bis = new BufferedInputStream(rs.getAsciiStream("data"));
-        byte[] recv = new byte[0xFF];
+        BufferedInputStream bis = new BufferedInputStream(
+                rs.getAsciiStream("data"));
+        byte[] recv = new byte[0x100];
         bis.read(recv);
-//        for (byte d : recv) {
-//            System.out.println(d);
-//        }
-        // OOPS!! : recv[128]=-17, recv[129]=-65, recv[130]=-67,... what happen??? 
+        // for (byte d : recv) {
+        // System.out.println(d);
+        // }
+        // OOPS!! : recv[128]=-17, recv[129]=-65, recv[130]=-67,... what happen???
         Assert.assertNotEquals(recv, src);
         rs.close();
         ps.close();
@@ -144,17 +128,10 @@ public class H2UsageDemo1Test {
                 .prepareStatement("insert into t3(name, data) values(?, ?)");
         ps.setString(1, "blob1");
 
-        // create blob datat from 0x00 to 0xFF
-        ByteBuffer bf = ByteBuffer.allocate(0xFF);
-        for (int d = 0x00; d < 0xFF; d++) {
-            bf.put(UnsignedByte.from(d));
-        }
-        bf.flip();
-        byte[] src = new byte[bf.limit()];
-        bf.get(src);
+        byte[] src = UnsignedByte.create0x00to0xFF();
         // insert blob data
         ByteArrayInputStream bais = new ByteArrayInputStream(src);
-        ps.setBinaryStream(2, bais, 0xFF);
+        ps.setBinaryStream(2, bais, 0x100);
         int r = ps.executeUpdate();
         Assert.assertEquals(r, 1);
 
@@ -163,8 +140,9 @@ public class H2UsageDemo1Test {
         ps.setString(1, "blob1");
         ResultSet rs = ps.executeQuery();
         rs.first();
-        BufferedInputStream bis = new BufferedInputStream(rs.getBinaryStream("data"));
-        byte[] recv = new byte[0xFF];
+        BufferedInputStream bis = new BufferedInputStream(
+                rs.getBinaryStream("data"));
+        byte[] recv = new byte[0x100];
         bis.read(recv);
         Assert.assertEquals(recv, src);
         rs.close();
