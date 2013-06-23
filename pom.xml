@@ -130,6 +130,19 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.2.1</version>
+          <!-- DON'T SETUP DEFAULT CONFIGURATION -->
+          <!--
+          <configuration>
+            <mainClass>javasnack.cli.CliDemo1</mainClass>
+            <classpathScope>test</classpathScope>
+          </configuration>
+          -->
+          <!--  DON'T BIND exec:xxxx TO ANY PHASES. -->
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
