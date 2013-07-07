@@ -11,6 +11,13 @@ import javasnack.snacks.HelloWorld;
 import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
 import javasnack.snacks.RunningJREVersionIs;
+import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
+import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
+import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
+import javasnack.snacks.perfs.map.PerfHashMapFinePutGet;
+import javasnack.snacks.perfs.map.PerfHashMapTotalAvg;
+import javasnack.snacks.perfs.map.PerfTreeMapFinePutGet;
+import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
 
 public class Main {
     static Runnable[] snacks = new Runnable[] {
@@ -21,7 +28,14 @@ public class Main {
         new ByteRange2(),
         new ByteRange3(),
         new ByteRange4(),
-        new ListAvailableCharsets()
+        new ListAvailableCharsets(),
+        new PerfJavaArrayFinePutGet(),
+        new PerfArrayListFinePutGet(),
+        new PerfLinkedListFinePutGet(),
+        new PerfHashMapFinePutGet(),
+        new PerfHashMapTotalAvg(),
+        new PerfTreeMapFinePutGet(),
+        new PerfTreeMapTotalAvg()
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
