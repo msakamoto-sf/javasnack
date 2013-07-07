@@ -3,16 +3,18 @@ package javasnack.snacks;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javasnack.tool.RandomString;
 
 public class CollectionTypes1 implements Runnable {
 
-    static final int NUM = 20;
+    static final int NUM = 10;
     static final String DUMMY_STR = "";
 
     void HashMapDemos() {
+        System.out.println("----------------------------------------------");
         System.out.println("HashMapDemos start.");
         HashMap<String, String> m = new HashMap<String, String>();
         String[] keys = new String[NUM];
@@ -31,10 +33,40 @@ public class CollectionTypes1 implements Runnable {
         while (it.hasNext()) {
             System.out.println(it.next());
         }
+        System.out.println("actual HashMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("HashMap[%s] = [%s]", e.getKey(),
+                    e.getValue()));
+        }
         System.out.println("HashMapDemos end.");
     }
 
+    void HashMapDemos2() {
+        System.out.println("----------------------------------------------");
+        System.out.println("HashMapDemos2 start.");
+        HashMap<String, String> m = new HashMap<String, String>();
+        m.put("abc", "ABC");
+        m.put("def", "DEF100");
+        m.put("def", "DEF200");
+        m.put("ghi", "GHI");
+        m.put("jkl", "JKL100");
+        m.put("jkl", "JKL300");
+        m.put("jkl", "JKL200");
+        m.put("mno", "MNO");
+        System.out.println("actual HashMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("HashMap[%s] = [%s]", e.getKey(),
+                    e.getValue()));
+        }
+        System.out.println("HashMapDemos2 end.");
+    }
+
     void LinkedHashMapDemos() {
+        System.out.println("----------------------------------------------");
         System.out.println("LinkedHashMapDemos start.");
         LinkedHashMap<String, String> m = new LinkedHashMap<String, String>();
         String[] keys = new String[NUM];
@@ -53,10 +85,66 @@ public class CollectionTypes1 implements Runnable {
         while (it.hasNext()) {
             System.out.println(it.next());
         }
+        System.out.println("actual LinkedHashMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("LinkedHashMap[%s] = [%s]",
+                    e.getKey(), e.getValue()));
+        }
         System.out.println("LinkedHashMapDemos end.");
     }
 
+    void LinkedHashMapDemos2() {
+        System.out.println("----------------------------------------------");
+        System.out.println("LinkedHashMapDemos2 start.");
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>();
+        m.put("abc", "ABC");
+        m.put("def", "DEF100");
+        m.put("def", "DEF200");
+        m.put("ghi", "GHI");
+        m.put("jkl", "JKL100");
+        m.put("jkl", "JKL300");
+        m.put("jkl", "JKL200");
+        m.put("mno", "MNO");
+        System.out.println("actual LinkedHashMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("LinkedHashMap[%s] = [%s]",
+                    e.getKey(), e.getValue()));
+        }
+        System.out.println("LinkedHashMapDemos2 end.");
+    }
+
+    void LinkedHashMapDemos3() {
+        System.out.println("----------------------------------------------");
+        System.out.println("LinkedHashMapDemos3 start.");
+        // create access-order linked hash map.
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(16,
+                0.75f, true);
+        m.put("abc", "ABC");
+        m.put("def", "DEF100");
+        m.put("def", "DEF200");
+        m.put("ghi", "GHI");
+        m.put("jkl", "JKL100");
+        m.put("jkl", "JKL300");
+        m.put("jkl", "JKL200");
+        m.put("mno", "MNO");
+        m.get("def");
+        m.get("jkl");
+        System.out.println("actual LinkedHashMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("LinkedHashMap[%s] = [%s]",
+                    e.getKey(), e.getValue()));
+        }
+        System.out.println("LinkedHashMapDemos3 end.");
+    }
+
     void TreeMapDemos() {
+        System.out.println("----------------------------------------------");
         System.out.println("TreeMapDemos start.");
         TreeMap<String, String> m = new TreeMap<String, String>();
         String[] keys = new String[NUM];
@@ -75,14 +163,47 @@ public class CollectionTypes1 implements Runnable {
         while (it.hasNext()) {
             System.out.println(it.next());
         }
+        System.out.println("actual TreeHashMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("TreeMap[%s] = [%s]", e.getKey(),
+                    e.getValue()));
+        }
         System.out.println("TreeMapDemos end.");
+    }
+
+    void TreeMapDemos2() {
+        System.out.println("----------------------------------------------");
+        System.out.println("TreeMapDemos2 start.");
+        TreeMap<String, String> m = new TreeMap<String, String>();
+        m.put("def", "DEF100");
+        m.put("def", "DEF200");
+        m.put("abc", "ABC");
+        m.put("mno", "MNO");
+        m.put("jkl", "JKL100");
+        m.put("jkl", "JKL300");
+        m.put("jkl", "JKL200");
+        m.put("ghi", "GHI");
+        System.out.println("actual TreeMap entrySet() order : ");
+        Iterator<Entry<String, String>> it2 = m.entrySet().iterator();
+        while (it2.hasNext()) {
+            Entry<String, String> e = it2.next();
+            System.out.println(String.format("TreeMap[%s] = [%s]", e.getKey(),
+                    e.getValue()));
+        }
+        System.out.println("TreeMapDemos2 end.");
     }
 
     @Override
     public void run() {
         HashMapDemos();
+        HashMapDemos2();
         LinkedHashMapDemos();
+        LinkedHashMapDemos2();
+        LinkedHashMapDemos3();
         TreeMapDemos();
+        TreeMapDemos2();
     }
 
 }
