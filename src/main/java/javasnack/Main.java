@@ -16,6 +16,8 @@ import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
 import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
 import javasnack.snacks.perfs.map.PerfHashMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfHashMapTotalAvg;
+import javasnack.snacks.perfs.map.PerfLinkedHashMapFinePutGet;
+import javasnack.snacks.perfs.map.PerfLinkedHashMapTotalAvg;
 import javasnack.snacks.perfs.map.PerfTreeMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
 
@@ -34,6 +36,8 @@ public class Main {
         new PerfLinkedListFinePutGet(),
         new PerfHashMapFinePutGet(),
         new PerfHashMapTotalAvg(),
+        new PerfLinkedHashMapFinePutGet(),
+        new PerfLinkedHashMapTotalAvg(),
         new PerfTreeMapFinePutGet(),
         new PerfTreeMapTotalAvg()
         };
