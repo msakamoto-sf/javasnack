@@ -65,7 +65,7 @@ public class TestExercise01 {
 
     @Test(dataProvider = "dp1")
     public void verifyAddFunc(int a, int b, int expected) {
-        assertEquals(expected, testadd(a, b));
+        assertEquals(testadd(a, b), expected);
     }
 
     List<String> mylist = Arrays.asList("123", "456");
@@ -74,13 +74,13 @@ public class TestExercise01 {
     public void listLength1() {
         mylist = Arrays.asList("abc", "def", "ghi");
         System.out.println(mylist);
-        assertEquals(3, mylist.size());
+        assertEquals(mylist.size(), 3);
     }
 
     @Test
     public void listLenngth2() {
         System.out.println(mylist);
-        assertEquals(3, mylist.size());
+        assertEquals(mylist.size(), 3);
     }
 
 
