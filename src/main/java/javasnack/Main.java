@@ -13,6 +13,7 @@ import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
 import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
+import javasnack.snacks.UUIDDemo;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
 import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
 import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
@@ -34,6 +35,7 @@ public class Main {
         new ByteRange4(),
         new ReadConsoleInput(),
         new ListAvailableCharsets(),
+        new UUIDDemo(),
         new PerfJavaArrayFinePutGet(),
         new PerfArrayListFinePutGet(),
         new PerfLinkedListFinePutGet(),
