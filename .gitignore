@@ -1,7 +1,7 @@
 *.class
 
 # Package Files #
-*.jar
+#*.jar    ... for subprojects/jar1 demo
 *.war
 *.ear
 
