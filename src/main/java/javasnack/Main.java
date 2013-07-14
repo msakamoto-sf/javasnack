@@ -11,6 +11,7 @@ import javasnack.snacks.CollectionTypes1;
 import javasnack.snacks.HelloWorld;
 import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
+import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
 import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
@@ -31,6 +32,7 @@ public class Main {
         new ByteRange2(),
         new ByteRange3(),
         new ByteRange4(),
+        new ReadConsoleInput(),
         new ListAvailableCharsets(),
         new PerfJavaArrayFinePutGet(),
         new PerfArrayListFinePutGet(),
