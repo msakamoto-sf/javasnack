@@ -23,6 +23,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>subprojects</groupId>
+      <artifactId>testjar1</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.1</version>
@@ -90,12 +95,6 @@
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
       <version>1.4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>subprojects</groupId>
-      <artifactId>testjar1</artifactId>
-      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
