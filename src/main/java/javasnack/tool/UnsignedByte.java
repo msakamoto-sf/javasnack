@@ -66,6 +66,15 @@ public class UnsignedByte {
         return sb.toString();
     }
 
+    public static String bits(byte[] src) {
+        StringBuilder sb = new StringBuilder(src.length * Byte.SIZE);
+        for (int i = 0; i < Byte.SIZE * src.length; i++) {
+            sb.append((src[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0'
+                    : '1');
+        }
+        return sb.toString();
+    }
+
     /**
      * create 256(0x100) byte buffer from 0x00 to 0xFF
      * 
