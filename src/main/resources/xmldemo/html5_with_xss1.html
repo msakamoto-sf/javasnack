@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<body>
+<form>
+<input type="text" name="v1" values="hello"><script>alert('xss')</script>" />
+</form>
+<p>
+your name=hello"><script>alert('xss')</script>
+</p>
+<a href="./foo.html?name="><script>alert('xss2')</script>">link</a>
+<p>
+dynamic script:
+<script>
+var name = "abc"</script><script>alert('xss4')</script>";
+</script>
+<script>
+<!--
+var comment = "abc"</script><script>alert('xss5')</script>";
+-->
+</script>
+</p>
+</body>
+</html>

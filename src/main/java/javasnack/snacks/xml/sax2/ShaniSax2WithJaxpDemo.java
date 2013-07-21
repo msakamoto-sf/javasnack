@@ -73,6 +73,7 @@ public class ShaniSax2WithJaxpDemo implements Runnable {
         loadXml("xmldemo/error1.xml");
         loadXml("xmldemo/html5.html");
         loadXml("xmldemo/ns_and_prefix1.xml");
+        loadXml("xmldemo/html5_with_xss1.html");
 
         System.out.println("(END)");
     }
