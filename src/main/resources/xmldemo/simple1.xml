@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BigElement attr="value">
+  <MediumElement order="1">
+    &#x22;Double Quoted Text&#x22;
+  </MediumElement>
+  <!-- comment1 -->
+  <MediumElement order="2">
+    <!-- comment2 -->
+    <![CDATA[
+<hello>"you", '&', me</hello>
+    ]]>
+  </MediumElement>
+  <?foo bar="baz"?>
+  <MediumElement2>
+    abc <inline>def</inline> ghi.
+  </MediumElement2>
+</BigElement>

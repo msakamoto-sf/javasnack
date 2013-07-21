@@ -1,0 +1,30 @@
+<root xmlns="http://a.b.c/default" xmlns:p="http://a.b.c/prefix1" xmlns:q="http://a.b.c/prefix2">
+  <elements offset="10" limit="5">
+    <p:element>
+      <name>abc</name>
+      <q:age>20</q:age>
+    </p:element>
+    <p:element>
+      <name>def</name>
+      <q:age>30</q:age>
+      <p:extras xmlns:r="http://a.b.c/prefix3">
+        <zipcode>123456</zipcode>
+        <r:hobbies>
+          <hobby>cooking</hobby>
+          <hobby>afternoon-tea</hobby>
+        </r:hobbies>
+      </p:extras>
+    </p:element>
+    <p:element>
+      <name>def</name>
+      <q:age>30</q:age>
+      <p:extras xmlns="http://a.b.c/prefix4">
+        <zipcode>7890123</zipcode>
+        <q:hobbies>
+          <hobby>programming</hobby>
+          <hobby>coffee-break</hobby>
+        </q:hobbies>
+      </p:extras>
+    </p:element>
+  </elements>
+</root>
