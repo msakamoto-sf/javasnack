@@ -9,9 +9,10 @@ import javasnack.snacks.ByteRange3;
 import javasnack.snacks.ByteRange4;
 import javasnack.snacks.CollectionTypes1;
 import javasnack.snacks.HelloWorld;
-import javasnack.snacks.LocalJarDemo;
+import javasnack.snacks.JCLDemo;
 import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
+import javasnack.snacks.LocalJarDemo;
 import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
@@ -49,7 +50,8 @@ public class Main {
         new PerfTreeMapFinePutGet(),
         new PerfTreeMapTotalAvg(),
         new CollectionTypes1(),
-        new LocalJarDemo()
+        new LocalJarDemo(),
+        new JCLDemo()
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
