@@ -19,6 +19,7 @@ import static org.testng.Assert.*;
 
 import java.io.InputStream;
 
+import myapi.GreetingImpl;
 import myapi.GreetingInterface;
 
 import org.testng.annotations.Test;
@@ -46,6 +47,15 @@ public class TestJCLDemoApis {
                 String.class });
 
         return JclUtils.cast(obj, GreetingInterface.class);
+    }
+
+    @Test
+    public void testDefaultImpl() {
+        GreetingImpl gi = new GreetingImpl("Firstname", "Lastname");
+        assertEquals(gi.morning("Java"),
+                "good morning, Java and Firstname Lastname.");
+        assertEquals(gi.afternoon("Java"),
+                "good afternoon, Java and Firstname Lastname.");
     }
 
     @Test

@@ -17,6 +17,7 @@ package javasnack.snacks;
 
 import java.io.InputStream;
 
+import myapi.GreetingImpl;
 import myapi.GreetingInterface;
 
 import org.xeustechnologies.jcl.JarClassLoader;
@@ -53,6 +54,11 @@ public class JCLDemo implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("===== Default GreetingImpl:");
+        GreetingImpl gi = new GreetingImpl("Firstname", "Lastname");
+        System.out.println(gi.morning("Java"));
+        System.out.println(gi.afternoon("Java"));
+
         System.out.println("===== load myapi-impl1.jar");
         sandbox("JCLDemo/myapi-impl1.jar");
         System.out.println("===== load myapi-impl2.jar");
