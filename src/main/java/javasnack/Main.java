@@ -41,7 +41,7 @@ import javasnack.snacks.perfs.map.PerfLinkedHashMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfLinkedHashMapTotalAvg;
 import javasnack.snacks.perfs.map.PerfTreeMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
-import javasnack.snacks.xml.sax2.XercesSax2WithJaxpDemo;
+import javasnack.snacks.xml.sax2.ShaniSax2WithJaxpDemo;
 
 /**
  * Console Play Board:
@@ -76,7 +76,7 @@ public class Main {
         new CollectionTypes1(),
         new LocalJarDemo(),
         new JCLDemo(),
-        new XercesSax2WithJaxpDemo()
+        new ShaniSax2WithJaxpDemo()
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");

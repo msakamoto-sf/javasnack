@@ -26,8 +26,9 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 /**
- * Apache Xerces SAX2 Parser (through JAXP) Demos.
+ * ShaniXmlParser SAX2 Parser (through JAXP) Demos.
  * 
+ * @see http://sourceforge.net/projects/shanidom/
  * @see http://docs.oracle.com/javase/tutorial/jaxp/sax/parsing.html
  * @see http://msugai.fc2web.com/java/XML/xerces.html
  * @see http://msugai.fc2web.com/java/XML/SAX.html
@@ -36,12 +37,13 @@ import org.xml.sax.SAXException;
  * 
  * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
  */
-public class XercesSax2WithJaxpDemo implements Runnable {
+public class ShaniSax2WithJaxpDemo implements Runnable {
 
     void printSaxParserSwitches(SAXParser p) {
         System.out.println("isNamespaceAware() : " + p.isNamespaceAware());
         System.out.println("isValidating()     : " + p.isValidating());
-        System.out.println("isXIncludeAware()  : " + p.isXIncludeAware());
+        // Shani's Parser invokes java.lang.UnsupportedOperationException: This parser does not support specification "null" version "null"
+        //System.out.println("isXIncludeAware()  : " + p.isXIncludeAware());
     }
 
     void loadXml(String res) {
@@ -65,7 +67,7 @@ public class XercesSax2WithJaxpDemo implements Runnable {
     @Override
     public void run() {
         System.setProperty("javax.xml.parsers.SAXParserFactory",
-                "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+                "org.allcolor.xml.parser.CSaxParserFactory");
 
         loadXml("xmldemo/simple1.xml");
         loadXml("xmldemo/error1.xml");
