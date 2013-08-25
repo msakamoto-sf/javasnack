@@ -28,6 +28,8 @@ import javasnack.snacks.JCLDemo;
 import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
 import javasnack.snacks.LocalJarDemo;
+import javasnack.snacks.RandomDistrubution;
+import javasnack.snacks.RandomDistrubutionInt;
 import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
@@ -78,7 +80,9 @@ public class Main {
         new LocalJarDemo(),
         new JCLDemo(),
         new XercesSax2WithJaxpDemo(),
-        new JdkProxyDemo()
+        new JdkProxyDemo(),
+        new RandomDistrubution(),
+        new RandomDistrubutionInt()
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
