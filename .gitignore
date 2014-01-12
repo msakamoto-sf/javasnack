@@ -7,6 +7,6 @@
 *.ear
 
 # Directories #
-.settings/*
+#.settings/*
 target/*
 test-output/*
