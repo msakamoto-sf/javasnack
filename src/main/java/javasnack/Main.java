@@ -34,6 +34,10 @@ import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
 import javasnack.snacks.UUIDDemo;
+import javasnack.snacks.json.PojoEncodeGroovyJsonBuilder;
+import javasnack.snacks.json.PojoEncodeGson;
+import javasnack.snacks.json.PojoEncodeJackson;
+import javasnack.snacks.json.PojoEncodeJsonic;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
 import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
 import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
@@ -82,7 +86,11 @@ public class Main {
         new XercesSax2WithJaxpDemo(),
         new JdkProxyDemo(),
         new RandomDistrubution(),
-        new RandomDistrubutionInt()
+        new RandomDistrubutionInt(),
+        new PojoEncodeJsonic(),
+        new PojoEncodeJackson(),
+        new PojoEncodeGson(),
+        new PojoEncodeGroovyJsonBuilder()
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
