@@ -11,6 +11,10 @@ import com.google.gson.stream.JsonWriter;
 /**
  * google-gson JSON Encoder Demo : POJO to JSON
  * 
+ * TODO : how to use public getter, not only public field ?
+ * @see http://stackoverflow.com/questions/6203487/why-does-gson-use-fields-and-not-getters-setters
+ * @see http://www.javacreed.com/simple-gson-example/
+ * 
  * @see https://code.google.com/p/google-gson/
  * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
  */

@@ -85,4 +85,8 @@ public class EncodePojo {
     public List<EncodePojoChild> getChildren() {
         return Arrays.asList(new EncodePojoChild(20), new EncodePojoChild(30));
     }
+
+    public String get日本語ゲッター() {
+        return "日本語ゲッターの値";
+    }
 }
