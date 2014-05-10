@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package javasnack.snacks.json.pojo;
+ */
+package javasnack.snacks.json.pojo;
 
 public enum EncodePojoEnum {
     ONE, TWO, THREE, FOUR, FIVE,
