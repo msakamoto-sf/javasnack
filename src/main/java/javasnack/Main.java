@@ -37,6 +37,7 @@ import javasnack.snacks.UUIDDemo;
 import javasnack.snacks.json.PojoEncodeGroovyJsonBuilder;
 import javasnack.snacks.json.PojoEncodeGson;
 import javasnack.snacks.json.PojoEncodeJackson;
+import javasnack.snacks.json.PojoEncodeJackson2;
 import javasnack.snacks.json.PojoEncodeJsonic;
 import javasnack.snacks.mustache.MustacheExercise;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
@@ -90,6 +91,7 @@ public class Main {
         new RandomDistrubutionInt(),
         new PojoEncodeJsonic(),
         new PojoEncodeJackson(),
+        new PojoEncodeJackson2(),
         new PojoEncodeGson(),
         new PojoEncodeGroovyJsonBuilder(),
         new MustacheExercise()
