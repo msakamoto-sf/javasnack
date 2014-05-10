@@ -28,3 +28,7 @@ to:
 ```
 
 If `<mirrorOf>` is `*`, then maven searches all dependencies to `<url>` repository, so, local file dependencies couldn't be resolved.
+
+About `<mirrorOf>` setting, see :
+- http://maven.apache.org/guides/mini/guide-mirror-settings.html
+- http://stackoverflow.com/questions/17019308/maven-setup-another-repository-for-certain-dependency
