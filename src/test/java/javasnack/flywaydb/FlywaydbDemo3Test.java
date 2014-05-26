@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2014 "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.testng1.flywaydb;
+package javasnack.flywaydb;
 
 import static org.testng.Assert.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -38,7 +38,7 @@ import com.googlecode.flyway.core.api.MigrationInfoService;
 import com.googlecode.flyway.core.api.MigrationState;
 import com.googlecode.flyway.core.api.MigrationVersion;
 
-public class FlywaydbDemo1Test {
+public class FlywaydbDemo3Test {
 
     Connection conn;
 
@@ -52,13 +52,9 @@ public class FlywaydbDemo1Test {
     @BeforeTest
     public void prepareDb() throws Exception {
         Class.forName("org.h2.Driver");
-        conn = DriverManager.getConnection("jdbc:h2:mem:flywaydb_demo1", "sa",
+        conn = DriverManager.getConnection("jdbc:h2:mem:flywaydb_demo3", "sa",
                 "");
-        // create test table.
-        PreparedStatement ps = conn
-                .prepareStatement("create table t1(id integer auto_increment primary key, name varchar, age int)");
-        ps.execute();
-        ps.close();
+        // prepare empty database.
     }
 
     @AfterTest
@@ -67,28 +63,28 @@ public class FlywaydbDemo1Test {
     }
 
     @Test
-    public void typicalMigrationFlow() throws Exception {
+    public void usingPlaceholderAndEncoding() throws Exception {
         Properties properties = new Properties();
         properties.setProperty("flyway.user", "sa");
         properties.setProperty("flyway.password", "");
         properties.setProperty("flyway.url",
-                "jdbc:h2:mem:flywaydb_demo1;DB_CLOSE_DELAY=-1");
+                "jdbc:h2:mem:flywaydb_demo3;DB_CLOSE_DELAY=-1");
         properties.setProperty("flyway.driver", "org.h2.Driver");
 
         final Flyway flyway = new Flyway();
         flyway.configure(properties);
-        assertNotNull(flyway.getDataSource());
-        flyway.setLocations("flywaydbdemos/demo1");
-        // not initialized -> no target schemas.
-        assertEquals(flyway.getSchemas().length, 0);
+        flyway.setLocations("flywaydbdemos/demo3");
 
-        flyway.init();
-        assertEquals(flyway.getSchemas().length, 1);
-        assertEquals(flyway.getSchemas()[0], "PUBLIC");
-        assertEquals(flyway.getTable(), "schema_version");
+        flyway.setEncoding("UTF-8");
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("L1", "abc");
+        placeholders.put("L2", "def");
+        placeholders.put("L3", "abc");
+        placeholders.put("L4", "def");
+        flyway.setPlaceholders(placeholders);
 
         MigrationInfoService mis = flyway.info();
-        assertEquals(mis.all().length, 4);
+        assertEquals(mis.all().length, 3);
         for (MigrationInfo mi : mis.all()) {
             System.out.println(mi.getVersion());
             System.out.println(mi.getDescription());
@@ -96,25 +92,23 @@ public class FlywaydbDemo1Test {
             System.out.println(mi.getType());
 
         }
-        // 3 migrations (V1.1, V1.2, V1.3) must be pending status.
+        // 3 migrations (V1, V1.1, V1.2) must be pending status.
         assertEquals(mis.pending().length, 3);
-        // initialized version (V1) applied.
-        assertEquals(mis.applied().length, 1);
-        // current version is initialized version (V1).
+        // no version applied.
+        assertEquals(mis.applied().length, 0);
+        // no current version.
         MigrationInfo mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "1");
-        assertEquals(mi.getDescription(), flyway.getInitDescription());
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertNull(mi);
 
-        // migrate to V1.2
-        flyway.setTarget(MigrationVersion.fromVersion("1.2"));
+        // migrate to V1.1
+        flyway.setTarget(MigrationVersion.fromVersion("1.1"));
         flyway.migrate();
         mis = flyway.info();
-        assertEquals(mis.all().length, 4);
-        // no pending, V1.3 -> "ABOVE_TARGET".
+        assertEquals(mis.all().length, 3);
+        // no pending, V1.2 -> "ABOVE_TARGET".
         assertEquals(mis.pending().length, 0);
         // V1, V1.1, V1.2 were applied.
-        assertEquals(mis.applied().length, 3);
+        assertEquals(mis.applied().length, 2);
         for (MigrationInfo _mi : mis.all()) {
             System.out.println(_mi.getVersion());
             System.out.println(_mi.getDescription());
@@ -123,19 +117,23 @@ public class FlywaydbDemo1Test {
 
         }
         mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "1.2");
+        assertEquals(mi.getVersion().getVersion(), "1.1");
         assertEquals(mi.getDescription(), "add t1 hobby column");
         assertEquals(mi.getState(), MigrationState.SUCCESS);
+
+        // change placeholder prefix and suffix.
+        flyway.setPlaceholderPrefix("%{%");
+        flyway.setPlaceholderSuffix("%}%");
 
         // migrate to latest version
         flyway.setTarget(MigrationVersion.LATEST);
         flyway.migrate();
         mis = flyway.info();
-        assertEquals(mis.all().length, 4);
+        assertEquals(mis.all().length, 3);
         assertEquals(mis.pending().length, 0);
-        assertEquals(mis.applied().length, 4);
+        assertEquals(mis.applied().length, 3);
         mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "1.3");
+        assertEquals(mi.getVersion().getVersion(), "1.2");
         assertEquals(mi.getDescription(), "insert t1 data2");
         assertEquals(mi.getState(), MigrationState.SUCCESS);
 
@@ -158,10 +156,10 @@ public class FlywaydbDemo1Test {
             }
         };
         Map<Long, T1> found = run.query(conn,
-                "select id, name, age, hobby from t1", h);
+                "select id, name, age, hobby from abc_def_t1", h);
         assertEquals(found.size(), 4);
         T1 jon = found.get(1L);
-        assertEquals(jon.name, "jon");
+        assertEquals(jon.name, "日本語");
         assertEquals(jon.hobby, "");
         T1 alice = found.get(3L);
         assertEquals(alice.name, "alice");

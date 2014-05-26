@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2013 "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.testng1;
+package javasnack.tool;
 
 import static org.testng.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javasnack.tool.UnsignedByte;
 
 import org.testng.annotations.Test;
 

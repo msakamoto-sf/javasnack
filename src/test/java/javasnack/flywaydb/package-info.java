@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2014 "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,4 +22,4 @@
  * @see http://blog.livedoor.jp/ryu22e/archives/65722084.html
  * @see http://siguniang.wordpress.com/2013/11/10/db-schema-migration-made-easy-with-flyway/
  */
-package javasnack.testng1.flywaydb;
+package javasnack.flywaydb;

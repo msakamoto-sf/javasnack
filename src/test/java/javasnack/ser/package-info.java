@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 the original author or authors.
+ * Copyright 2014 "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,4 +24,4 @@
  * @see http://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
  * @see http://stackoverflow.com/questions/2836646/java-serializable-object-to-byte-array
  */
-package javasnack.testng1.ser;
+package javasnack.ser;
