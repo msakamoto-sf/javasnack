@@ -68,4 +68,77 @@ public class TestSimpleInject {
         HelloWorld2 hw = i.getInstance(HelloWorld2.class);
         assertEquals(hw.hello2(), "Hello Google Guice!!");
     }
+
+    public static class HelloWorld3 {
+        private final HelloWorld hw1;
+
+        @Inject
+        public HelloWorld3(HelloWorld hw) {
+            this.hw1 = Preconditions.checkNotNull(hw);
+        }
+
+        public String hello1() {
+            return hw1.hello();
+        }
+
+        @Inject
+        private HelloWorld hw2;
+
+        public String hello2() {
+            return hw2.hello();
+        }
+
+        private HelloWorld hw3;
+
+        @Inject
+        public void setHelloWorld(HelloWorld hw) {
+            this.hw3 = hw;
+        }
+
+        public String hello3() {
+            return hw3.hello();
+        }
+    }
+
+    @Test
+    public void testConstructorAndFieldAndMethodInject() {
+        Injector i = Guice.createInjector();
+        HelloWorld3 hw = i.getInstance(HelloWorld3.class);
+        assertEquals(hw.hello1(), "Hello Google Guice!!");
+        assertEquals(hw.hello2(), "Hello Google Guice!!");
+        assertEquals(hw.hello3(), "Hello Google Guice!!");
+    }
+
+    public static class HelloWorld4 extends HelloWorld3 {
+
+        final private HelloWorld hw4;
+
+        @Inject
+        public HelloWorld4(HelloWorld hw, HelloWorld hw4) {
+            super(hw);
+            this.hw4 = hw4;
+        }
+
+        public String hello4() {
+            return this.hw4.hello();
+        }
+
+        @Inject
+        private HelloWorld hw5;
+
+        public String hello5() {
+            return this.hw5.hello();
+        }
+    }
+
+    @Test
+    public void testInheritanceInject() {
+        Injector i = Guice.createInjector();
+        HelloWorld4 hw = i.getInstance(HelloWorld4.class);
+        assertEquals(hw.hello1(), "Hello Google Guice!!");
+        assertEquals(hw.hello2(), "Hello Google Guice!!");
+        assertEquals(hw.hello3(), "Hello Google Guice!!");
+        assertEquals(hw.hello4(), "Hello Google Guice!!");
+        assertEquals(hw.hello5(), "Hello Google Guice!!");
+    }
 }
