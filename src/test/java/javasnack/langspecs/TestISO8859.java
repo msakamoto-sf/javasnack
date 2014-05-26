@@ -127,4 +127,13 @@ public class TestISO8859 {
         assertNotEquals(r, errs);
     }
 
+    @Test
+    public void replace0x00ToEmpty() {
+        char[] data = new char[] { 'a', 'b', '\0', 'c', 'd', '\0', 'e', 'f' };
+        String data2 = new String(data);
+        String expected1 = "ab" + "\0" + "cd" + "\0" + "ef";
+        assertEquals(data2, expected1);
+        String data3 = data2.replaceAll("\0", "");
+        assertEquals(data3, "abcdef");
+    }
 }

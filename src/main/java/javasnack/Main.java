@@ -34,6 +34,7 @@ import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
 import javasnack.snacks.UUIDDemo;
+import javasnack.snacks.UnicodeC0C1;
 import javasnack.snacks.json.PojoEncodeGroovyJsonBuilder;
 import javasnack.snacks.json.PojoEncodeGson;
 import javasnack.snacks.json.PojoEncodeJackson;
@@ -94,7 +95,8 @@ public class Main {
         new PojoEncodeJackson2(),
         new PojoEncodeGson(),
         new PojoEncodeGroovyJsonBuilder(),
-        new MustacheExercise()
+        new MustacheExercise(),
+        new UnicodeC0C1(),
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
