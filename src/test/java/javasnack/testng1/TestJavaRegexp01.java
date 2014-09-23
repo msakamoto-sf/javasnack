@@ -35,21 +35,23 @@ public class TestJavaRegexp01 {
         String regexp2 = "\\s{2}";
         p = Pattern.compile(regexp2, Pattern.UNIX_LINES
                 + Pattern.CASE_INSENSITIVE + Pattern.COMMENTS
-                + Pattern.MULTILINE);
+                + Pattern.MULTILINE + Pattern.DOTALL);
         int f = p.flags();
         assertEquals(f & Pattern.UNIX_LINES, Pattern.UNIX_LINES);
         assertEquals(f & Pattern.CASE_INSENSITIVE, Pattern.CASE_INSENSITIVE);
         assertEquals(f & Pattern.COMMENTS, Pattern.COMMENTS);
         assertEquals(f & Pattern.MULTILINE, Pattern.MULTILINE);
+        assertEquals(f & Pattern.DOTALL, Pattern.DOTALL);
         assertEquals(p.pattern(), regexp2);
 
-        String regexp3 = "(?dixm)\\s{2}";
+        String regexp3 = "(?dixms)\\s{2}";
         p = Pattern.compile(regexp3);
         f = p.flags();
         assertEquals(f & Pattern.UNIX_LINES, Pattern.UNIX_LINES);
         assertEquals(f & Pattern.CASE_INSENSITIVE, Pattern.CASE_INSENSITIVE);
         assertEquals(f & Pattern.COMMENTS, Pattern.COMMENTS);
         assertEquals(f & Pattern.MULTILINE, Pattern.MULTILINE);
+        assertEquals(f & Pattern.DOTALL, Pattern.DOTALL);
         assertEquals(p.pattern(), regexp3);
     }
 
@@ -460,6 +462,62 @@ public class TestJavaRegexp01 {
         assertEquals(m.start(), 28);
         assertEquals(m.end(), 31);
         assertEquals(m.group(), "abc");
+    }
+
+    @Test
+    public void TestDotAll1() {
+        Pattern p = Pattern.compile("ab.*g");
+        Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
+        assertFalse(m.matches());
+        assertFalse(m.lookingAt()); // CAUTION!
+        assertTrue(m.find()); // CAUTION!
+        m.reset(); // CAUTION!
+        assertTrue(m.find()); // CAUTION!
+        assertEquals(m.groupCount(), 0);
+        assertEquals(m.start(), 3);
+        assertEquals(m.end(), 10);
+        assertEquals(m.group(), "abcdefg");
+        assertFalse(m.find());
+    }
+
+    @Test
+    public void TestDotAll2() {
+        // see: http://stackoverflow.com/questions/3651725/match-multiline-text-using-regular-expression
+        Pattern p = Pattern.compile("ab.*g", Pattern.DOTALL);
+        Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
+        assertFalse(m.matches());
+        assertFalse(m.lookingAt()); // CAUTION!
+        assertTrue(m.find()); // CAUTION!
+        m.reset(); // CAUTION!
+        assertTrue(m.find()); // CAUTION!
+        assertEquals(m.groupCount(), 0);
+        assertEquals(m.start(), 3);
+        assertEquals(m.end(), 21);
+        assertEquals(m.group(), "abcdefghi\nabc\ndefg");
+        assertFalse(m.find());
+    }
+
+    @Test
+    public void TestDotAll3() {
+        // reluctant quantifier
+        // see: http://docs.oracle.com/javase/tutorial/essential/regex/quant.html
+        // see: http://stackoverflow.com/questions/5319840/greedy-vs-reluctant-vs-possessive-quantifiers
+        Pattern p = Pattern.compile("(?s)ab.*?g");
+        Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
+        assertFalse(m.matches());
+        assertFalse(m.lookingAt()); // CAUTION!
+        assertTrue(m.find()); // CAUTION!
+        m.reset(); // CAUTION!
+        assertTrue(m.find()); // CAUTION!
+        assertEquals(m.groupCount(), 0);
+        assertEquals(m.start(), 3);
+        assertEquals(m.end(), 10);
+        assertEquals(m.group(), "abcdefg");
+        assertTrue(m.find());
+        assertEquals(m.groupCount(), 0);
+        assertEquals(m.start(), 13);
+        assertEquals(m.end(), 21);
+        assertEquals(m.group(), "abc\ndefg");
     }
 
     @Test
