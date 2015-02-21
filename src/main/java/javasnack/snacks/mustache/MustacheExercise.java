@@ -112,8 +112,7 @@ public class MustacheExercise implements Runnable {
         Mustache mustache = mf.compile("mustache-java-tmpl/pojo.mustache");
         EncodePojo boundScope = new EncodePojo() {
             SubScope subScope = new SubScope("HelloMustache");
-            List<SubScope> subScopes = Arrays.asList(new SubScope("subscope1"),
-                    new SubScope("subscope2"));
+            List<SubScope> subScopes = Arrays.asList(new SubScope("subscope1"), new SubScope("subscope2"));
         };
         mustache.execute(new PrintWriter(System.out), boundScope).flush();
     }
@@ -165,8 +164,7 @@ public class MustacheExercise implements Runnable {
         boundScope.put("item5", "evening");
 
         MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache mustache = mf
-                .compile("mustache-java-tmpl/conditions.mustache");
+        Mustache mustache = mf.compile("mustache-java-tmpl/conditions.mustache");
         mustache.execute(new PrintWriter(System.out), boundScope).flush();
     }
 
@@ -183,8 +181,52 @@ public class MustacheExercise implements Runnable {
             public String val = "<\"\\'&>";
         };
         MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache mustache = mf
-                .compile("mustache-java-tmpl/htmlescape.mustache");
+        Mustache mustache = mf.compile("mustache-java-tmpl/htmlescape.mustache");
+        mustache.execute(new PrintWriter(System.out), boundScope).flush();
+    }
+
+    class Bean4 {
+        public String attr4 = "bean4:attr4";
+    }
+
+    class Bean3 {
+        public String attr3 = "bean3:attr3";
+    }
+
+    class Bean2 {
+        public String attr2 = "bean2:attr2";
+        public Bean3 bean3 = new Bean3();
+    }
+
+    class Bean1 {
+        public String attr1 = "bean1:attr1";
+        public Bean2 bean2 = new Bean2();
+        public Map<String, Bean4> map;
+
+        public Bean1() {
+            map = new HashMap<>();
+            map.put("key1", new Bean4());
+        }
+    }
+
+    /**
+     * <pre>
+     * -------------------
+     * beans:
+     * bean1:attr1
+     * bean2:attr2
+     * bean3:attr3
+     * -------------------
+     * </pre>
+     * 
+     * @throws Exception
+     */
+    void nestedbeans() throws Exception {
+        Object boundScope = new Object() {
+            public Bean1 bean1 = new Bean1();
+        };
+        MustacheFactory mf = new DefaultMustacheFactory();
+        Mustache mustache = mf.compile("mustache-java-tmpl/nestedbeans.mustache");
         mustache.execute(new PrintWriter(System.out), boundScope).flush();
     }
 
@@ -199,6 +241,8 @@ public class MustacheExercise implements Runnable {
             conditions();
             System.out.println("================= htmlescape");
             htmlescape();
+            System.out.println("================= nestedbeans");
+            nestedbeans();
         } catch (Exception e) {
             e.printStackTrace();
         }
