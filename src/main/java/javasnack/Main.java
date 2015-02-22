@@ -28,6 +28,7 @@ import javasnack.snacks.JCLDemo;
 import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
 import javasnack.snacks.LocalJarDemo;
+import javasnack.snacks.NetworkInterface1;
 import javasnack.snacks.RandomDistrubution;
 import javasnack.snacks.RandomDistrubutionInt;
 import javasnack.snacks.ReadConsoleInput;
@@ -97,6 +98,7 @@ public class Main {
         new PojoEncodeGroovyJsonBuilder(),
         new MustacheExercise(),
         new UnicodeC0C1(),
+        new NetworkInterface1(),
         };
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
