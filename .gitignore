@@ -1,12 +1,29 @@
 *.class
-*.swp
-
 # Package Files #
 #*.jar    ... for subprojects/jar1 demo
 *.war
 *.ear
 
-# Directories #
-#.settings/*
+# Eclipse #
+.settings/*
+.classpath
+.project
+
+# Windows #
+Thumbs.db
+.DS_Store
+
+# Maven #
 target/*
 test-output/*
+
+# general build directories #
+out/*
+build/*
+bin/*
+
+# other #
+*.swp
+*.log
+*.bak
+*.orig
