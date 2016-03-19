@@ -27,3 +27,6 @@ bin/*
 *.log
 *.bak
 *.orig
+
+# Eclipse m2e auto generate #
+/target/
