@@ -47,6 +47,8 @@ public class TestTaskAbortion {
     @Test
     public void testThreadPoolExecutorHook() throws InterruptedException {
         class AbortTask implements Runnable {
+            public String label = "hello";
+
             @Override
             public void run() {
                 throw new NullPointerException("test");
@@ -55,6 +57,7 @@ public class TestTaskAbortion {
 
         class CustomThreadPoolExecutor extends ThreadPoolExecutor {
             public Throwable myT = null;
+            public AbortTask caughtT = null;
 
             public CustomThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
                     BlockingQueue<Runnable> workQueue) {
@@ -64,6 +67,7 @@ public class TestTaskAbortion {
             @Override
             public void afterExecute(Runnable r, Throwable t) {
                 super.afterExecute(r, t);
+                caughtT = (AbortTask) r;
                 myT = t;
             }
         }
@@ -86,6 +90,7 @@ public class TestTaskAbortion {
             assertEquals(pool.myT.getSuppressed().length, 0);
             assertEquals(pool.myT.getCause(), null);
         }
+        assertEquals(pool.caughtT.label, "hello");
     }
 
     @Test
