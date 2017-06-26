@@ -192,5 +192,9 @@ public class TestBasicDemo {
         assertEquals(ldt1.toString(), "1970-01-02T09:01:02");
         ZonedDateTime zdt1 = ZonedDateTime.now(c1);
         assertEquals(zdt1.toString(), "1970-01-02T09:01:02+09:00");
+
+        // see also:
+        // https://stackoverflow.com/questions/24491260/mocking-time-in-java-8s-java-time-api
+        // https://stackoverflow.com/questions/27067049/unit-testing-a-class-with-a-java-8-clock
     }
 }
