@@ -18,8 +18,11 @@ package javasnack.dateandtime;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.time.Clock;
+import java.time.DateTimeException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +32,11 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.JapaneseDate;
+import java.time.chrono.JapaneseEra;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -196,5 +204,84 @@ public class TestBasicDemo {
         // see also:
         // https://stackoverflow.com/questions/24491260/mocking-time-in-java-8s-java-time-api
         // https://stackoverflow.com/questions/27067049/unit-testing-a-class-with-a-java-8-clock
+    }
+
+    @Test
+    public void formatterDemo() {
+        LocalDateTime ldt1 = LocalDateTime.parse("2017-01-02T03:04:05");
+        OffsetDateTime odt1 = OffsetDateTime.parse("2016-12-31T23:59:59+09:00");
+        ZonedDateTime zdt1 = ZonedDateTime.parse("2017-02-03T04:05:06+09:00[Asia/Tokyo]");
+        assertEquals(ldt1.format(DateTimeFormatter.ISO_DATE_TIME), "2017-01-02T03:04:05");
+        assertEquals(odt1.format(DateTimeFormatter.ISO_DATE_TIME), "2016-12-31T23:59:59+09:00");
+        assertEquals(zdt1.format(DateTimeFormatter.ISO_DATE_TIME), "2017-02-03T04:05:06+09:00[Asia/Tokyo]");
+
+        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyy'年'MM'月'dd'日 'HH'時'mm'分'ss'秒 'XXX");
+        try {
+            ldt1.format(dtf1);
+            fail();
+        } catch (DateTimeException e) {
+            assertEquals(e.getClass(), UnsupportedTemporalTypeException.class);
+        }
+        assertEquals(odt1.format(dtf1), "2016年12月31日 23時59分59秒 +09:00");
+        assertEquals(zdt1.format(dtf1), "2017年02月03日 04時05分06秒 +09:00");
+
+        DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("yyyyMMdd' 'HHmmss[XXX[' ['VV']']]");
+        assertEquals(ldt1.format(dtf2), "20170102 030405");
+        assertEquals(odt1.format(dtf2), "20161231 235959+09:00");
+        assertEquals(zdt1.format(dtf2), "20170203 040506+09:00 [Asia/Tokyo]");
+
+        assertEquals(ldt1, LocalDateTime.parse("20170102 030405", dtf2));
+        assertEquals(odt1, OffsetDateTime.parse("20161231 235959+09:00", dtf2));
+        assertEquals(zdt1, ZonedDateTime.parse("20170203 040506+09:00 [Asia/Tokyo]", dtf2));
+    }
+
+    @Test
+    public void betweenDurationDemo() {
+        LocalDateTime ldt0 = LocalDateTime.parse("2008-02-27T23:59:58");
+        LocalDateTime ldt1 = LocalDateTime.parse("2008-02-28T00:00:00");
+        // leep-year, 2008-02-29 exists.
+        LocalDateTime ldt2 = LocalDateTime.parse("2008-03-01T00:00:00");
+        Duration dr0 = Duration.between(ldt1, ldt0);
+        assertEquals(dr0.getSeconds(), -2L);
+        Duration dr1 = Duration.between(ldt1, ldt2);
+        assertEquals(dr1.getSeconds(), 3600 * 24 * 2L);
+
+        OffsetDateTime odt1 = OffsetDateTime.parse("2008-03-01T00:00:00+09:00");
+        OffsetDateTime odt2 = OffsetDateTime.parse("2008-03-01T00:00:00+01:00");
+        assertEquals(Duration.between(ldt1, odt1).getSeconds(), 3600 * 24 * 2L);
+        assertEquals(Duration.between(ldt1, odt2).getSeconds(), 3600 * 24 * 2L);
+        assertEquals(Duration.between(odt1, odt2).getSeconds(), 3600 * 8L);
+    }
+
+    @Test
+    public void japaneseEraDemo() {
+        assertEquals(JapaneseDate.of(1874, 1, 1).getEra(), JapaneseEra.MEIJI); // MEIJI supports from 1874(MEIJI 6 year)
+        assertEquals(JapaneseDate.of(1912, 7, 29).getEra(), JapaneseEra.MEIJI);
+        assertEquals(JapaneseDate.of(1912, 7, 30).getEra(), JapaneseEra.TAISHO);
+        assertEquals(JapaneseDate.of(1926, 12, 24).getEra(), JapaneseEra.TAISHO);
+        assertEquals(JapaneseDate.of(1926, 12, 25).getEra(), JapaneseEra.SHOWA);
+        assertEquals(JapaneseDate.of(1989, 1, 7).getEra(), JapaneseEra.SHOWA);
+        assertEquals(JapaneseDate.of(1989, 1, 8).getEra(), JapaneseEra.HEISEI);
+
+        JapaneseDate jdh1 = JapaneseDate.of(JapaneseEra.HEISEI, 1, 1, 8);
+        assertEquals(jdh1.get(ChronoField.YEAR), 1989);
+        assertEquals(jdh1.get(ChronoField.YEAR_OF_ERA), 1);
+
+        try {
+            JapaneseDate.of(JapaneseEra.HEISEI, 1, 1, 7);
+            fail();
+        } catch (DateTimeException e) {
+            assertEquals(e.getClass(), DateTimeException.class);
+        }
+        JapaneseDate jdh2 = JapaneseDate.of(JapaneseEra.SHOWA, 64, 1, 7);
+        assertEquals(jdh2.get(ChronoField.YEAR), 1989);
+        assertEquals(jdh2.get(ChronoField.YEAR_OF_ERA), 64);
+
+        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("Gy年M月d日");
+        assertEquals(jdh1.format(dtf1), "平成1年1月8日");
+        assertEquals(jdh2.format(dtf1), "昭和64年1月7日");
+        DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("GGGGGy年M月d日");
+        assertEquals(jdh1.format(dtf2), "H1年1月8日");
+        assertEquals(jdh2.format(dtf2), "S64年1月7日");
     }
 }
