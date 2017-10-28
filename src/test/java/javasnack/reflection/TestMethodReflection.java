@@ -98,6 +98,8 @@ public class TestMethodReflection {
         Base o0 = new Base(10);
         Method[] methods = c0.getDeclaredMethods();
         Assert.assertEquals(methods.length, 4);
+        // (? ?) sort order of getDeclaredMethods() return array is not same between several times.
+        // -> convert to map for stripping sort order effection.
         Map<String, Method> n2m = new HashMap<>();
         for (Method m0 : methods) {
             n2m.put(m0.getName(), m0);
