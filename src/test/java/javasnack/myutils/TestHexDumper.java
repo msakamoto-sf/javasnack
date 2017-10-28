@@ -78,7 +78,15 @@ public class TestHexDumper {
     @Test
     public void testSimple() {
         HexDumper dumper = new HexDumper();
-        String r = dumper.dump(BYTES_00_FF);
+        String r = dumper.dump(null);
+        assertEquals(r, "");
+        r = dumper.dump(new byte[] {});
+        assertEquals(r, "");
+        r = dumper.dump(new byte[] { 0 });
+        assertEquals(r, "00");
+        r = dumper.dump(new byte[] { 0, 1 });
+        assertEquals(r, "0001");
+        r = dumper.dump(BYTES_00_FF);
         assertEquals(r, createDummy("", false, ""));
     }
 

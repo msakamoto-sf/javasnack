@@ -39,6 +39,8 @@
  */
 package javasnack.myutils;
 
+import java.util.Objects;
+
 /**
  * works > JDK 1.5 :)
  * 
@@ -65,6 +67,9 @@ public class HexDumper {
     }
 
     public String dump(final byte[] srcbytes) {
+        if (Objects.isNull(srcbytes)) {
+            return "";
+        }
         if (srcbytes.length == 0) {
             return "";
         }
