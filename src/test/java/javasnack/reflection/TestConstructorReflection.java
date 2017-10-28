@@ -105,4 +105,88 @@ public class TestConstructorReflection {
         Assert.assertEquals(o3.val2, 20);
         Assert.assertEquals(o3.s1, "def");
     }
+
+    /* SPECIAL THANKS:
+     * @see http://d.hatena.ne.jp/Nagise/20131121/1385046248
+     * @see https://stackoverflow.com/questions/75175/create-instance-of-generic-type-in-java
+     */
+
+    public static class DemoPojo1 {
+        int i0 = 100;
+    }
+
+    public static class DemoPojo2 {
+        String s0 = "hello";
+    }
+
+    public static <T> T createPojo(Class<T> clazz) throws NoSuchMethodException, SecurityException,
+            InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Constructor<T> c0 = clazz.getDeclaredConstructor(new Class<?>[] {});
+        T r = c0.newInstance();
+        return r;
+    }
+
+    @Test
+    public void testPojoCreation() throws NoSuchMethodException, SecurityException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        DemoPojo1 pojo1 = createPojo(DemoPojo1.class);
+        Assert.assertEquals(pojo1.i0, 100);
+        DemoPojo2 pojo2 = createPojo(DemoPojo2.class);
+        Assert.assertEquals(pojo2.s0, "hello");
+    }
+
+    public static class Demo2 {
+        int i1;
+        String s1;
+
+        public Demo2(int a0, String a1) {
+            this.i1 = a0;
+            this.s1 = a1;
+        }
+    }
+
+    public static class Demo3a extends Demo2 {
+        public Demo3a(String a1) {
+            super(10, a1);
+        }
+    }
+
+    public static class Demo3b extends Demo2 {
+        public Demo3b(String a1) {
+            super(20, a1);
+        }
+    }
+
+    public static class Demo3c extends Demo2 {
+        public Demo3c(String a1) {
+            super(30, a1);
+        }
+    }
+
+    public static <T extends Demo2> T createDemo3(String a1, Class<T> clazz)
+            throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        Constructor<T> c0 = clazz.getDeclaredConstructor(new Class<?>[] { String.class });
+        T r = c0.newInstance(a1);
+        return r;
+    }
+
+    @Test
+    public void testDemo3Creation() throws NoSuchMethodException, SecurityException, InstantiationException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Demo3a d3a = createDemo3("abc", Demo3a.class);
+        Assert.assertEquals(d3a.i1, 10);
+        Assert.assertEquals(d3a.s1, "abc");
+        Demo3b d3b = createDemo3("def", Demo3b.class);
+        Assert.assertEquals(d3b.i1, 20);
+        Assert.assertEquals(d3b.s1, "def");
+        Demo3c d3c = createDemo3("ghi", Demo3c.class);
+        Assert.assertEquals(d3c.i1, 30);
+        Assert.assertEquals(d3c.s1, "ghi");
+        Demo2 d2 = createDemo3("jkl", Demo3a.class);
+        Assert.assertEquals(d2.i1, 10);
+        Assert.assertEquals(d2.s1, "jkl");
+
+        // createDemo3("xxx", String.class); // compile error :)
+    }
 }
