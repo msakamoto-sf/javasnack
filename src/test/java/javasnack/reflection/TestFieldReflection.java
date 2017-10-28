@@ -9,7 +9,7 @@ import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class TestClassField {
+public class TestFieldReflection {
     public static class Base {
         byte packagedByteField = 1;
         @SuppressWarnings("unused")
