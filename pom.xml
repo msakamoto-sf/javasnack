@@ -25,6 +25,11 @@
   <dependencies>
     <!-- compile and runtime -->
     <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+      <version>0.1.54</version>
+    </dependency>
+    <dependency>
       <groupId>subprojects</groupId>
       <artifactId>testjar1</artifactId>
       <version>1.0</version>
