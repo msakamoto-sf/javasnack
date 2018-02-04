@@ -1,21 +1,59 @@
+target/
+test-output/
+!.mvn/wrapper/maven-wrapper.jar
+
+### vscode ###
+.vscode
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+
+# Compiled class file
 *.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
 # Package Files #
 #*.jar    ... for subprojects/jar1 demo
 *.war
 *.ear
+*.zip
+*.tar.gz
+*.rar
 
-# Eclipse #
-.settings/*
-.classpath
-.project
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
 
 # Windows #
 Thumbs.db
 .DS_Store
-
-# Maven #
-target/*
-test-output/*
 
 # general build directories #
 out/*
@@ -28,5 +66,3 @@ bin/*
 *.bak
 *.orig
 
-# Eclipse m2e auto generate #
-/target/
