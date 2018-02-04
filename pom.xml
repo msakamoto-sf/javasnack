@@ -19,6 +19,9 @@
     <java.version.target>1.8</java.version.target>
     <java.compiler.debug>true</java.compiler.debug>
     <exec.mainClass>javasnack.Main</exec.mainClass>
+
+    <powermock.version>1.7.3</powermock.version>
+
   </properties>
 
   <repositories>
@@ -135,17 +138,18 @@
       <artifactId>guava</artifactId>
       <version>17.0</version>
     </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.7</version>
+      <version>6.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -156,19 +160,19 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-testng</artifactId>
-      <version>1.4.12</version>
+      <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
-      <version>1.4.12</version>
+      <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
-      <version>1.4.12</version>
+      <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
