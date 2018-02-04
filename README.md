@@ -91,3 +91,29 @@ If `<mirrorOf>` is `*`, then maven searches all dependencies to `<url>` reposito
 About `<mirrorOf>` setting, see :
 - http://maven.apache.org/guides/mini/guide-mirror-settings.html
 - http://stackoverflow.com/questions/17019308/maven-setup-another-repository-for-certain-dependency
+
+### 4. build main project
+
+```
+$ cd javasnack/
+
+$ ./mvnw package
+
+$ java -jar target/javasnack-1.0-SNAPSHOT.jar
+or
+$ mvnw exec:java
+```
+
+## for Developers setup (Eclipse)
+
+- JDK >= 1.8.0_xx
+- Eclipse >= 4.5.2 (Mars.2 Release), "Eclipse IDE for Java EE Developers" package
+- Maven >= 3.5.2 (download automatically by mvnw script. also works by 3.x)
+- use UTF-8 for source code and other text files.
+
+See https://github.com/msakamoto-sf/howto-eclipse-setup : README.md.
+Refer following `setup-type1` setting:
+- Eclipse install how-to
+- Clean Up/Formatter configuration
+- Required plugin : TestNG
+
