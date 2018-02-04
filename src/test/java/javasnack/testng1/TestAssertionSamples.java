@@ -15,7 +15,10 @@
  */
 package javasnack.testng1;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertEqualsNoOrder;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -340,7 +343,6 @@ public class TestAssertionSamples {
         ac.set(2000, 1, 2, 3, 4, 5);
         Calendar ec = Calendar.getInstance();
         ec.set(2000, 1, 2, 3, 4, 5);
-        assertEquals(ac, ec);
         assertCalendarYearIs(ac, 2000);
     }
 }
