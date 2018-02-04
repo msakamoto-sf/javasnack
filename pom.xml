@@ -11,8 +11,14 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+    <!-- see : https://maven.apache.org/general.html#encoding-warning  -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
+
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version.source>1.8</java.version.source>
+    <java.version.target>1.8</java.version.target>
+    <java.compiler.debug>true</java.compiler.debug>
+    <exec.mainClass>javasnack.Main</exec.mainClass>
   </properties>
 
   <repositories>
@@ -168,63 +174,65 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
-          <configuration>
-            <debug>true</debug>
-            <encoding>${project.build.sourceEncoding}</encoding>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <!--
-          see:
-          1) http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi
-          2) http://confluence.highsource.org/display/~lexi/How+to+run+both+JUnit+and+TestNG+with+maven-surefire-plugin
-          3) http://jira.codehaus.org/browse/SUREFIRE-377
-          ... Christophe Furmaniak's solution seems smart in 1), Oct 29'11 at 17:26 post.
-          -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
-          <configuration>
-            <reportsDirectory>${project.build.directory}/surefire-reports/junit</reportsDirectory>
-            <testNGArtifactName>none:none</testNGArtifactName>
-          </configuration>
-          <executions>
-            <execution>
-              <phase>test</phase>
-              <goals>
-                <goal>test</goal>
-              </goals>
-              <configuration>
-                <reportsDirectory>${project.build.directory}/surefire-reports/testng</reportsDirectory>
-                <junitArtifactName>none:none</junitArtifactName>
-                <testNGArtifactName>org.testng:testng</testNGArtifactName>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.4.0</version>
-          <!-- DON'T SETUP DEFAULT CONFIGURATION -->
-          <!--
-          <configuration>
-            <mainClass>javasnack.cli.CliDemo1</mainClass>
-            <classpathScope>test</classpathScope>
-          </configuration>
-          -->
-          <!--  DON'T BIND exec:xxxx TO ANY PHASES. -->
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>${java.version.source}</source>
+          <target>${java.version.target}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <debug>${java.compiler.debug}</debug>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <!--
+        see:
+        1) http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi
+        2) http://confluence.highsource.org/display/~lexi/How+to+run+both+JUnit+and+TestNG+with+maven-surefire-plugin
+        3) http://jira.codehaus.org/browse/SUREFIRE-377
+        ... Christophe Furmaniak's solution seems smart in 1), Oct 29'11 at 17:26 post.
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.20.1</version>
+        <configuration>
+          <reportsDirectory>${project.build.directory}/surefire-reports/junit</reportsDirectory>
+          <testNGArtifactName>none:none</testNGArtifactName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <reportsDirectory>${project.build.directory}/surefire-reports/testng</reportsDirectory>
+              <junitArtifactName>none:none</junitArtifactName>
+              <testNGArtifactName>org.testng:testng</testNGArtifactName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <!-- DON'T SETUP DEFAULT CONFIGURATION -->
+        <!--
+        <configuration>
+          <mainClass>javasnack.cli.CliDemo1</mainClass>
+          <classpathScope>test</classpathScope>
+        </configuration>
+        -->
+        <!--  DON'T BIND exec:xxxx TO ANY PHASES. -->
+      </plugin>
+    </plugins>
+
   </build>
 
 </project>
