@@ -1,4 +1,4 @@
-package javasnack.langspecs;
+package javasnack.concurrent;
 
 import static org.testng.Assert.*;
 
