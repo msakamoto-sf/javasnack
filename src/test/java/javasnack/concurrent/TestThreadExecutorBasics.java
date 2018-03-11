@@ -201,4 +201,90 @@ public class TestThreadExecutorBasics {
         assertTrue(es.isShutdown());
         assertTrue(es.isTerminated());
     }
+
+    class BreakableTask implements Runnable {
+        final long sleepms;
+        final int loopcnt;
+        volatile boolean isInterrupted = false;
+        volatile boolean done = false;
+        volatile boolean brk = false;
+
+        public BreakableTask(long sleepms, int loopcnt) {
+            this.sleepms = sleepms;
+            this.loopcnt = loopcnt;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < loopcnt; i++) {
+                if (brk) {
+                    break;
+                }
+                try {
+                    Thread.sleep(this.sleepms);
+                } catch (InterruptedException expected) {
+                    isInterrupted = true;
+                }
+            }
+            if (!brk) {
+                this.done = true;
+            }
+        }
+    }
+
+    @Test
+    void testGracefulShutdownExample() throws InterruptedException {
+        ExecutorService es = Executors.newSingleThreadExecutor();
+        final int NUM = 4;
+        BreakableTask tasks[] = new BreakableTask[NUM];
+        for (int i = 0; i < NUM; i++) {
+            tasks[i] = new BreakableTask(50, 2);
+            es.submit(tasks[i]);
+        }
+        es.shutdown();
+        assertFalse(es.awaitTermination(105, TimeUnit.MILLISECONDS));
+        // [0] done, [1] in sleeping, [2], [3] not started.
+        List<Runnable> l = es.shutdownNow();
+        assertEquals(l.size(), 2);
+        // [1] ignores interruption, [2], [3] are removed from task queue.
+        assertTrue(es.awaitTermination(105, TimeUnit.MILLISECONDS));
+        // [1] done, completely terminated :)
+
+        assertTrue(tasks[0].done);
+        assertTrue(tasks[1].done);
+        assertFalse(tasks[2].done);
+        assertFalse(tasks[3].done);
+
+        assertFalse(tasks[0].isInterrupted);
+        assertTrue(tasks[1].isInterrupted); // only [1] received interruption (but ignored)
+        assertFalse(tasks[2].isInterrupted);
+        assertFalse(tasks[3].isInterrupted);
+
+        es = Executors.newSingleThreadExecutor();
+        for (int i = 0; i < NUM; i++) {
+            tasks[i] = new BreakableTask(20, 5);
+            es.submit(tasks[i]);
+        }
+        es.shutdown();
+        assertFalse(es.awaitTermination(40, TimeUnit.MILLISECONDS));
+        // [0] in sleep + looping, [1], [2], [3] not started.
+        assertEquals(es.shutdownNow().size(), 3);
+
+        // send break signal :P
+        for (BreakableTask t : tasks) {
+            t.brk = true;
+        }
+        assertTrue(es.awaitTermination(40, TimeUnit.MILLISECONDS));
+
+        assertFalse(tasks[0].done); // broken, not done.
+        assertFalse(tasks[1].done);
+        assertFalse(tasks[2].done);
+        assertFalse(tasks[3].done);
+
+        // assertFalse(tasks[0].isInterrupted); // DO NOT TEST. timing-base, sensitive tests.
+        assertFalse(tasks[1].isInterrupted);
+        assertFalse(tasks[2].isInterrupted);
+        assertFalse(tasks[3].isInterrupted);
+    }
+
 }
