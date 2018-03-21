@@ -28,7 +28,7 @@ public class TestBlackholeTcpServer {
     }
 
     @Test
-    public void testReceivedData() throws IOException {
+    public void testReceivedData() throws IOException, InterruptedException {
         BlackholeTcpServer server = new BlackholeTcpServer();
         Map<InetSocketAddress, byte[]> receivedData = server.getReceivedBytes();
         assertEquals(receivedData.size(), 0);
@@ -52,6 +52,9 @@ public class TestBlackholeTcpServer {
         out.write(new byte[] { 0x09, 0x0a, 0x0b });
         out.flush();
         socket.close();
+
+        // wait data receiving ... :P
+        Thread.sleep(50);
 
         server.stop();
         receivedData = server.getReceivedBytes();
