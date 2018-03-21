@@ -24,6 +24,7 @@ import javasnack.snacks.ByteRange3;
 import javasnack.snacks.ByteRange4;
 import javasnack.snacks.CollectionTypes1;
 import javasnack.snacks.HelloWorld;
+import javasnack.snacks.InfiniteLoop;
 import javasnack.snacks.JCLDemo;
 import javasnack.snacks.ListAvailableCharsets;
 import javasnack.snacks.LivingUserThreads;
@@ -71,6 +72,7 @@ public class Main {
         new HelloWorld(),
         new RunningJREVersionIs(),
         new LivingUserThreads(),
+        new InfiniteLoop(),
         new ByteRange1(),
         new ByteRange2(),
         new ByteRange3(),
