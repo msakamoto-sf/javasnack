@@ -20,8 +20,15 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -33,9 +40,29 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javasnack.tool.BlackholeTcpServer;
+
 public class TestThreadExecutorBasics {
+
+    BlackholeTcpServer blackholeTcpServer = null;
+    int blackholeTcpServerPort = 0;
+
+    @BeforeClass
+    public void beforeClass() throws IOException {
+        BlackholeTcpServer server = new BlackholeTcpServer();
+        this.blackholeTcpServerPort = server.start();
+    }
+
+    @AfterClass
+    public void afterClass() {
+        if (Objects.nonNull(this.blackholeTcpServer)) {
+            this.blackholeTcpServer.stop();
+        }
+    }
 
     @Test
     void testFixedThreadPoolDemo() throws InterruptedException {
@@ -131,7 +158,8 @@ public class TestThreadExecutorBasics {
         }
         // all task is done, so latch.await() returns :)
         latch.await();
-        assertFalse(es.isTerminated());
+        assertTrue(es.awaitTermination(60, TimeUnit.MILLISECONDS));
+        assertTrue(es.isTerminated());
     }
 
     class ShutdownNowDemoTask implements Runnable {
@@ -285,6 +313,104 @@ public class TestThreadExecutorBasics {
         assertFalse(tasks[1].isInterrupted);
         assertFalse(tasks[2].isInterrupted);
         assertFalse(tasks[3].isInterrupted);
+    }
+
+    class BlockingIOTask implements Runnable {
+        final int no;
+        final int remotePort;
+        volatile Socket clientSocket = null;
+        volatile Thread currentThread = null;
+        volatile boolean isInterrupted = false;
+        volatile boolean done = false;
+
+        public BlockingIOTask(final int no, final int remotePort) {
+            this.no = no;
+            this.remotePort = remotePort;
+        }
+
+        public void interruptThread() {
+            if (Objects.nonNull(currentThread)) {
+                currentThread.interrupt();
+            }
+        }
+
+        public void closeSocket() {
+            if (Objects.nonNull(clientSocket) && clientSocket.isConnected()) {
+                try {
+                    clientSocket.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+
+        @Override
+        public void run() {
+            currentThread = Thread.currentThread();
+            InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", this.remotePort);
+            clientSocket = new Socket();
+            try {
+                clientSocket.connect(connectTo);
+                System.out.println("connected[" + no + "]");
+                OutputStream out = clientSocket.getOutputStream();
+                out.write(new byte[] { 0x00, 0x01, 0x02 });
+                out.write(new byte[] { 0x03, 0x04, 0x05 });
+                out.flush();
+                InputStream in = clientSocket.getInputStream();
+                System.out.println("read start[" + no + "]");
+                in.read();
+                System.out.println("read end[" + no + "]");
+            } catch (IOException e) {
+                assertTrue(e instanceof SocketException);
+                assertEquals(e.getMessage(), "Socket closed");
+            } finally {
+                if (clientSocket.isConnected()) {
+                    try {
+                        clientSocket.close();
+                    } catch (IOException ignore) {
+                    }
+                }
+            }
+            this.isInterrupted = currentThread.isInterrupted();
+            this.done = true;
+        }
+    }
+
+    @Test
+    void testGracefulShutdownBlockingIOTaskDemo() throws InterruptedException {
+        final int NUM = 4;
+        ExecutorService es = Executors.newFixedThreadPool(NUM);
+        BlockingIOTask tasks[] = new BlockingIOTask[NUM];
+        for (int i = 0; i < NUM; i++) {
+            tasks[i] = new BlockingIOTask(i, this.blackholeTcpServerPort);
+            es.submit(tasks[i]);
+        }
+        es.shutdown();
+        assertFalse(es.awaitTermination(50, TimeUnit.MILLISECONDS));
+        List<Runnable> l = es.shutdownNow();
+        assertEquals(l.size(), 0);
+
+        // oops ... blocking i/o read-wait does not interrupted by shutdownNow(), so not terminated yet :( 
+        assertFalse(es.awaitTermination(50, TimeUnit.MILLISECONDS));
+
+        // call Thread#interrupt() from outside MANUALLY
+        for (int i = 0; i < NUM; i++) {
+            tasks[i].interruptThread();
+        }
+
+        // oops ... not terminated yet :P 
+        assertFalse(es.awaitTermination(50, TimeUnit.MILLISECONDS));
+
+        // call Socket#close from outside
+        for (int i = 0; i < NUM; i++) {
+            tasks[i].closeSocket();
+        }
+        // termination completed :)
+        assertTrue(es.awaitTermination(50, TimeUnit.MILLISECONDS));
+
+        assertTrue(tasks[0].done);
+        assertTrue(tasks[1].done);
+        assertTrue(tasks[2].done);
+        assertTrue(tasks[3].done);
     }
 
 }
