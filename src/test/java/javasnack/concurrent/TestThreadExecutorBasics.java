@@ -411,6 +411,10 @@ public class TestThreadExecutorBasics {
         assertTrue(tasks[1].done);
         assertTrue(tasks[2].done);
         assertTrue(tasks[3].done);
+        assertTrue(tasks[0].isInterrupted);
+        assertTrue(tasks[1].isInterrupted);
+        assertTrue(tasks[2].isInterrupted);
+        assertTrue(tasks[3].isInterrupted);
     }
 
 }
