@@ -30,6 +30,9 @@ public class TestBlackholeTcpServer {
     @Test
     public void testReceivedData() throws IOException {
         BlackholeTcpServer server = new BlackholeTcpServer();
+        Map<InetSocketAddress, byte[]> receivedData = server.getReceivedBytes();
+        assertEquals(receivedData.size(), 0);
+
         final int localPort = server.start();
         InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", localPort);
         Socket socket = new Socket();
@@ -51,7 +54,7 @@ public class TestBlackholeTcpServer {
         socket.close();
 
         server.stop();
-        Map<InetSocketAddress, byte[]> receivedData = server.getReceivedBytes();
+        receivedData = server.getReceivedBytes();
         assertEquals(receivedData.size(), 2);
         assertTrue(receivedData.containsKey(local1));
         assertTrue(receivedData.containsKey(local2));

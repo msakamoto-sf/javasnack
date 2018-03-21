@@ -43,7 +43,7 @@ public class BlackholeTcpServer {
         this.port = port;
     }
 
-    final Map<InetSocketAddress, ByteArrayOutputStream> receivedBytesMap = new HashMap<>();
+    private final Map<InetSocketAddress, ByteArrayOutputStream> receivedBytesMap = new HashMap<>();
 
     ServerSocketChannel serverChannel = null;
 
