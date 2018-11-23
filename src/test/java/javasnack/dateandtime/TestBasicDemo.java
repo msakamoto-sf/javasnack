@@ -35,12 +35,14 @@ import java.time.ZonedDateTime;
 import java.time.chrono.JapaneseDate;
 import java.time.chrono.JapaneseEra;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -57,8 +59,8 @@ public class TestBasicDemo {
         assertEquals(ldt1.getHour(), 23);
         assertEquals(ldt1.getMinute(), 59);
         assertEquals(ldt1.getSecond(), 59);
-        LocalDateTime ldt1b = ldt1.withYear(2014).withMonth(3).withDayOfMonth(4).withHour(1).withMinute(2)
-                .withSecond(3);
+        LocalDateTime ldt1b =
+            ldt1.withYear(2014).withMonth(3).withDayOfMonth(4).withHour(1).withMinute(2).withSecond(3);
         assertEquals(ldt1b.getYear(), 2014);
         assertEquals(ldt1b.getMonth(), Month.MARCH);
         assertEquals(ldt1b.getDayOfMonth(), 4);
@@ -233,6 +235,76 @@ public class TestBasicDemo {
         assertEquals(ldt1, LocalDateTime.parse("20170102 030405", dtf2));
         assertEquals(odt1, OffsetDateTime.parse("20161231 235959+09:00", dtf2));
         assertEquals(zdt1, ZonedDateTime.parse("20170203 040506+09:00 [Asia/Tokyo]", dtf2));
+    }
+
+    @DataProvider(name = "provideFormatShouldSuccess_ForLocalDate")
+    public Object[][] provideFormatShouldSuccess_ForLocalDate() {
+        return new Object[][] {
+            { "0000-01-01", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1900-01-01", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970-01-01", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970-12-31", DateTimeFormatter.ISO_LOCAL_DATE },
+            // leap-year
+            { "2004-02-29", DateTimeFormatter.ISO_LOCAL_DATE }, };
+    }
+
+    @Test(dataProvider = "provideFormatShouldSuccess_ForLocalDate")
+    public void formatShouldSuccess_ForLocalDate(final String s, final DateTimeFormatter dtf) {
+        LocalDate.parse(s, dtf);
+    }
+
+    @DataProvider(name = "provideFormatShouldFailure_ForLocalDate")
+    public Object[][] provideFormatShouldFailure_ForLocalDate() {
+        return new Object[][] {
+            { "0000-00-00", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970-12-32", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970-11-31", DateTimeFormatter.ISO_LOCAL_DATE },
+            // not leap-year
+            { "2003-02-29", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970-1-1", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970/01/01", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "1970/1/1", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "aaa", DateTimeFormatter.ISO_LOCAL_DATE },
+            { "", DateTimeFormatter.ISO_LOCAL_DATE }, };
+        // NOTE: null -> NPE.
+    }
+
+    @Test(dataProvider = "provideFormatShouldFailure_ForLocalDate", expectedExceptions = DateTimeParseException.class)
+    public void formatShouldFailure_ForLocalDate(final String s, final DateTimeFormatter dtf) {
+        LocalDate.parse(s, dtf);
+    }
+
+    @DataProvider(name = "provideFormatShouldSuccess_ForLocalTime")
+    public Object[][] provideFormatShouldSuccess_ForLocalTime() {
+        return new Object[][] {
+            { "00:00:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "12:59:59", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "13:00:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "23:59:59", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "00:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "23:59", DateTimeFormatter.ISO_LOCAL_TIME }, };
+    }
+
+    @Test(dataProvider = "provideFormatShouldSuccess_ForLocalTime")
+    public void formatShouldSuccess_ForLocalTime(final String s, final DateTimeFormatter dtf) {
+        LocalTime.parse(s, dtf);
+    }
+
+    @DataProvider(name = "provideFormatShouldFailure_ForLocalTime")
+    public Object[][] provideFormatShouldFailure_ForLocalTime() {
+        return new Object[][] {
+            { "24:00:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "24:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "AM 00:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "1:00", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "1:0", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "aaa", DateTimeFormatter.ISO_LOCAL_TIME },
+            { "", DateTimeFormatter.ISO_LOCAL_TIME }, };
+    }
+
+    @Test(dataProvider = "provideFormatShouldFailure_ForLocalTime", expectedExceptions = DateTimeParseException.class)
+    public void formatShouldFailure_ForLocalTime(final String s, final DateTimeFormatter dtf) {
+        LocalTime.parse(s, dtf);
     }
 
     @Test
