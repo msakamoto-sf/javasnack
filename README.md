@@ -3,15 +3,33 @@ javasnack
 
 Tinny Java Excersise, Experimental, Practices Programms.
 
+## for Developers setup (Eclipse/Spring Tool Suite)
+
+- OpenJDK >= 11
+- Eclipse >= 201903 (v4.10), "Eclipse IDE for Java EE Developers" package
+  - or Spring Tools 4 (STS4 >= 4.2.1)
+- Maven >= 3.6.1 (download automatically by mvnw script. also works by 3.x)
+- use UTF-8 for source code and other text files.
+
+to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
+- Eclipse install how-to
+- Clean Up/Formatter configuration
+- Required plugin : TestNG
+
 ## how to build and execute main()
 
-requires:
-- Java8 SDK
+javasnack demonstrates classloading from jar in resources and referencing project related local repository.
 
-### 1. build myapi-impl(1|2).jar, "GreetingInterface" implementation
+1. build jar library and install to src/main/resources/.
+2. build jar library and deploy to project related path. (NOT to `~/.m2/repository/`)
+3. setup `~/.m2/settings.xml` to refer project related path.
+4. build main project.
+
+### 1. build jar library and install to src/main/resources/.
 
 **(You can skip this step : already pre-built jar has been commited to src/main/resources/JCLDemo/)**
 
+build myapi-impl(1|2).jar, "GreetingInterface" implementation:
 ```
 $ cd javasnack/
 
@@ -30,11 +48,11 @@ $ popd
 
 These jar files are used for demonstration of https://github.com/kamranzafar/JCL at [JCLDemo](src/main/java/javasnack/snacks/JCLDemo.java), [TestJCLDemoApis](src/test/java/javasnack/langspecs/TestJCLDemoApis.java).
 
-### 2. build testjar1-1.0.jar
+### 2. build jar library and deploy to project related path. (NOT to `~/.m2/repository/`)
 
 **(You can skip this step : already pre-built jar has been commited to repo/subprojects/)**
 
-build jar file:
+build testjar1-1.0.jar:
 ```
 $ cd javasnack/subprojects/jar1
 $ javac src/testjar1/*.java
@@ -47,7 +65,7 @@ Good Afternoon, DEF.
 install jar to project local repository:
 ```
 $ cd javasnack/
-$ mvn install:install-file \
+$ ./mvnw install:install-file \
       -DlocalRepositoryPath=subprojects/repo \
       -DcreateChecksum=true \
       -Dpackaging=jar \
@@ -65,7 +83,7 @@ see:
 - Mavenプロジェクトで3rdパーティJARを扱う方法｜Ouobpo
   - http://ameblo.jp/ouobpo/entry-10051976866.html
 
-### 3. `$HOME/.m2/setting.xml` mirror setting for local repository setup
+### 3. setup `~/.m2/settings.xml` to refer project related path.
 
 This maven project includes demonstrating maven local file repository.
 Check your `$HOME/.m2/setting.xml` and if `<mirror>` - `<mirrorOf>` setting is `*`, then fix it to `external:*`.
@@ -92,7 +110,7 @@ About `<mirrorOf>` setting, see :
 - http://maven.apache.org/guides/mini/guide-mirror-settings.html
 - http://stackoverflow.com/questions/17019308/maven-setup-another-repository-for-certain-dependency
 
-### 4. build main project
+### 4. build main project.
 
 ```
 $ cd javasnack/
@@ -103,17 +121,3 @@ $ java -jar target/javasnack-1.0-SNAPSHOT.jar
 or
 $ mvnw exec:java
 ```
-
-## for Developers setup (Eclipse)
-
-- JDK >= 1.8.0_xx
-- Eclipse >= 4.5.2 (Mars.2 Release), "Eclipse IDE for Java EE Developers" package
-- Maven >= 3.5.2 (download automatically by mvnw script. also works by 3.x)
-- use UTF-8 for source code and other text files.
-
-See https://github.com/msakamoto-sf/howto-eclipse-setup : README.md.
-Refer following `setup-type1` setting:
-- Eclipse install how-to
-- Clean Up/Formatter configuration
-- Required plugin : TestNG
-
