@@ -1,6 +1,8 @@
 target/
 test-output/
 !.mvn/wrapper/maven-wrapper.jar
+subprojects/myapi-impl1/myapi-impl1.jar
+subprojects/myapi-impl2/myapi-impl2.jar
 
 ### vscode ###
 .vscode
