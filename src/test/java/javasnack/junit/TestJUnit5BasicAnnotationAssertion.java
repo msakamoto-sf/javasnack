@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -141,63 +140,14 @@ public class TestJUnit5BasicAnnotationAssertion {
         assertEquals("/ by zero", exception.getMessage());
     }
 
-    static class Foo {
-        public int intval;
-        public long longval;
-        public String strval;
-        public byte[] bytes;
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + Arrays.hashCode(bytes);
-            result = prime * result + intval;
-            result = prime * result + (int) (longval ^ (longval >>> 32));
-            result = prime * result + ((strval == null) ? 0 : strval.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            Foo other = (Foo) obj;
-            if (!Arrays.equals(bytes, other.bytes)) {
-                return false;
-            }
-            if (intval != other.intval) {
-                return false;
-            }
-            if (longval != other.longval) {
-                return false;
-            }
-            if (strval == null) {
-                if (other.strval != null) {
-                    return false;
-                }
-            } else if (!strval.equals(other.strval)) {
-                return false;
-            }
-            return true;
-        }
-    }
-
     @Test
-    public void assertFooObject() {
-        final Foo expected = new Foo();
+    public void assertSomeObject() {
+        final SomeObject expected = new SomeObject();
         expected.intval = 10;
         expected.longval = 20L;
         expected.strval = "hello";
         expected.bytes = new byte[] { 1, 2, 3 };
-        final Foo actual = new Foo();
+        final SomeObject actual = new SomeObject();
         actual.intval = 10;
         actual.longval = 20L;
         actual.strval = "hello";
