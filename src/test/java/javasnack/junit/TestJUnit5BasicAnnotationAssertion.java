@@ -93,6 +93,12 @@ public class TestJUnit5BasicAnnotationAssertion {
     }
 
     @Test
+    public void assertFloadOrDoubleValue() {
+        assertEquals(0.333f, 1 / 3f, 0.001f);
+        assertEquals(0.333d, 1 / 3d, 0.001d);
+    }
+
+    @Test
     public void assertTrueOrFalseOrNull() {
         final boolean isTrue = true;
         final boolean isFalse = false;
