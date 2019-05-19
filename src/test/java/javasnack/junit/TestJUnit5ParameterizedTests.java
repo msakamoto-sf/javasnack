@@ -100,7 +100,7 @@ public class TestJUnit5ParameterizedTests {
         assertTrue(text == null || text.trim().isEmpty());
     }
 
-    // must be static method
+    // must be static unless the test class is annotated with @TestInstance(Lifecycle.PER_CLASS)
     static Stream<String> provideHelloSource() {
         return Stream.of("hello abc", "hello def", "hello ghi");
     }
