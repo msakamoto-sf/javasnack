@@ -195,9 +195,21 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M3</version>
         <configuration>
+          <!--
+          see: https://junit.org/junit5/docs/current/user-guide/#writing-tests-tagging-and-filtering
+          see: https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
+          see: https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-filter-tags
+          see: http://nowokay.hatenablog.com/entry/20171012/1507769090
+          see: https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html 
+          -->
+          <excludedGroups>junit5-tag-filter-2 | my-junit5-meta-annotation-2</excludedGroups>
+
+          <!-- TODO : remove TestNG configuration -->
           <reportsDirectory>${project.build.directory}/surefire-reports/junit</reportsDirectory>
           <testNGArtifactName>none:none</testNGArtifactName>
         </configuration>
+
+        <!-- TODO : remove TestNG configuration -->
         <executions>
           <execution>
             <phase>test</phase>
