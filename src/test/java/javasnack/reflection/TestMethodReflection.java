@@ -39,14 +39,16 @@
  */
 package javasnack.reflection;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestMethodReflection {
     public static class Base {
@@ -97,7 +99,7 @@ public class TestMethodReflection {
         Class<?> c0 = Base.class;
         Base o0 = new Base(10);
         Method[] methods = c0.getDeclaredMethods();
-        Assert.assertEquals(methods.length, 4);
+        assertEquals(4, methods.length);
         // (? ?) sort order of getDeclaredMethods() return array is not same between several times.
         // -> convert to map for stripping sort order effection.
         Map<String, Method> n2m = new HashMap<>();
@@ -105,46 +107,46 @@ public class TestMethodReflection {
             n2m.put(m0.getName(), m0);
         }
         Method m0 = n2m.get("getA");
-        Assert.assertEquals(Modifier.toString(m0.getModifiers()), "public");
-        Assert.assertEquals(m0.getReturnType(), int.class);
-        Assert.assertEquals(m0.getParameterTypes(), new Class<?>[] {});
-        Assert.assertEquals((int) m0.invoke(o0), 10);
+        assertEquals("public", Modifier.toString(m0.getModifiers()));
+        assertEquals(int.class, m0.getReturnType());
+        assertArrayEquals(new Class<?>[] {}, m0.getParameterTypes());
+        assertEquals(10, (int) m0.invoke(o0));
         m0 = n2m.get("none");
-        Assert.assertEquals(Modifier.toString(m0.getModifiers()), "public");
-        Assert.assertEquals(m0.getReturnType(), void.class);
-        Assert.assertEquals(m0.getParameterTypes(), new Class<?>[] {});
+        assertEquals("public", Modifier.toString(m0.getModifiers()));
+        assertEquals(void.class, m0.getReturnType());
+        assertArrayEquals(new Class<?>[] {}, m0.getParameterTypes());
         m0.invoke(o0);
         m0 = n2m.get("minus");
         // NOTE : we can access & call protected method :)
-        Assert.assertEquals(Modifier.toString(m0.getModifiers()), "protected");
-        Assert.assertEquals(m0.getReturnType(), int.class);
-        Assert.assertEquals(m0.getParameterTypes(), new Class<?>[] { int.class });
-        Assert.assertEquals((int) m0.invoke(o0, 20), -10);
+        assertEquals("protected", Modifier.toString(m0.getModifiers()));
+        assertEquals(int.class, m0.getReturnType());
+        assertArrayEquals(new Class<?>[] { int.class }, m0.getParameterTypes());
+        assertEquals(-10, (int) m0.invoke(o0, 20));
         m0 = n2m.get("multiply");
-        Assert.assertEquals(Modifier.toString(m0.getModifiers()), "public");
-        Assert.assertEquals(m0.getReturnType(), int.class);
-        Assert.assertEquals(m0.getParameterTypes(), new Class<?>[] { int.class });
-        Assert.assertEquals((int) m0.invoke(o0, 3), 30);
+        assertEquals("public", Modifier.toString(m0.getModifiers()));
+        assertEquals(int.class, m0.getReturnType());
+        assertArrayEquals(new Class<?>[] { int.class }, m0.getParameterTypes());
+        assertEquals(30, (int) m0.invoke(o0, 3));
 
         c0 = Ext.class;
         Ext o1 = new Ext(30, 10);
         methods = c0.getDeclaredMethods();
-        Assert.assertEquals(methods.length, 2);
+        assertEquals(2, methods.length);
         n2m = new HashMap<>();
         for (Method m1 : methods) {
             n2m.put(m1.getName(), m1);
         }
         Method m1 = n2m.get("plus");
-        Assert.assertEquals(Modifier.toString(m1.getModifiers()), "public");
-        Assert.assertEquals(m1.getReturnType(), int.class);
-        Assert.assertEquals(m1.getParameterTypes(), new Class<?>[] { int.class });
-        Assert.assertEquals((int) m1.invoke(o1, 40), 80);
+        assertEquals("public", Modifier.toString(m1.getModifiers()));
+        assertEquals(int.class, m1.getReturnType());
+        assertArrayEquals(new Class<?>[] { int.class }, m1.getParameterTypes());
+        assertEquals(80, (int) m1.invoke(o1, 40));
         m1 = n2m.get("div");
-        Assert.assertEquals(Modifier.toString(m1.getModifiers()), "private");
-        Assert.assertEquals(m1.getReturnType(), int.class);
-        Assert.assertEquals(m1.getParameterTypes(), new Class<?>[] {});
+        assertEquals("private", Modifier.toString(m1.getModifiers()));
+        assertEquals(int.class, m1.getReturnType());
+        assertArrayEquals(new Class<?>[] {}, m1.getParameterTypes());
         // NOTE we can call private method :)
         m1.setAccessible(true);
-        Assert.assertEquals((int) m1.invoke(o1), 3);
+        assertEquals(3, (int) m1.invoke(o1));
     }
 }
