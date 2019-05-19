@@ -15,8 +15,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version.source>1.8</java.version.source>
-    <java.version.target>1.8</java.version.target>
+    <java.version.source>11</java.version.source>
+    <java.version.target>11</java.version.target>
     <java.compiler.debug>true</java.compiler.debug>
     <exec.mainClass>javasnack.Main</exec.mainClass>
 
