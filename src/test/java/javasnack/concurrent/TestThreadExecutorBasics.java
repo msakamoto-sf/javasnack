@@ -266,16 +266,16 @@ public class TestThreadExecutorBasics {
         final int NUM = 4;
         BreakableTask tasks[] = new BreakableTask[NUM];
         for (int i = 0; i < NUM; i++) {
-            tasks[i] = new BreakableTask(50, 2);
+            tasks[i] = new BreakableTask(100, 2);
             es.submit(tasks[i]);
         }
         es.shutdown();
-        assertFalse(es.awaitTermination(105, TimeUnit.MILLISECONDS));
+        assertFalse(es.awaitTermination(250, TimeUnit.MILLISECONDS));
         // [0] done, [1] in sleeping, [2], [3] not started.
         List<Runnable> l = es.shutdownNow();
         assertEquals(l.size(), 2);
         // [1] ignores interruption, [2], [3] are removed from task queue.
-        assertTrue(es.awaitTermination(105, TimeUnit.MILLISECONDS));
+        assertTrue(es.awaitTermination(250, TimeUnit.MILLISECONDS));
         // [1] done, completely terminated :)
 
         assertTrue(tasks[0].done);
