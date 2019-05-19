@@ -100,6 +100,7 @@ public class TestJUnit5ParameterizedTests {
         assertTrue(text == null || text.trim().isEmpty());
     }
 
+    // must be static method
     static Stream<String> provideHelloSource() {
         return Stream.of("hello abc", "hello def", "hello ghi");
     }
@@ -109,6 +110,18 @@ public class TestJUnit5ParameterizedTests {
     void explicitMethodSourceResolutionDemo(String src) {
         assertTrue(src.startsWith("hello"));
     }
+
+    /*
+    Stream<String> provideHelloSource2() {
+        return Stream.of("hello abc", "hello def", "hello ghi");
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideHelloSource2")
+    void explicitMethodSourceResolutionDemo2(String src) {
+        assertTrue(src.startsWith("hello"));
+    }
+    */
 
     static Stream<String> implicitMethodSourceResolutionDemo() {
         return Stream.of("hello abc", "hello def", "hello ghi");
