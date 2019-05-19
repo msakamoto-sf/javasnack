@@ -17,10 +17,13 @@ package javasnack.junit;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
@@ -46,8 +49,8 @@ import org.slf4j.LoggerFactory;
  * @see http://www.ne.jp/asahi/hishidama/home/tech/java/junit/5/assertion.html
  */
 @DisplayName("TestExercise01, ლ(´ڡ`ლ)")
-public class TestJBasicAnnotationAssertion {
-    private static final Logger LOG = LoggerFactory.getLogger(TestJBasicAnnotationAssertion.class);
+public class TestJUnit5BasicAnnotationAssertion {
+    private static final Logger LOG = LoggerFactory.getLogger(TestJUnit5BasicAnnotationAssertion.class);
 
     private static final String MYUUID = UUID.randomUUID().toString();
 
@@ -57,7 +60,7 @@ public class TestJBasicAnnotationAssertion {
         LOG.info("class loading static block, MYUUID={}", MYUUID);
     }
 
-    public TestJBasicAnnotationAssertion() {
+    public TestJUnit5BasicAnnotationAssertion() {
         LOG.info("constructor block, instanceUUID = {}", instanceUUID);
     }
 
@@ -87,6 +90,16 @@ public class TestJBasicAnnotationAssertion {
         final String expected = "hello";
         final String actual = "hello";
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void assertTrueOrFalseOrNull() {
+        final boolean isTrue = true;
+        final boolean isFalse = false;
+        final Object isNull = null;
+        assertTrue(isTrue);
+        assertFalse(isFalse);
+        assertNull(isNull);
     }
 
     @Test
