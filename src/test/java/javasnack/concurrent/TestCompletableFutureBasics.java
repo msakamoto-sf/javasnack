@@ -15,11 +15,11 @@
  */
 package javasnack.concurrent;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * sample test codes for CompletableFuture, CompletionStage
@@ -55,11 +55,14 @@ public class TestCompletableFutureBasics {
                 latch0.countDown();
             }
         };
-        CompletableFuture<Void> cf0 =
-            CompletableFuture.supplyAsync(supplier0).thenApply(fun0).thenAccept(consumer0).thenRun(start);
+        CompletableFuture<Void> cf0 = CompletableFuture
+                .supplyAsync(supplier0)
+                .thenApply(fun0)
+                .thenAccept(consumer0)
+                .thenRun(start);
         latch0.await();
         assertNull(cf0.get());
-        assertEquals(len.get(), 4);
+        assertEquals(4, len.get());
         assertFalse(cf0.isCancelled());
         assertTrue(cf0.isDone());
     }
@@ -78,15 +81,14 @@ public class TestCompletableFutureBasics {
                 latch0.countDown();
             }
         };
-        CompletableFuture<Void> cf0 =
-            CompletableFuture
+        CompletableFuture<Void> cf0 = CompletableFuture
                 .supplyAsync(supplier0)
                 .thenApplyAsync(fun0)
                 .thenAcceptAsync(consumer0)
                 .thenRunAsync(start);
         latch0.await();
         assertNull(cf0.get());
-        assertEquals(len.get(), 4);
+        assertEquals(4, len.get());
         assertFalse(cf0.isCancelled());
         assertTrue(cf0.isDone());
     }
@@ -115,7 +117,7 @@ public class TestCompletableFutureBasics {
         };
         CompletableFuture<Void> cf2 = cf1.acceptEitherAsync(cf0, consumer0);
         assertNull(cf2.get());
-        assertEquals(len.get(), 7);
+        assertEquals(7, len.get());
         assertFalse(cf2.isCancelled());
         assertTrue(cf2.isDone());
     }
@@ -140,7 +142,7 @@ public class TestCompletableFutureBasics {
         CompletableFuture<String> cf1 = CompletableFuture.supplyAsync(supplier1);
         Function<String, Integer> fun0 = s -> s.length();
         CompletableFuture<Integer> cf2 = cf1.applyToEitherAsync(cf0, fun0);
-        assertEquals(cf2.get().intValue(), 7);
+        assertEquals(7, cf2.get().intValue());
         assertFalse(cf2.isCancelled());
         assertTrue(cf2.isDone());
     }
@@ -172,13 +174,12 @@ public class TestCompletableFutureBasics {
         Consumer<String> consumer0 = s -> {
             sb.append(s);
         };
-        CompletableFuture<Void> cf0 =
-            CompletableFuture.allOf(
+        CompletableFuture<Void> cf0 = CompletableFuture.allOf(
                 CompletableFuture.supplyAsync(supplier0).thenAccept(consumer0),
                 CompletableFuture.supplyAsync(supplier1).thenAccept(consumer0),
                 CompletableFuture.supplyAsync(supplier2).thenAccept(consumer0));
         assertNull(cf0.get());
-        assertEquals(sb.toString(), "Hello, my name is bob.");
+        assertEquals("Hello, my name is bob.", sb.toString());
         assertFalse(cf0.isCancelled());
         assertTrue(cf0.isDone());
     }
@@ -195,8 +196,7 @@ public class TestCompletableFutureBasics {
                 count.incrementAndGet();
             }
         };
-        CompletableFuture<Void> cf0 =
-            CompletableFuture
+        CompletableFuture<Void> cf0 = CompletableFuture
                 .runAsync(countUp)
                 .thenRunAsync(countUp)
                 .thenRunAsync(countUp)
@@ -206,10 +206,10 @@ public class TestCompletableFutureBasics {
             cf0.get();
             fail("not reach here");
         } catch (ExecutionException expected) {
-            assertEquals(count.get(), 4);
-            assertEquals(expected.getMessage(), "java.lang.IllegalStateException: test");
-            assertEquals(expected.getCause().getClass(), IllegalStateException.class);
-            assertEquals(expected.getCause().getMessage(), "test");
+            assertEquals(4, count.get());
+            assertEquals("java.lang.IllegalStateException: test", expected.getMessage());
+            assertEquals(IllegalStateException.class, expected.getCause().getClass());
+            assertEquals("test", expected.getCause().getMessage());
             assertFalse(cf0.isCancelled());
             assertTrue(cf0.isDone());
         }
@@ -230,8 +230,7 @@ public class TestCompletableFutureBasics {
                 latch0.countDown();
             }
         };
-        CompletableFuture<Void> cf0 =
-            CompletableFuture
+        CompletableFuture<Void> cf0 = CompletableFuture
                 .runAsync(countUp)
                 .thenRunAsync(countUp)
                 .thenRunAsync(countUp)

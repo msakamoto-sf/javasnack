@@ -15,10 +15,11 @@
  */
 package javasnack.concurrent;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -28,7 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestExecutorFutureBasics {
 
@@ -69,7 +70,7 @@ public class TestExecutorFutureBasics {
         assertFalse(f.isCancelled());
         assertFalse(f.isDone());
         long rl = f.get();
-        assertEquals(rl, 100L);
+        assertEquals(100L, rl);
         assertFalse(f.isCancelled());
         assertTrue(f.isDone());
         es.shutdown();
@@ -109,7 +110,7 @@ public class TestExecutorFutureBasics {
 
         long rl = f1.get();
         assertFalse(f1.cancel(true));
-        assertEquals(rl, 100L);
+        assertEquals(100L, rl);
         assertFalse(f1.isCancelled());
         assertTrue(f1.isDone());
 
@@ -135,7 +136,7 @@ public class TestExecutorFutureBasics {
         es.shutdown();
     }
 
-    @Test(expectedExceptions = ExecutionException.class)
+    @Test
     public void testUncheckedExceptionCaughtThroughExecutionException()
             throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
@@ -148,17 +149,14 @@ public class TestExecutorFutureBasics {
                 s.length();
             }
         });
-        try {
+        final ExecutionException expectedException = assertThrows(ExecutionException.class, () -> {
             f.get();
-        } catch (ExecutionException expected) {
-            Throwable cause = expected.getCause();
-            assertEquals(cause.getClass(), NullPointerException.class);
-            throw expected;
-        }
+        });
         es.shutdown();
+        assertEquals(NullPointerException.class, expectedException.getCause().getClass());
     }
 
-    @Test(expectedExceptions = ExecutionException.class)
+    @Test
     public void testAssertionErrorCaughtThroughExecutionException() throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
         Future<?> f = es.submit(new Runnable() {
@@ -169,13 +167,10 @@ public class TestExecutorFutureBasics {
                 assert a == b;
             }
         });
-        try {
+        final ExecutionException expectedException = assertThrows(ExecutionException.class, () -> {
             f.get();
-        } catch (ExecutionException expected) {
-            Throwable cause = expected.getCause();
-            assertEquals(cause.getClass(), AssertionError.class);
-            throw expected;
-        }
+        });
         es.shutdown();
+        assertEquals(AssertionError.class, expectedException.getCause().getClass());
     }
 }

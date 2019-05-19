@@ -15,7 +15,7 @@
  */
 package javasnack.concurrent;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.RecursiveTask;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see https://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html
@@ -67,8 +67,8 @@ public class TestForkJoinBasics {
                 final int m = this.strings.size() / 2;
                 RecursiveTaskSample t1 = new RecursiveTaskSample(this.strings.subList(0, m), this.taskName + "-1");
                 t1.fork();
-                RecursiveTaskSample t2 =
-                    new RecursiveTaskSample(this.strings.subList(m, this.strings.size()), this.taskName + "-2");
+                RecursiveTaskSample t2 = new RecursiveTaskSample(this.strings.subList(m, this.strings.size()),
+                        this.taskName + "-2");
                 t2.fork();
                 final int r = t1.join() + t2.join();
                 System.out.printf("[%s] - %s fork-join end : %d%n", tname, this.taskName, r);
@@ -85,7 +85,7 @@ public class TestForkJoinBasics {
         }
         ForkJoinPool forkJoin = new ForkJoinPool();
         int n = forkJoin.invoke(new RecursiveTaskSample(strings));
-        assertEquals(n, 600);
+        assertEquals(600, n);
     }
 
     static class RecursiveActionSample extends RecursiveAction {
@@ -143,7 +143,7 @@ public class TestForkJoinBasics {
         for (int i = 0; i < 258; i++) {
             expected.append("hello");
         }
-        assertEquals(sb.toString().length(), expected.toString().length());
-        assertEquals(sb.toString(), expected.toString());
+        assertEquals(expected.toString().length(), sb.toString().length());
+        assertEquals(expected.toString(), sb.toString());
     }
 }

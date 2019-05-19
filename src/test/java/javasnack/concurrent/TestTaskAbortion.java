@@ -15,9 +15,9 @@
  */
 package javasnack.concurrent;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.HashSet;
@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Examples for CERT Oracle Coding Standard for Java, 
@@ -85,12 +85,12 @@ public class TestTaskAbortion {
         if (null == pool.myT) {
             fail();
         } else {
-            assertEquals(pool.myT.getClass(), NullPointerException.class);
-            assertEquals(pool.myT.getMessage(), "test");
-            assertEquals(pool.myT.getSuppressed().length, 0);
-            assertEquals(pool.myT.getCause(), null);
+            assertEquals(NullPointerException.class, pool.myT.getClass());
+            assertEquals("test", pool.myT.getMessage());
+            assertEquals(0, pool.myT.getSuppressed().length);
+            assertEquals(null, pool.myT.getCause());
         }
-        assertEquals(pool.caughtT.label, "hello");
+        assertEquals("hello", pool.caughtT.label);
     }
 
     @Test
@@ -149,9 +149,9 @@ public class TestTaskAbortion {
         } catch (InterruptedException ignore) {
         }
         List<Runnable> remains = pool.shutdownNow();
-        assertEquals(remains.size(), 0);
+        assertEquals(0, remains.size());
 
-        assertEquals(handler.caughtThrowables.size(), 2);
+        assertEquals(2, handler.caughtThrowables.size());
         assertTrue(handler.caughtThrowables.contains("test:task1"));
         assertTrue(handler.caughtThrowables.contains("test:task2"));
     }
@@ -179,7 +179,7 @@ public class TestTaskAbortion {
         } catch (InterruptedException ignore) {
         }
         List<Runnable> remains = pool.shutdownNow();
-        assertEquals(remains.size(), 0);
+        assertEquals(0, remains.size());
 
         try {
             f1.get();
@@ -188,10 +188,10 @@ public class TestTaskAbortion {
         } catch (ExecutionException e) {
             e.printStackTrace();
             Throwable t = e.getCause();
-            assertEquals(t.getClass(), NullPointerException.class);
-            assertEquals(t.getMessage(), "test:task1");
-            assertEquals(t.getSuppressed().length, 0);
-            assertEquals(t.getCause(), null);
+            assertEquals(NullPointerException.class, t.getClass());
+            assertEquals("test:task1", t.getMessage());
+            assertEquals(0, t.getSuppressed().length);
+            assertEquals(null, t.getCause());
         }
 
         try {
@@ -201,10 +201,10 @@ public class TestTaskAbortion {
         } catch (ExecutionException e) {
             e.printStackTrace();
             Throwable t = e.getCause();
-            assertEquals(t.getClass(), NullPointerException.class);
-            assertEquals(t.getMessage(), "test:task2");
-            assertEquals(t.getSuppressed().length, 0);
-            assertEquals(t.getCause(), null);
+            assertEquals(NullPointerException.class, t.getClass());
+            assertEquals("test:task2", t.getMessage());
+            assertEquals(0, t.getSuppressed().length);
+            assertEquals(null, t.getCause());
         }
     }
 }
