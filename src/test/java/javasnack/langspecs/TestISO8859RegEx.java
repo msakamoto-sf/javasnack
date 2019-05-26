@@ -15,16 +15,18 @@
  */
 package javasnack.langspecs;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import javasnack.tool.CharsetTool;
 import javasnack.tool.UnsignedByte;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 public class TestISO8859RegEx {
 
@@ -44,19 +46,19 @@ public class TestISO8859RegEx {
         byte[] d = o.toByteArray();
         String haystack = new String(d, CharsetTool.BINARY);
         int pos = haystack.indexOf("Foo");
-        Assert.assertEquals(pos, 18);
+        assertThat(pos).isEqualTo(18);
         String haystack2 = haystack.replaceFirst("Foo", "Bar");
-        Assert.assertEquals(haystack2.indexOf("Foo"), -1);
-        Assert.assertEquals(haystack2.indexOf("Bar"), 18);
+        assertThat(haystack2.indexOf("Foo")).isEqualTo(-1);
+        assertThat(haystack2.indexOf("Bar")).isEqualTo(18);
 
         // regex pattern matching
         Pattern p = Pattern.compile("Bar");
         Matcher m = p.matcher(haystack2);
-        Assert.assertTrue(m.find());
+        Assertions.assertTrue(m.find());
         // regex pattern matching by hex expression
         Pattern p2 = Pattern.compile("\\x42\\x61\\x72");
         Matcher m2 = p2.matcher(haystack2);
-        Assert.assertTrue(m2.find());
+        Assertions.assertTrue(m2.find());
     }
 
     @Test
@@ -82,13 +84,13 @@ public class TestISO8859RegEx {
         byte[] d = o.toByteArray();
         String haystack = new String(d, CharsetTool.BINARY);
         int pos = haystack.indexOf(japanese_aiueo_utf8_binary);
-        Assert.assertEquals(pos, 18);
+        assertThat(pos).isEqualTo(18);
 
         String japanese_aiueo_utf8_regex = UnsignedByte.hex("\\x", japanese_aiueo_utf8);
         // regex pattern matching
         Pattern p = Pattern.compile(japanese_aiueo_utf8_regex);
         Matcher m = p.matcher(haystack);
-        Assert.assertTrue(m.find());
+        Assertions.assertTrue(m.find());
     }
 
 }

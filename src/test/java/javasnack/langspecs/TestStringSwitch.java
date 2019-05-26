@@ -15,9 +15,9 @@
  */
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see http://docs.oracle.com/javase/8/docs/technotes/guides/language/strings-switch.html
@@ -39,9 +39,9 @@ public class TestStringSwitch {
 
     @Test
     public void demo() {
-        assertEquals(switchDemo("one"), 1);
-        assertEquals(switchDemo("Two"), 2);
-        assertEquals(switchDemo("THREE"), 3);
-        assertEquals(switchDemo("four"), 0);
+        assertThat(switchDemo("one")).isEqualTo(1);
+        assertThat(switchDemo("Two")).isEqualTo(2);
+        assertThat(switchDemo("THREE")).isEqualTo(3);
+        assertThat(switchDemo("four")).isEqualTo(0);
     }
 }

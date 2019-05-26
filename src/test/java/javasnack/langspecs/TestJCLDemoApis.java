@@ -15,17 +15,17 @@
  */
 package javasnack.langspecs;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 
-import myapi.GreetingImpl;
-import myapi.GreetingInterface;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 import org.xeustechnologies.jcl.JclUtils;
+
+import myapi.GreetingImpl;
+import myapi.GreetingInterface;
 
 /**
  * Tiny Demonstration for https://github.com/kamranzafar/JCL
@@ -43,8 +43,9 @@ public class TestJCLDemoApis {
 
         // call constructor with arguments.
         Object obj = factory.create(jcl, "myapi.GreetingImpl", new String[] {
-                "Firstname", "Lastname" }, new Class[] { String.class,
-                String.class });
+                "Firstname", "Lastname" },
+                new Class[] { String.class,
+                        String.class });
 
         return JclUtils.cast(obj, GreetingInterface.class);
     }
@@ -52,27 +53,27 @@ public class TestJCLDemoApis {
     @Test
     public void testDefaultImpl() {
         GreetingImpl gi = new GreetingImpl("Firstname", "Lastname");
-        assertEquals(gi.morning("Java"),
+        assertThat(gi.morning("Java")).isEqualTo(
                 "good morning, Java and Firstname Lastname.");
-        assertEquals(gi.afternoon("Java"),
+        assertThat(gi.afternoon("Java")).isEqualTo(
                 "good afternoon, Java and Firstname Lastname.");
     }
 
     @Test
     public void testImpl1() {
         GreetingInterface gi = loadGreetingInterface("JCLDemo/myapi-impl1.jar");
-        assertEquals(gi.morning("Darjeeling"),
+        assertThat(gi.morning("Darjeeling")).isEqualTo(
                 "GOOD MORNING, Darjeeling. I am Firstname Lastname.");
-        assertEquals(gi.afternoon("Assam"),
+        assertThat(gi.afternoon("Assam")).isEqualTo(
                 "GOOD AFTERNOON, Assam. I am Firstname Lastname.");
     }
 
     @Test
     public void testImpl2() {
         GreetingInterface gi = loadGreetingInterface("JCLDemo/myapi-impl2.jar");
-        assertEquals(gi.morning("Darjeeling"),
+        assertThat(gi.morning("Darjeeling")).isEqualTo(
                 "Good Morning, I am Darjeeling. You are Firstname Lastname.");
-        assertEquals(gi.afternoon("Assam"),
+        assertThat(gi.afternoon("Assam")).isEqualTo(
                 "Good Afternoon, I am Assam. You are Firstname Lastname.");
     }
 

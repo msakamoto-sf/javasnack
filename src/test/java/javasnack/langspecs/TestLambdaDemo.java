@@ -15,14 +15,14 @@
  */
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
@@ -32,18 +32,18 @@ public class TestLambdaDemo {
     @Test
     public void basicLambda() throws Exception {
         Callable<Integer> call0 = () -> 1 + 2 + 3;
-        assertEquals(call0.call().intValue(), 6);
+        assertThat(call0.call().intValue()).isEqualTo(6);
 
         Callable<String> call1 = () -> "Hello";
-        assertEquals(call1.call(), "Hello");
+        assertThat(call1.call()).isEqualTo("Hello");
 
         Callable<String> call2 = () -> {
             return "Hello";
         };
-        assertEquals(call2.call(), "Hello");
+        assertThat(call2.call()).isEqualTo("Hello");
 
         Function<String, String> f1 = who -> "Hello, " + who;
-        assertEquals(f1.apply("Jon"), "Hello, Jon");
+        assertThat(f1.apply("Jon")).isEqualTo("Hello, Jon");
 
         BiFunction<String, Integer, String> repeater1 = (String src, Integer cnt) -> {
             StringBuilder sb = new StringBuilder();
@@ -52,7 +52,7 @@ public class TestLambdaDemo {
             }
             return sb.toString();
         };
-        assertEquals(repeater1.apply("ABC", 3), "ABCABCABC");
+        assertThat(repeater1.apply("ABC", 3)).isEqualTo("ABCABCABC");
 
         BiFunction<String, Integer, String> repeater2 = (src, cnt) -> {
             StringBuilder sb = new StringBuilder();
@@ -61,7 +61,7 @@ public class TestLambdaDemo {
             }
             return sb.toString();
         };
-        assertEquals(repeater2.apply("ABC", 3), "ABCABCABC");
+        assertThat(repeater2.apply("ABC", 3)).isEqualTo("ABCABCABC");
     }
 
     int c = 3;
@@ -78,18 +78,18 @@ public class TestLambdaDemo {
             }
         };
         IntSupplier cycle123b = () -> (this.c++ % 3) + 1;
-        assertEquals(cycle123a.getAsInt(), 1);
-        assertEquals(cycle123a.getAsInt(), 2);
-        assertEquals(cycle123a.getAsInt(), 3);
-        assertEquals(cycle123a.getAsInt(), 1);
-        assertEquals(cycle123a.getAsInt(), 2);
-        assertEquals(cycle123a.getAsInt(), 3);
-        assertEquals(cycle123b.getAsInt(), 1);
-        assertEquals(cycle123b.getAsInt(), 2);
-        assertEquals(cycle123b.getAsInt(), 3);
-        assertEquals(cycle123b.getAsInt(), 1);
-        assertEquals(cycle123b.getAsInt(), 2);
-        assertEquals(cycle123b.getAsInt(), 3);
-        assertEquals(this.c, 9);
+        assertThat(cycle123a.getAsInt()).isEqualTo(1);
+        assertThat(cycle123a.getAsInt()).isEqualTo(2);
+        assertThat(cycle123a.getAsInt()).isEqualTo(3);
+        assertThat(cycle123a.getAsInt()).isEqualTo(1);
+        assertThat(cycle123a.getAsInt()).isEqualTo(2);
+        assertThat(cycle123a.getAsInt()).isEqualTo(3);
+        assertThat(cycle123b.getAsInt()).isEqualTo(1);
+        assertThat(cycle123b.getAsInt()).isEqualTo(2);
+        assertThat(cycle123b.getAsInt()).isEqualTo(3);
+        assertThat(cycle123b.getAsInt()).isEqualTo(1);
+        assertThat(cycle123b.getAsInt()).isEqualTo(2);
+        assertThat(cycle123b.getAsInt()).isEqualTo(3);
+        assertThat(this.c).isEqualTo(9);
     }
 }

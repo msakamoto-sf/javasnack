@@ -15,9 +15,9 @@
  */
 package javasnack.langspecs;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestJavaMethodOverrides {
 
@@ -79,30 +79,30 @@ public class TestJavaMethodOverrides {
     @Test
     public void testCallOverrideMethods() {
         Foo o1 = new Foo();
-        assertEquals(o1.i1a(1, 2), 3);
-        assertEquals(o1.i1b(3, 2), 1);
+        assertThat(o1.i1a(1, 2)).isEqualTo(3);
+        assertThat(o1.i1b(3, 2)).isEqualTo(1);
 
         Bar o2 = new Bar();
-        assertEquals(o2.i1a(1, 2), 13);
+        assertThat(o2.i1a(1, 2)).isEqualTo(13);
         // Bar::i1b() -> Bar::m1b()
-        assertEquals(o2.i1b(3, 2), 7);
+        assertThat(o2.i1b(3, 2)).isEqualTo(7);
 
         o1 = o2;
         // Bar::i1a() as Foo -> Bar::i1a()
-        assertEquals(o1.i1a(1, 2), 13);
+        assertThat(o1.i1a(1, 2)).isEqualTo(13);
         // Bar::i1b() as Foo -> Bar::i1b() -> Bar::m1b()
-        assertEquals(o1.i1b(3, 2), 7);
+        assertThat(o1.i1b(3, 2)).isEqualTo(7);
 
         Baz o3 = new Baz();
         // Baz::i1a() = Bar::i1a()
-        assertEquals(o3.i1a(1, 2), 13);
+        assertThat(o3.i1a(1, 2)).isEqualTo(13);
         // Baz::i1b() = Bar::i1b() -> [[Baz]]::m1b()
-        assertEquals(o3.i1b(3, 2), 1);
+        assertThat(o3.i1b(3, 2)).isEqualTo(1);
 
         o1 = o3;
         // Baz::i1a() as Foo = Bar::i1a()
-        assertEquals(o1.i1a(1, 2), 13);
+        assertThat(o1.i1a(1, 2)).isEqualTo(13);
         // Baz::i1b() as Foo = Bar::i1b() -> [[Baz]]::m1b()
-        assertEquals(o1.i1b(3, 2), 1);
+        assertThat(o1.i1b(3, 2)).isEqualTo(1);
     }
 }

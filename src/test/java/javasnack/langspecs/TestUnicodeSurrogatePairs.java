@@ -15,9 +15,9 @@
  */
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unicode Surrogate Pair exercise (include JIS X 2013:2004)
@@ -48,10 +48,10 @@ public class TestUnicodeSurrogatePairs {
         char c6 = '\uD842'; // kuchi + shichi (high), cp=134047
         char c7 = '\uDF9F'; // kuchi + shichi (low), cp=134047
         String s = new String(new char[] { c1, c2, c3, c4, c5, c6, c7 });
-        assertEquals(s, "\u3042\uD842\uDFB7\u30D5\u309A\uD842\uDF9F");
+        assertThat(s).isEqualTo("\u3042\uD842\uDFB7\u30D5\u309A\uD842\uDF9F");
 
         int len = s.length();
-        assertEquals(len, 7); // ignores surrogate pair :P
+        assertThat(len).isEqualTo(7); // ignores surrogate pair :P
         int[] actualCps = new int[len];
         for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
@@ -59,10 +59,10 @@ public class TestUnicodeSurrogatePairs {
         }
         // Ignores surrogate pairs... :(
         // BUT JavaScript unicode escape in browser accepts this format...:(
-        assertEquals(actualCps, new int[] { 0x3042, 0xD842, 0xDFB7, 0x30D5, 0x309A, 0xD842, 0xDF9F });
+        assertThat(actualCps).isEqualTo(new int[] { 0x3042, 0xD842, 0xDFB7, 0x30D5, 0x309A, 0xD842, 0xDF9F });
 
         int countOfCp = s.codePointCount(0, len);
-        assertEquals(countOfCp, 5); // GOOD.
+        assertThat(countOfCp).isEqualTo(5); // GOOD.
 
         actualCps = new int[countOfCp];
         for (int i = 0, j = 0, cp; i < len; i += Character.charCount(cp)) {
@@ -70,6 +70,6 @@ public class TestUnicodeSurrogatePairs {
             actualCps[j++] = cp;
         }
         // GOOD.
-        assertEquals(actualCps, new int[] { 0x3042, 0x20BB7, 0x30D5, 0x309A, 0x20B9F });
+        assertThat(actualCps).isEqualTo(new int[] { 0x3042, 0x20BB7, 0x30D5, 0x309A, 0x20B9F });
     }
 }

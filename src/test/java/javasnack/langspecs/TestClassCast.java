@@ -15,8 +15,10 @@
  */
 package javasnack.langspecs;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
 
 public class TestClassCast {
 
@@ -60,27 +62,27 @@ public class TestClassCast {
     public void castSuccess() {
         Object o1 = new C1C1();
         Object p1 = P1.class.cast(o1);
-        Assert.assertEquals(p1.getClass().getSimpleName(), "C1C1");
-        Assert.assertEquals(p1.getClass().getName(), "javasnack.langspecs.TestClassCast$C1C1");
-        Assert.assertEquals(p1.getClass().getCanonicalName(), "javasnack.langspecs.TestClassCast.C1C1");
+        assertThat(p1.getClass().getSimpleName()).isEqualTo("C1C1");
+        assertThat(p1.getClass().getName()).isEqualTo("javasnack.langspecs.TestClassCast$C1C1");
+        assertThat(p1.getClass().getCanonicalName()).isEqualTo("javasnack.langspecs.TestClassCast.C1C1");
 
         Object c1 = new C1();
         Object c1b = c1.getClass().cast(o1);
-        Assert.assertEquals(c1b.getClass().getSimpleName(), "C1C1");
-        Assert.assertEquals(c1b.getClass().getName(), "javasnack.langspecs.TestClassCast$C1C1");
-        Assert.assertEquals(c1b.getClass().getCanonicalName(), "javasnack.langspecs.TestClassCast.C1C1");
+        assertThat(c1b.getClass().getSimpleName()).isEqualTo("C1C1");
+        assertThat(c1b.getClass().getName()).isEqualTo("javasnack.langspecs.TestClassCast$C1C1");
+        assertThat(c1b.getClass().getCanonicalName()).isEqualTo("javasnack.langspecs.TestClassCast.C1C1");
 
         Object o2 = new C2C1();
         Object p2 = P2.class.cast(o2);
-        Assert.assertEquals(p2.getClass().getSimpleName(), "C2C1");
-        Assert.assertEquals(p2.getClass().getName(), "javasnack.langspecs.TestClassCast$C2C1");
-        Assert.assertEquals(p2.getClass().getCanonicalName(), "javasnack.langspecs.TestClassCast.C2C1");
+        assertThat(p2.getClass().getSimpleName()).isEqualTo("C2C1");
+        assertThat(p2.getClass().getName()).isEqualTo("javasnack.langspecs.TestClassCast$C2C1");
+        assertThat(p2.getClass().getCanonicalName()).isEqualTo("javasnack.langspecs.TestClassCast.C2C1");
 
         Object c2 = new C2();
         Object c2b = c2.getClass().cast(o2);
-        Assert.assertEquals(c2b.getClass().getSimpleName(), "C2C1");
-        Assert.assertEquals(c2b.getClass().getName(), "javasnack.langspecs.TestClassCast$C2C1");
-        Assert.assertEquals(c2b.getClass().getCanonicalName(), "javasnack.langspecs.TestClassCast.C2C1");
+        assertThat(c2b.getClass().getSimpleName()).isEqualTo("C2C1");
+        assertThat(c2b.getClass().getName()).isEqualTo("javasnack.langspecs.TestClassCast$C2C1");
+        assertThat(c2b.getClass().getCanonicalName()).isEqualTo("javasnack.langspecs.TestClassCast.C2C1");
 
         Object imp1 = new IMPIC1();
         IP1.class.cast(imp1);
@@ -90,22 +92,28 @@ public class TestClassCast {
         IC2.class.cast(imp2);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void castFailure1() {
-        P1 p1 = new P1();
-        P2.class.cast(p1);
+        assertThatThrownBy(() -> {
+            P1 p1 = new P1();
+            P2.class.cast(p1);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void castFailure2() {
-        P2 p2 = new C2C1();
-        C1C1 c1c1 = new C1C1();
-        c1c1.getClass().cast(p2);
+        assertThatThrownBy(() -> {
+            P2 p2 = new C2C1();
+            C1C1 c1c1 = new C1C1();
+            c1c1.getClass().cast(p2);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void castFailure3() {
-        IP1 ip1 = new IMPIC1();
-        IC2.class.cast(ip1);
+        assertThatThrownBy(() -> {
+            IP1 ip1 = new IMPIC1();
+            IC2.class.cast(ip1);
+        }).isInstanceOf(ClassCastException.class);
     }
 }

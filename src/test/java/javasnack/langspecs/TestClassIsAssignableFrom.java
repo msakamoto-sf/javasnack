@@ -15,8 +15,8 @@
  */
 package javasnack.langspecs;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestClassIsAssignableFrom {
 
@@ -59,32 +59,32 @@ public class TestClassIsAssignableFrom {
     @Test
     public void testIsAssignableFrom() {
         Object o1 = new C1C1();
-        Assert.assertTrue(o1.getClass().isAssignableFrom(C1C1.class));
-        Assert.assertFalse(o1.getClass().isAssignableFrom(C1.class));
-        Assert.assertFalse(o1.getClass().isAssignableFrom(P1.class));
-        Assert.assertFalse(o1.getClass().isAssignableFrom(C2.class));
-        Assert.assertFalse(o1.getClass().isAssignableFrom(C2C1.class));
-        Assert.assertFalse(o1.getClass().isAssignableFrom(P2.class));
-        Assert.assertTrue(C1C1.class.isAssignableFrom(o1.getClass()));
-        Assert.assertTrue(C1.class.isAssignableFrom(o1.getClass()));
-        Assert.assertTrue(P1.class.isAssignableFrom(o1.getClass()));
-        Assert.assertFalse(C2C1.class.isAssignableFrom(o1.getClass()));
-        Assert.assertFalse(C2.class.isAssignableFrom(o1.getClass()));
-        Assert.assertFalse(P2.class.isAssignableFrom(o1.getClass()));
+        Assertions.assertTrue(o1.getClass().isAssignableFrom(C1C1.class));
+        Assertions.assertFalse(o1.getClass().isAssignableFrom(C1.class));
+        Assertions.assertFalse(o1.getClass().isAssignableFrom(P1.class));
+        Assertions.assertFalse(o1.getClass().isAssignableFrom(C2.class));
+        Assertions.assertFalse(o1.getClass().isAssignableFrom(C2C1.class));
+        Assertions.assertFalse(o1.getClass().isAssignableFrom(P2.class));
+        Assertions.assertTrue(C1C1.class.isAssignableFrom(o1.getClass()));
+        Assertions.assertTrue(C1.class.isAssignableFrom(o1.getClass()));
+        Assertions.assertTrue(P1.class.isAssignableFrom(o1.getClass()));
+        Assertions.assertFalse(C2C1.class.isAssignableFrom(o1.getClass()));
+        Assertions.assertFalse(C2.class.isAssignableFrom(o1.getClass()));
+        Assertions.assertFalse(P2.class.isAssignableFrom(o1.getClass()));
 
         Object ip1 = new IMPIC1();
-        Assert.assertTrue(ip1.getClass().isAssignableFrom(IMPIC1.class));
-        Assert.assertFalse(ip1.getClass().isAssignableFrom(IP1.class));
-        Assert.assertFalse(ip1.getClass().isAssignableFrom(IC1.class));
-        Assert.assertFalse(ip1.getClass().isAssignableFrom(IP2.class));
-        Assert.assertFalse(ip1.getClass().isAssignableFrom(IC2.class));
-        Assert.assertFalse(ip1.getClass().isAssignableFrom(IMPIC2.class));
-        Assert.assertTrue(IMPIC1.class.isAssignableFrom(ip1.getClass()));
-        Assert.assertTrue(IC1.class.isAssignableFrom(ip1.getClass()));
-        Assert.assertTrue(IP1.class.isAssignableFrom(ip1.getClass()));
-        Assert.assertFalse(IMPIC2.class.isAssignableFrom(ip1.getClass()));
-        Assert.assertFalse(IC2.class.isAssignableFrom(ip1.getClass()));
-        Assert.assertFalse(IP2.class.isAssignableFrom(ip1.getClass()));
+        Assertions.assertTrue(ip1.getClass().isAssignableFrom(IMPIC1.class));
+        Assertions.assertFalse(ip1.getClass().isAssignableFrom(IP1.class));
+        Assertions.assertFalse(ip1.getClass().isAssignableFrom(IC1.class));
+        Assertions.assertFalse(ip1.getClass().isAssignableFrom(IP2.class));
+        Assertions.assertFalse(ip1.getClass().isAssignableFrom(IC2.class));
+        Assertions.assertFalse(ip1.getClass().isAssignableFrom(IMPIC2.class));
+        Assertions.assertTrue(IMPIC1.class.isAssignableFrom(ip1.getClass()));
+        Assertions.assertTrue(IC1.class.isAssignableFrom(ip1.getClass()));
+        Assertions.assertTrue(IP1.class.isAssignableFrom(ip1.getClass()));
+        Assertions.assertFalse(IMPIC2.class.isAssignableFrom(ip1.getClass()));
+        Assertions.assertFalse(IC2.class.isAssignableFrom(ip1.getClass()));
+        Assertions.assertFalse(IP2.class.isAssignableFrom(ip1.getClass()));
     }
 
     @Test
@@ -93,23 +93,23 @@ public class TestClassIsAssignableFrom {
         // http://stackoverflow.com/questions/496928/what-is-the-difference-between-instanceof-and-class-isassignablefrom
 
         Object o1 = new C1C1();
-        Assert.assertTrue(o1 instanceof C1C1);
+        Assertions.assertTrue(o1 instanceof C1C1);
         // we can't write like:
-        // Assert.assertTrue(o1 instanceof C1C1.class); // syntax error
+        // Assertions.assertTrue(o1 instanceof C1C1.class); // syntax error
         // we can't write like:
-        // Assert.assertTrue(o1.getClass() instanceof clazz); // syntax error
-        Assert.assertTrue(o1 instanceof C1);
-        Assert.assertTrue(o1 instanceof P1);
-        Assert.assertFalse(o1 instanceof C2C1);
-        Assert.assertFalse(o1 instanceof C2);
-        Assert.assertFalse(o1 instanceof P2);
+        // Assertions.assertTrue(o1.getClass() instanceof clazz); // syntax error
+        Assertions.assertTrue(o1 instanceof C1);
+        Assertions.assertTrue(o1 instanceof P1);
+        Assertions.assertFalse(o1 instanceof C2C1);
+        Assertions.assertFalse(o1 instanceof C2);
+        Assertions.assertFalse(o1 instanceof P2);
 
         Object ip1 = new IMPIC1();
-        Assert.assertTrue(ip1 instanceof IMPIC1);
-        Assert.assertTrue(ip1 instanceof IC1);
-        Assert.assertTrue(ip1 instanceof IP1);
-        Assert.assertFalse(ip1 instanceof IMPIC2);
-        Assert.assertFalse(ip1 instanceof IC2);
-        Assert.assertFalse(ip1 instanceof IP2);
+        Assertions.assertTrue(ip1 instanceof IMPIC1);
+        Assertions.assertTrue(ip1 instanceof IC1);
+        Assertions.assertTrue(ip1 instanceof IP1);
+        Assertions.assertFalse(ip1 instanceof IMPIC2);
+        Assertions.assertFalse(ip1 instanceof IC2);
+        Assertions.assertFalse(ip1 instanceof IP2);
     }
 }

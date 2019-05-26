@@ -15,9 +15,8 @@
  */
 package javasnack.langspecs;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -33,10 +32,10 @@ public class TestByteBuffers {
         ByteBuffer b = ByteBuffer.allocate(2);
         b.put((byte) 1);
         b.put((byte) 2);
-        assertEquals(2, b.position());
-        assertThrows(BufferOverflowException.class, () -> {
+        assertThat(b.position()).isEqualTo(2);
+        assertThatThrownBy(() -> {
             b.put((byte) 3);
-        });
+        }).isInstanceOf(BufferOverflowException.class);
     }
 
     @Test
@@ -45,17 +44,17 @@ public class TestByteBuffers {
         ByteArrayOutputStream o = new ByteArrayOutputStream(2);
         o.write((byte) 0);
         o.write((byte) 1);
-        assertEquals(2, o.size());
+        assertThat(o.size()).isEqualTo(2);
         // Add more 1 byte.
         o.write((byte) 2);
         // Size must expand 1.
-        assertEquals(3, o.size());
+        assertThat(o.size()).isEqualTo(3);
 
         // get string
         String s = o.toString("ISO-8859-1");
         // get byte array from string
         byte[] r = s.getBytes("ISO-8859-1");
         // original toByteArray() must be equal to r.
-        assertArrayEquals(o.toByteArray(), r);
+        assertThat(r).isEqualTo(o.toByteArray());
     }
 }

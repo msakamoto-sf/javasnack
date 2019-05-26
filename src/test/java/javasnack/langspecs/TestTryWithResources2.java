@@ -15,15 +15,15 @@
  */
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * try-with-resources with "catch" examples.
@@ -53,9 +53,9 @@ public class TestTryWithResources2 {
                 dummy++; // avoid JIT optimization (not to skip try-with-resources block)
             }
         } catch (Exception e) {
-            assertEquals(e.getClass(), IOException.class);
-            assertEquals(e.getMessage(), "dummy");
-            assertEquals(e.getSuppressed().length, 0);
+            assertThat(e.getClass()).isEqualTo(IOException.class);
+            assertThat(e.getMessage()).isEqualTo("dummy");
+            assertThat(e.getSuppressed()).hasSize(0);
         }
     }
 
@@ -79,9 +79,9 @@ public class TestTryWithResources2 {
                 dummy++; // avoid JIT optimization (not to skip try-with-resources block)
             }
         } catch (Exception e) {
-            assertEquals(e.getClass(), Exception.class);
-            assertEquals(e.getMessage(), "dummy");
-            assertEquals(e.getSuppressed().length, 0);
+            assertThat(e.getClass()).isEqualTo(Exception.class);
+            assertThat(e.getMessage()).isEqualTo("dummy");
+            assertThat(e.getSuppressed()).hasSize(0);
         }
     }
 
@@ -105,12 +105,12 @@ public class TestTryWithResources2 {
             try (Closeable1 c1 = new Closeable1();) {
                 c1.throwSomething();
             }
-            fail(); // NEVER REACH HERE.
+            fail("NEVER REACH HERE.");
         } catch (IllegalArgumentException e) {
             // REACHE HERE:
-            assertEquals(e.getMessage(), "dummy");
+            assertThat(e.getMessage()).isEqualTo("dummy");
             Throwable[] suppressed = e.getSuppressed();
-            assertEquals(suppressed.length, 0);
+            assertThat(suppressed).hasSize(0);
         }
     }
 
@@ -138,16 +138,16 @@ public class TestTryWithResources2 {
             try (Closeable1 c1 = new Closeable1();) {
                 c1.throwSomething();
             }
-            fail(); // NEVER REACH HERE.
+            fail("NEVER REACH HERE.");
         } catch (IOException e) {
-            fail(); // NEVER REACH HERE, TOO.
+            fail("NEVER REACH HERE, TOO.");
         } catch (IllegalArgumentException e) {
             // REACHE HERE:
-            assertEquals(e.getMessage(), "dummy1");
+            assertThat(e.getMessage()).isEqualTo("dummy1");
             Throwable[] suppressed = e.getSuppressed();
-            assertEquals(suppressed.length, 1);
-            assertEquals(suppressed[0].getMessage(), "dummy2");
-            assertEquals(suppressed[0].getClass(), IOException.class);
+            assertThat(suppressed).hasSize(1);
+            assertThat(suppressed[0].getMessage()).isEqualTo("dummy2");
+            assertThat(suppressed[0].getClass()).isEqualTo(IOException.class);
         }
     }
 
@@ -185,24 +185,24 @@ public class TestTryWithResources2 {
                 Closeable1 c2 = new Closeable1("res2", messageBox);
                 Closeable1 c3 = new Closeable1("res3", messageBox);) {
             c2.throwSomething();
-            fail(); // NEVER REACH HERE.
+            fail("NEVER REACH HERE.");
         } catch (IOException e) {
-            fail(); // NEVER REACH HERE, TOO.
+            fail("NEVER REACH HERE, TOO.");
         } catch (Exception e) {
             // REACHE HERE:
 
             // close() WAS CALLED, ALREADY.
-            assertEquals(messageBox.size(), 3);
-            assertEquals(messageBox.get(0), "CLOSED:res3");
-            assertEquals(messageBox.get(1), "CLOSED:res2");
-            assertEquals(messageBox.get(2), "CLOSED:res1");
+            assertThat(messageBox).hasSize(3);
+            assertThat(messageBox.get(0)).isEqualTo("CLOSED:res3");
+            assertThat(messageBox.get(1)).isEqualTo("CLOSED:res2");
+            assertThat(messageBox.get(2)).isEqualTo("CLOSED:res1");
 
-            assertEquals(e.getMessage(), "dummy1:res2");
+            assertThat(e.getMessage()).isEqualTo("dummy1:res2");
             Throwable[] suppressed = e.getSuppressed();
-            assertEquals(suppressed.length, 3);
-            assertEquals(suppressed[0].getMessage(), "dummy2:res3");
-            assertEquals(suppressed[1].getMessage(), "dummy2:res2");
-            assertEquals(suppressed[2].getMessage(), "dummy2:res1");
+            assertThat(suppressed).hasSize(3);
+            assertThat(suppressed[0].getMessage()).isEqualTo("dummy2:res3");
+            assertThat(suppressed[1].getMessage()).isEqualTo("dummy2:res2");
+            assertThat(suppressed[2].getMessage()).isEqualTo("dummy2:res1");
         }
     }
 }
