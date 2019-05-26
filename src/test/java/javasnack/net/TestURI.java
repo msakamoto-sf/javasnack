@@ -15,14 +15,16 @@
  */
 package javasnack.net;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.stream.Stream;
 
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * typical getter usage of {@link java.net.URI}
@@ -32,244 +34,247 @@ public class TestURI {
     @Test
     public void testTypicalGetter() throws URISyntaxException {
         URI url0 = new URI("http://localhost/");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "http");
-        assertEquals(url0.getSchemeSpecificPart(), "//localhost/");
-        assertEquals(url0.getRawSchemeSpecificPart(), "//localhost/");
-        assertEquals(url0.getAuthority(), "localhost");
-        assertEquals(url0.getRawAuthority(), "localhost");
-        assertEquals(url0.getHost(), "localhost");
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/");
-        assertEquals(url0.getRawPath(), "/");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "http://localhost/");
-        assertEquals(url0.toString(), "http://localhost/");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("http");
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("//localhost/");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("//localhost/");
+        assertThat(url0.getAuthority()).isEqualTo("localhost");
+        assertThat(url0.getRawAuthority()).isEqualTo("localhost");
+        assertThat(url0.getHost()).isEqualTo("localhost");
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/");
+        assertThat(url0.getRawPath()).isEqualTo("/");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("http://localhost/");
+        assertThat(url0.toString()).isEqualTo("http://localhost/");
 
         String url1 = "xxx://username:password@localhost:8080/aaa/bbb;ccc;ddd/eee.txt;fff=ggg?q1=v1&q2=v2#ref123";
         url0 = new URI(url1);
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "xxx");
-        assertEquals(url0.getSchemeSpecificPart(),
-                "//username:password@localhost:8080/aaa/bbb;ccc;ddd/eee.txt;fff=ggg?q1=v1&q2=v2");
-        assertEquals(url0.getRawSchemeSpecificPart(),
-                "//username:password@localhost:8080/aaa/bbb;ccc;ddd/eee.txt;fff=ggg?q1=v1&q2=v2");
-        assertEquals(url0.getAuthority(), "username:password@localhost:8080");
-        assertEquals(url0.getRawAuthority(), "username:password@localhost:8080");
-        assertEquals(url0.getHost(), "localhost");
-        assertEquals(url0.getUserInfo(), "username:password");
-        assertEquals(url0.getRawUserInfo(), "username:password");
-        assertEquals(url0.getPort(), 8080);
-        assertEquals(url0.getPath(), "/aaa/bbb;ccc;ddd/eee.txt;fff=ggg");
-        assertEquals(url0.getRawPath(), "/aaa/bbb;ccc;ddd/eee.txt;fff=ggg");
-        assertEquals(url0.getQuery(), "q1=v1&q2=v2");
-        assertEquals(url0.getRawQuery(), "q1=v1&q2=v2");
-        assertEquals(url0.getFragment(), "ref123");
-        assertEquals(url0.getRawFragment(), "ref123");
-        assertEquals(url0.toASCIIString(), url1);
-        assertEquals(url0.toString(), url1);
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("xxx");
+        assertThat(url0.getSchemeSpecificPart())
+                .isEqualTo("//username:password@localhost:8080/aaa/bbb;ccc;ddd/eee.txt;fff=ggg?q1=v1&q2=v2");
+        assertThat(url0.getRawSchemeSpecificPart())
+                .isEqualTo("//username:password@localhost:8080/aaa/bbb;ccc;ddd/eee.txt;fff=ggg?q1=v1&q2=v2");
+        assertThat(url0.getAuthority()).isEqualTo("username:password@localhost:8080");
+        assertThat(url0.getRawAuthority()).isEqualTo("username:password@localhost:8080");
+        assertThat(url0.getHost()).isEqualTo("localhost");
+        assertThat(url0.getUserInfo()).isEqualTo("username:password");
+        assertThat(url0.getRawUserInfo()).isEqualTo("username:password");
+        assertThat(url0.getPort()).isEqualTo(8080);
+        assertThat(url0.getPath()).isEqualTo("/aaa/bbb;ccc;ddd/eee.txt;fff=ggg");
+        assertThat(url0.getRawPath()).isEqualTo("/aaa/bbb;ccc;ddd/eee.txt;fff=ggg");
+        assertThat(url0.getQuery()).isEqualTo("q1=v1&q2=v2");
+        assertThat(url0.getRawQuery()).isEqualTo("q1=v1&q2=v2");
+        assertThat(url0.getFragment()).isEqualTo("ref123");
+        assertThat(url0.getRawFragment()).isEqualTo("ref123");
+        assertThat(url0.toASCIIString()).isEqualTo(url1);
+        assertThat(url0.toString()).isEqualTo(url1);
 
         String url2 = "xxx://user%20%2Fname:pass%20%2Fword@local%20host:8080/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg?q1=v1&q2%20%2F=v2#ref%2F%20123";
         url0 = new URI(url2);
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "xxx");
-        assertEquals(url0.getSchemeSpecificPart(),
-                "//user /name:pass /word@local host:8080/aaa/bbb;ccc;ddd /eee.txt;fff=ggg?q1=v1&q2 /=v2");
-        assertEquals(url0.getRawSchemeSpecificPart(),
-                "//user%20%2Fname:pass%20%2Fword@local%20host:8080/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg?q1=v1&q2%20%2F=v2");
-        assertEquals(url0.getAuthority(), "user /name:pass /word@local host:8080");
-        assertEquals(url0.getRawAuthority(), "user%20%2Fname:pass%20%2Fword@local%20host:8080");
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/aaa/bbb;ccc;ddd /eee.txt;fff=ggg");
-        assertEquals(url0.getRawPath(), "/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg");
-        assertEquals(url0.getQuery(), "q1=v1&q2 /=v2");
-        assertEquals(url0.getRawQuery(), "q1=v1&q2%20%2F=v2");
-        assertEquals(url0.getFragment(), "ref/ 123");
-        assertEquals(url0.getRawFragment(), "ref%2F%20123");
-        assertEquals(url0.toASCIIString(), url2);
-        assertEquals(url0.toString(), url2);
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("xxx");
+        assertThat(url0.getSchemeSpecificPart())
+                .isEqualTo("//user /name:pass /word@local host:8080/aaa/bbb;ccc;ddd /eee.txt;fff=ggg?q1=v1&q2 /=v2");
+        assertThat(url0.getRawSchemeSpecificPart())
+                .isEqualTo(
+                        "//user%20%2Fname:pass%20%2Fword@local%20host:8080/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg?q1=v1&q2%20%2F=v2");
+        assertThat(url0.getAuthority()).isEqualTo("user /name:pass /word@local host:8080");
+        assertThat(url0.getRawAuthority()).isEqualTo("user%20%2Fname:pass%20%2Fword@local%20host:8080");
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/aaa/bbb;ccc;ddd /eee.txt;fff=ggg");
+        assertThat(url0.getRawPath()).isEqualTo("/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg");
+        assertThat(url0.getQuery()).isEqualTo("q1=v1&q2 /=v2");
+        assertThat(url0.getRawQuery()).isEqualTo("q1=v1&q2%20%2F=v2");
+        assertThat(url0.getFragment()).isEqualTo("ref/ 123");
+        assertThat(url0.getRawFragment()).isEqualTo("ref%2F%20123");
+        assertThat(url0.toASCIIString()).isEqualTo(url2);
+        assertThat(url0.toString()).isEqualTo(url2);
 
         url0 = new URI("");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), null);
-        assertEquals(url0.getSchemeSpecificPart(), "");
-        assertEquals(url0.getRawSchemeSpecificPart(), "");
-        assertEquals(url0.getAuthority(), null);
-        assertEquals(url0.getRawAuthority(), null);
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "");
-        assertEquals(url0.getRawPath(), "");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "");
-        assertEquals(url0.toString(), "");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo(null);
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("");
+        assertThat(url0.getAuthority()).isEqualTo(null);
+        assertThat(url0.getRawAuthority()).isEqualTo(null);
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("");
+        assertThat(url0.getRawPath()).isEqualTo("");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("");
+        assertThat(url0.toString()).isEqualTo("");
 
         url0 = new URI("/");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), null);
-        assertEquals(url0.getSchemeSpecificPart(), "/");
-        assertEquals(url0.getRawSchemeSpecificPart(), "/");
-        assertEquals(url0.getAuthority(), null);
-        assertEquals(url0.getRawAuthority(), null);
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/");
-        assertEquals(url0.getRawPath(), "/");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "/");
-        assertEquals(url0.toString(), "/");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo(null);
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("/");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("/");
+        assertThat(url0.getAuthority()).isEqualTo(null);
+        assertThat(url0.getRawAuthority()).isEqualTo(null);
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/");
+        assertThat(url0.getRawPath()).isEqualTo("/");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("/");
+        assertThat(url0.toString()).isEqualTo("/");
 
         url0 = new URI("a");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), null);
-        assertEquals(url0.getSchemeSpecificPart(), "a");
-        assertEquals(url0.getRawSchemeSpecificPart(), "a");
-        assertEquals(url0.getAuthority(), null);
-        assertEquals(url0.getRawAuthority(), null);
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "a");
-        assertEquals(url0.getRawPath(), "a");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "a");
-        assertEquals(url0.toString(), "a");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo(null);
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("a");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("a");
+        assertThat(url0.getAuthority()).isEqualTo(null);
+        assertThat(url0.getRawAuthority()).isEqualTo(null);
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("a");
+        assertThat(url0.getRawPath()).isEqualTo("a");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("a");
+        assertThat(url0.toString()).isEqualTo("a");
 
         url0 = new URI("file:///");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "file");
-        assertEquals(url0.getSchemeSpecificPart(), "///");
-        assertEquals(url0.getRawSchemeSpecificPart(), "///");
-        assertEquals(url0.getAuthority(), null);
-        assertEquals(url0.getRawAuthority(), null);
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/");
-        assertEquals(url0.getRawPath(), "/");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "file:///");
-        assertEquals(url0.toString(), "file:///");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("file");
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("///");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("///");
+        assertThat(url0.getAuthority()).isEqualTo(null);
+        assertThat(url0.getRawAuthority()).isEqualTo(null);
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/");
+        assertThat(url0.getRawPath()).isEqualTo("/");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("file:///");
+        assertThat(url0.toString()).isEqualTo("file:///");
 
         url0 = new URI("file:///aaa/bbb/ccc.txt");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "file");
-        assertEquals(url0.getSchemeSpecificPart(), "///aaa/bbb/ccc.txt");
-        assertEquals(url0.getRawSchemeSpecificPart(), "///aaa/bbb/ccc.txt");
-        assertEquals(url0.getAuthority(), null);
-        assertEquals(url0.getRawAuthority(), null);
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/aaa/bbb/ccc.txt");
-        assertEquals(url0.getRawPath(), "/aaa/bbb/ccc.txt");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "file:///aaa/bbb/ccc.txt");
-        assertEquals(url0.toString(), "file:///aaa/bbb/ccc.txt");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("file");
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("///aaa/bbb/ccc.txt");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("///aaa/bbb/ccc.txt");
+        assertThat(url0.getAuthority()).isEqualTo(null);
+        assertThat(url0.getRawAuthority()).isEqualTo(null);
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/aaa/bbb/ccc.txt");
+        assertThat(url0.getRawPath()).isEqualTo("/aaa/bbb/ccc.txt");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("file:///aaa/bbb/ccc.txt");
+        assertThat(url0.toString()).isEqualTo("file:///aaa/bbb/ccc.txt");
 
         url0 = new URI("file://C:/aaa/bbb/ccc.txt");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "file");
-        assertEquals(url0.getSchemeSpecificPart(), "//C:/aaa/bbb/ccc.txt");
-        assertEquals(url0.getRawSchemeSpecificPart(), "//C:/aaa/bbb/ccc.txt");
-        assertEquals(url0.getAuthority(), "C:");
-        assertEquals(url0.getRawAuthority(), "C:");
-        assertEquals(url0.getHost(), "C");
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/aaa/bbb/ccc.txt");
-        assertEquals(url0.getRawPath(), "/aaa/bbb/ccc.txt");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "file://C:/aaa/bbb/ccc.txt");
-        assertEquals(url0.toString(), "file://C:/aaa/bbb/ccc.txt");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("file");
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("//C:/aaa/bbb/ccc.txt");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("//C:/aaa/bbb/ccc.txt");
+        assertThat(url0.getAuthority()).isEqualTo("C:");
+        assertThat(url0.getRawAuthority()).isEqualTo("C:");
+        assertThat(url0.getHost()).isEqualTo("C");
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/aaa/bbb/ccc.txt");
+        assertThat(url0.getRawPath()).isEqualTo("/aaa/bbb/ccc.txt");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("file://C:/aaa/bbb/ccc.txt");
+        assertThat(url0.toString()).isEqualTo("file://C:/aaa/bbb/ccc.txt");
 
         url0 = new URI("xxx:yyy");
-        assertEquals(url0.isOpaque(), true);
-        assertEquals(url0.getScheme(), "xxx");
-        assertEquals(url0.getSchemeSpecificPart(), "yyy");
-        assertEquals(url0.getRawSchemeSpecificPart(), "yyy");
-        assertEquals(url0.getAuthority(), null);
-        assertEquals(url0.getRawAuthority(), null);
-        assertEquals(url0.getHost(), null);
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), null);
-        assertEquals(url0.getRawPath(), null);
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "xxx:yyy");
-        assertEquals(url0.toString(), "xxx:yyy");
+        assertThat(url0.isOpaque()).isEqualTo(true);
+        assertThat(url0.getScheme()).isEqualTo("xxx");
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("yyy");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("yyy");
+        assertThat(url0.getAuthority()).isEqualTo(null);
+        assertThat(url0.getRawAuthority()).isEqualTo(null);
+        assertThat(url0.getHost()).isEqualTo(null);
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo(null);
+        assertThat(url0.getRawPath()).isEqualTo(null);
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("xxx:yyy");
+        assertThat(url0.toString()).isEqualTo("xxx:yyy");
 
         url0 = new URI("ftp://localhost/aaa/bbb/ccc.txt");
-        assertEquals(url0.isOpaque(), false);
-        assertEquals(url0.getScheme(), "ftp");
-        assertEquals(url0.getSchemeSpecificPart(), "//localhost/aaa/bbb/ccc.txt");
-        assertEquals(url0.getRawSchemeSpecificPart(), "//localhost/aaa/bbb/ccc.txt");
-        assertEquals(url0.getAuthority(), "localhost");
-        assertEquals(url0.getRawAuthority(), "localhost");
-        assertEquals(url0.getHost(), "localhost");
-        assertEquals(url0.getUserInfo(), null);
-        assertEquals(url0.getRawUserInfo(), null);
-        assertEquals(url0.getPort(), -1);
-        assertEquals(url0.getPath(), "/aaa/bbb/ccc.txt");
-        assertEquals(url0.getRawPath(), "/aaa/bbb/ccc.txt");
-        assertEquals(url0.getQuery(), null);
-        assertEquals(url0.getRawQuery(), null);
-        assertEquals(url0.getFragment(), null);
-        assertEquals(url0.getRawFragment(), null);
-        assertEquals(url0.toASCIIString(), "ftp://localhost/aaa/bbb/ccc.txt");
-        assertEquals(url0.toString(), "ftp://localhost/aaa/bbb/ccc.txt");
+        assertThat(url0.isOpaque()).isEqualTo(false);
+        assertThat(url0.getScheme()).isEqualTo("ftp");
+        assertThat(url0.getSchemeSpecificPart()).isEqualTo("//localhost/aaa/bbb/ccc.txt");
+        assertThat(url0.getRawSchemeSpecificPart()).isEqualTo("//localhost/aaa/bbb/ccc.txt");
+        assertThat(url0.getAuthority()).isEqualTo("localhost");
+        assertThat(url0.getRawAuthority()).isEqualTo("localhost");
+        assertThat(url0.getHost()).isEqualTo("localhost");
+        assertThat(url0.getUserInfo()).isEqualTo(null);
+        assertThat(url0.getRawUserInfo()).isEqualTo(null);
+        assertThat(url0.getPort()).isEqualTo(-1);
+        assertThat(url0.getPath()).isEqualTo("/aaa/bbb/ccc.txt");
+        assertThat(url0.getRawPath()).isEqualTo("/aaa/bbb/ccc.txt");
+        assertThat(url0.getQuery()).isEqualTo(null);
+        assertThat(url0.getRawQuery()).isEqualTo(null);
+        assertThat(url0.getFragment()).isEqualTo(null);
+        assertThat(url0.getRawFragment()).isEqualTo(null);
+        assertThat(url0.toASCIIString()).isEqualTo("ftp://localhost/aaa/bbb/ccc.txt");
+        assertThat(url0.toString()).isEqualTo("ftp://localhost/aaa/bbb/ccc.txt");
     }
 
-    @DataProvider(name = "uriSyntaxErrors")
-    public Object[][] provideURISyntaxErrors() {
-        return new Object[][] {
-            // @formatter:off
-            { "C:\\aaa\\bbb\\ccc.html" },
-            // @formatter:on
-        };
+    static Stream<String> provideURISyntaxErrors() {
+        return Stream.of(
+        // @formatter:off
+        "C:\\aaa\\bbb\\ccc.html"
+        // @formatter:on
+        );
     }
 
-    @Test(dataProvider = "uriSyntaxErrors", expectedExceptions = { URISyntaxException.class })
-    public void testURISyntaxExceptionDemo(String uristr) throws URISyntaxException {
-        new URI(uristr);
-        Assert.fail("not reached here.");
+    @ParameterizedTest
+    @MethodSource("provideURISyntaxErrors")
+    public void testURISyntaxExceptionDemo(String uristr) {
+        assertThatThrownBy(() -> {
+            new URI(uristr);
+        }).isInstanceOf(URISyntaxException.class);
     }
+
 }

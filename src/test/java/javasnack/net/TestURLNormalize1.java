@@ -15,13 +15,16 @@
  */
 package javasnack.net;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.stream.Stream;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Convert relative URL to absolute URL by URL constructor.
@@ -31,26 +34,26 @@ import org.testng.annotations.Test;
  */
 public class TestURLNormalize1 {
 
-    @DataProvider(name = "nomalizeSampleUrls")
-    public Object[][] getNomalizeSampleUrls() {
-        return new Object[][] {
-                { "http://www.example.com/", "", "http://www.example.com/" },
-                { "http://www.example.com/", "../../../../../../", "http://www.example.com/../../" },
-                { "http://www.example.com/a/b/c/", "/d/e/f.html?p=%20%0D%0A",
-                        "http://www.example.com/d/e/f.html?p=%20%0D%0A" },
-                { "http://www.example.com/a/b/c/", "../../g/h/./../i/hello world.html?p=%20%0D%0A",
-                        "http://www.example.com/a/g/i/hello world.html?p=%20%0D%0A" },
-                { "http://www.example.com/a/b/c/test.html", "../../g/h/./../i/hello world.html?p=%20%0D%0A",
-                        "http://www.example.com/a/g/i/hello world.html?p=%20%0D%0A" },
-                { "http://www.example.com/hello.html", "/thanks.html;abc=def?p=%20%0D%0A#def",
-                        "http://www.example.com/thanks.html;abc=def?p=%20%0D%0A#def" },
-                { "http://www.example.com/", "/", "http://www.example.com/" } };
+    static Stream<Arguments> provideNomalizeUrlSamples() {
+        return Stream.of(
+                arguments("http://www.example.com/", "", "http://www.example.com/"),
+                arguments("http://www.example.com/", "../../../../../../", "http://www.example.com/../../"),
+                arguments("http://www.example.com/a/b/c/", "/d/e/f.html?p=%20%0D%0A",
+                        "http://www.example.com/d/e/f.html?p=%20%0D%0A"),
+                arguments("http://www.example.com/a/b/c/", "../../g/h/./../i/hello world.html?p=%20%0D%0A",
+                        "http://www.example.com/a/g/i/hello world.html?p=%20%0D%0A"),
+                arguments("http://www.example.com/a/b/c/test.html", "../../g/h/./../i/hello world.html?p=%20%0D%0A",
+                        "http://www.example.com/a/g/i/hello world.html?p=%20%0D%0A"),
+                arguments("http://www.example.com/hello.html", "/thanks.html;abc=def?p=%20%0D%0A#def",
+                        "http://www.example.com/thanks.html;abc=def?p=%20%0D%0A#def"),
+                arguments("http://www.example.com/", "/", "http://www.example.com/"));
     }
 
-    @Test(dataProvider = "nomalizeSampleUrls")
+    @ParameterizedTest
+    @MethodSource("provideNomalizeUrlSamples")
     public void testNormalizeSampleUrls(String ctx, String relative, String expected) throws MalformedURLException {
         URL ctxUrl = new URL(ctx);
         URL rUrl = new URL(ctxUrl, relative);
-        assertEquals(rUrl.toExternalForm(), expected);
+        assertThat(rUrl.toExternalForm()).isEqualTo(expected);
     }
 }

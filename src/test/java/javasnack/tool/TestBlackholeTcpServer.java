@@ -1,8 +1,7 @@
 package javasnack.tool;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,7 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestBlackholeTcpServer {
 
@@ -18,7 +17,7 @@ public class TestBlackholeTcpServer {
     public void testStartStop() throws IOException {
         BlackholeTcpServer server = new BlackholeTcpServer();
         final int localPort = server.start();
-        assertTrue(localPort > 0);
+        assertThat(localPort).isGreaterThan(0);
         try {
             server.start();
             fail("shold not reach here.");
@@ -31,7 +30,7 @@ public class TestBlackholeTcpServer {
     public void testReceivedData() throws IOException, InterruptedException {
         BlackholeTcpServer server = new BlackholeTcpServer();
         Map<InetSocketAddress, byte[]> receivedData = server.getReceivedBytes();
-        assertEquals(receivedData.size(), 0);
+        assertThat(receivedData).isEmpty();
 
         final int localPort = server.start();
         InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", localPort);
@@ -58,10 +57,8 @@ public class TestBlackholeTcpServer {
 
         server.stop();
         receivedData = server.getReceivedBytes();
-        assertEquals(receivedData.size(), 2);
-        assertTrue(receivedData.containsKey(local1));
-        assertTrue(receivedData.containsKey(local2));
-        assertEquals(receivedData.get(local1), new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
-        assertEquals(receivedData.get(local2), new byte[] { 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b });
+        assertThat(receivedData).hasSize(2).containsKeys(local1, local2);
+        assertThat(receivedData.get(local1)).isEqualTo(new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 });
+        assertThat(receivedData.get(local2)).isEqualTo(new byte[] { 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b });
     }
 }

@@ -15,13 +15,13 @@
  */
 package javasnack.tool;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestUnsignedByte {
     @Test
@@ -43,73 +43,73 @@ public class TestUnsignedByte {
         for (int i = 0; i < r.length; i++) {
             expected[i] = UnsignedByte.from(i);
         }
-        assertEquals(r, expected);
+        assertThat(r).isEqualTo(expected);
     }
 
     @Test
     public void hex() {
         byte[] b1 = new byte[0];
-        assertEquals(UnsignedByte.hex("", b1), "");
-        assertEquals(UnsignedByte.hex("a", b1), "");
-        assertEquals(UnsignedByte.hex("ab", b1), "");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo( "");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo( "");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo( "");
 
         b1 = new byte[1];
         b1[0] = 0x0;
-        assertEquals(UnsignedByte.hex("", b1), "0");
-        assertEquals(UnsignedByte.hex("a", b1), "a0");
-        assertEquals(UnsignedByte.hex("ab", b1), "ab0");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo( "0");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo( "a0");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo( "ab0");
         b1[0] = Byte.MAX_VALUE;
-        assertEquals(UnsignedByte.hex("", b1), "7f");
-        assertEquals(UnsignedByte.hex("a", b1), "a7f");
-        assertEquals(UnsignedByte.hex("ab", b1), "ab7f");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo("7f");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo("a7f");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo("ab7f");
 
         b1 = new byte[2];
         b1[0] = 0x0;
         b1[1] = 0x0;
-        assertEquals(UnsignedByte.hex("", b1), "00");
-        assertEquals(UnsignedByte.hex("a", b1), "a0a0");
-        assertEquals(UnsignedByte.hex("ab", b1), "ab0ab0");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo("00");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo("a0a0");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo("ab0ab0");
         b1[0] = Byte.MAX_VALUE;
         b1[1] = Byte.MIN_VALUE;
-        assertEquals(UnsignedByte.hex("", b1), "7f80");
-        assertEquals(UnsignedByte.hex("a", b1), "a7fa80");
-        assertEquals(UnsignedByte.hex("ab", b1), "ab7fab80");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo("7f80");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo("a7fa80");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo("ab7fab80");
 
         b1 = new byte[3];
         b1[0] = Byte.MAX_VALUE;
         b1[1] = Byte.MIN_VALUE;
         b1[2] = 0x0;
-        assertEquals(UnsignedByte.hex("", b1), "7f800");
-        assertEquals(UnsignedByte.hex("a", b1), "a7fa80a0");
-        assertEquals(UnsignedByte.hex("ab", b1), "ab7fab80ab0");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo("7f800");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo("a7fa80a0");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo("ab7fab80ab0");
     }
 
     @Test
     public void bits() {
         byte[] b1 = new byte[0];
-        assertEquals(UnsignedByte.bits(b1), "");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("");
 
         b1 = new byte[1];
         b1[0] = 0x0;
-        assertEquals(UnsignedByte.bits(b1), "00000000");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("00000000");
         b1[0] = 0x1;
-        assertEquals(UnsignedByte.bits(b1), "00000001");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("00000001");
         b1[0] = Byte.MAX_VALUE;
-        assertEquals(UnsignedByte.bits(b1), "01111111");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("01111111");
         b1[0] = Byte.MIN_VALUE;
-        assertEquals(UnsignedByte.bits(b1), "10000000");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("10000000");
 
         b1 = new byte[2];
         b1[0] = 0x0;
         b1[1] = 0x0;
-        assertEquals(UnsignedByte.bits(b1), "0000000000000000");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("0000000000000000");
         b1[0] = Byte.MAX_VALUE;
         b1[1] = Byte.MIN_VALUE;
-        assertEquals(UnsignedByte.bits(b1), "0111111110000000");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("0111111110000000");
         b1 = new byte[3];
         b1[0] = 0x0;
         b1[1] = Byte.MAX_VALUE;
         b1[2] = Byte.MIN_VALUE;
-        assertEquals(UnsignedByte.bits(b1), "000000000111111110000000");
+        assertThat(UnsignedByte.bits(b1)).isEqualTo("000000000111111110000000");
     }
 }

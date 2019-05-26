@@ -15,7 +15,7 @@
  */
 package javasnack.tool;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestCurrentTime {
     @Test
@@ -34,7 +34,7 @@ public class TestCurrentTime {
         long systemNow2 = CurrentTime.millis();
         long diff = systemNow2 - systemNow1;
         // differential must be lesser than 10ms.
-        assertTrue(diff < 10);
+        assertThat(diff).isLessThan(10);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class TestCurrentTime {
             }
         };
         CurrentTime.mock(mock);
-        assertEquals(CurrentTime.millis(), mock.millis());
+        assertThat(CurrentTime.millis()).isEqualTo(mock.millis());
         CurrentTime.unmock();
     }
 
@@ -81,7 +81,10 @@ public class TestCurrentTime {
     public void mockConcurrent() throws InterruptedException,
             ExecutionException {
         ICurrentTimeProvider[] providers = new ICurrentTimeProvider[NUM_OF_THREAD];
+
+        @SuppressWarnings("unchecked")
         Future<Long>[] actual = new Future[NUM_OF_THREAD];
+
         CountDownLatch startGate = new CountDownLatch(1);
         ExecutorService es = Executors.newFixedThreadPool(NUM_OF_THREAD);
         for (int i = 0; i < NUM_OF_THREAD; i++) {
@@ -92,7 +95,7 @@ public class TestCurrentTime {
         es.awaitTermination(100, TimeUnit.MILLISECONDS);
         es.shutdown();
         for (int i = 0; i < NUM_OF_THREAD; i++) {
-            assertEquals(actual[i].get().longValue(), providers[i].millis());
+            assertThat(actual[i].get().longValue()).isEqualTo(providers[i].millis());
         }
     }
 }
