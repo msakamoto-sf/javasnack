@@ -15,7 +15,7 @@
  */
 package javasnack.h2;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -35,9 +35,6 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
-import javasnack.tool.FileDirHelper;
-import javasnack.tool.UnsignedByte;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dbunit.Assertion;
@@ -52,9 +49,12 @@ import org.dbunit.dataset.csv.CsvBase64BinarySafeDataSetWriter;
 import org.dbunit.dataset.csv.CsvDataSet;
 import org.dbunit.dataset.csv.CsvDataSetWriter;
 import org.dbunit.operation.DatabaseOperation;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javasnack.tool.FileDirHelper;
+import javasnack.tool.UnsignedByte;
 
 public class DbUnitCsvUsageTest {
 
@@ -109,7 +109,8 @@ public class DbUnitCsvUsageTest {
                                     "decimal_c decimal", "double_c double",
                                     "time_c time", "date_c date",
                                     "timestamp_c timestamp",
-                                    "varchar_c varchar" }, ", ") + ")");
+                                    "varchar_c varchar" }, ", ")
+                            + ")");
             ps.execute();
             ps.close();
         }
@@ -135,7 +136,8 @@ public class DbUnitCsvUsageTest {
         public Set<T1> findAll(Connection targetDbConn) throws SQLException {
             Set<T1> r = new HashSet<T1>();
             PreparedStatement ps = targetDbConn
-                    .prepareStatement("select id, boolean_c, int_c, decimal_c, double_c, time_c, date_c, timestamp_c, varchar_c from t1");
+                    .prepareStatement(
+                            "select id, boolean_c, int_c, decimal_c, double_c, time_c, date_c, timestamp_c, varchar_c from t1");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 T1 c = new T1();
@@ -281,7 +283,8 @@ public class DbUnitCsvUsageTest {
 
         void setup(Connection targetDbConn) throws SQLException {
             PreparedStatement ps = targetDbConn
-                    .prepareStatement("create table t4(id identity primary key, varchar_c varchar, binary_c binary, blob_c blob, null_c varchar)");
+                    .prepareStatement(
+                            "create table t4(id identity primary key, varchar_c varchar, binary_c binary, blob_c blob, null_c varchar)");
             ps.execute();
             ps.close();
         }
@@ -326,7 +329,7 @@ public class DbUnitCsvUsageTest {
     Connection conn;
     File tmpDir;
 
-    @BeforeTest
+    @BeforeEach
     public void prepareDb() throws Exception {
         tmpDir = FileDirHelper.createTmpDir();
 
@@ -364,7 +367,7 @@ public class DbUnitCsvUsageTest {
                 UnsignedByte.create0x00to0xFF()).insertMe(conn);
     }
 
-    @AfterTest
+    @AfterEach
     public void closeDb() throws SQLException, IOException {
         FileUtils.deleteDirectory(tmpDir);
         conn.close();
@@ -415,7 +418,7 @@ public class DbUnitCsvUsageTest {
         // H2DB can store and load binary string to varchar column safely.
         Set<T4> a = new T4().findAll(conn);
         for (T4 a2 : a) {
-            assertEquals(a2.stringField, UnsignedByte.create0x00to0xFFString());
+            assertEquals(UnsignedByte.create0x00to0xFFString(), a2.stringField);
         }
 
         // export t4 using base64 binary safely csv dataset writer.

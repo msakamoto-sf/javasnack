@@ -15,7 +15,7 @@
  */
 package javasnack.ser;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,9 +28,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class Bar implements Serializable {
+    private static final long serialVersionUID = -1117467365797726761L;
     protected int num;
     protected String name;
     protected Date createdAt;
@@ -81,6 +82,7 @@ class Bar implements Serializable {
         out.writeObject(hiddenName + " with spice!!");
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException,
             ClassNotFoundException {
         in.defaultReadObject();
@@ -121,12 +123,12 @@ public class TestCustomizedReadWrite {
 
         Bar o2 = (Bar) oin.readObject();
 
-        assertEquals(o2.getNum(), o.getNum());
-        assertEquals(o2.getName(), o.getName());
-        assertEquals(o2.getHiddenName(), o.getHiddenName() + " with spice!!");
-        assertEquals(o2.getCreatedAt(), o.getCreatedAt());
-        assertEquals(o2.options.get("name"), o.getName());
-        assertEquals(o2.options.get("num"), Integer.toString(o.getNum()));
-        assertEquals(o2.options.get("hidden"), o.getHiddenName());
+        assertEquals(o.getNum(), o2.getNum());
+        assertEquals(o.getName(), o2.getName());
+        assertEquals(o.getHiddenName() + " with spice!!", o2.getHiddenName());
+        assertEquals(o.getCreatedAt(), o2.getCreatedAt());
+        assertEquals(o.getName(), o2.options.get("name"));
+        assertEquals(Integer.toString(o.getNum()), o2.options.get("num"));
+        assertEquals(o.getHiddenName(), o2.options.get("hidden"));
     }
 }

@@ -15,11 +15,11 @@
  */
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -88,6 +88,6 @@ public class TestAssistedInject {
     public void testAssistedInject() {
         Injector i = Guice.createInjector(new TestAssistedModule());
         SomeInterfaceUser u = i.getInstance(SomeInterfaceUser.class);
-        assertEquals(u.getResult(), "Hello, Assisted Injection.[100]");
+        assertEquals("Hello, Assisted Injection.[100]", u.getResult());
     }
 }

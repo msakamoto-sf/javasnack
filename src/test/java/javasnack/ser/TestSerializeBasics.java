@@ -15,7 +15,7 @@
  */
 package javasnack.ser;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 class Foo implements Serializable {
     private static final long serialVersionUID = 7388974747804746922L;
@@ -94,9 +94,9 @@ public class TestSerializeBasics {
 
         Foo o2 = (Foo) oin.readObject();
 
-        assertEquals(o2.getNum(), o.getNum());
-        assertEquals(o2.getName(), o.getName());
-        assertEquals(o2.getCreatedAt(), o.getCreatedAt());
+        assertEquals(o.getNum(), o2.getNum());
+        assertEquals(o.getName(), o2.getName());
+        assertEquals(o.getCreatedAt(), o2.getCreatedAt());
     }
 
     @Test
@@ -146,17 +146,16 @@ public class TestSerializeBasics {
 
         ObjectInputStream oin = new ObjectInputStream(bin);
 
+        @SuppressWarnings("unchecked")
         List<Foo> l2 = (List<Foo>) oin.readObject();
-        assertEquals(l2.getClass().getName(), "java.util.ArrayList");
-        assertEquals(l2.size(), 3);
+        assertEquals("java.util.ArrayList", l2.getClass().getName());
+        assertEquals(3, l2.size());
         for (int i = 0; i < l2.size(); i++) {
             o = l.get(i);
             Foo o2 = l2.get(i);
-            assertEquals(o2.getNum(), o.getNum());
-            assertEquals(o2.getName(), o.getName());
-            assertEquals(o2.getCreatedAt().getTime(), o.getCreatedAt()
-                    .getTime());
-
+            assertEquals(o.getNum(), o2.getNum());
+            assertEquals(o.getName(), o2.getName());
+            assertEquals(o.getCreatedAt().getTime(), o2.getCreatedAt().getTime());
         }
     }
 
@@ -207,17 +206,16 @@ public class TestSerializeBasics {
 
         ObjectInputStream oin = new ObjectInputStream(bin);
 
+        @SuppressWarnings("unchecked")
         Map<String, Foo> m2 = (Map<String, Foo>) oin.readObject();
-        assertEquals(m2.getClass().getName(), "java.util.HashMap");
-        assertEquals(m2.size(), 3);
+        assertEquals("java.util.HashMap", m2.getClass().getName());
+        assertEquals(3, m2.size());
         for (Map.Entry<String, Foo> e : m2.entrySet()) {
             o = m.get(e.getKey());
             Foo o2 = e.getValue();
-            assertEquals(o2.getNum(), o.getNum());
-            assertEquals(o2.getName(), o.getName());
-            assertEquals(o2.getCreatedAt().getTime(), o.getCreatedAt()
-                    .getTime());
-
+            assertEquals(o.getNum(), o2.getNum());
+            assertEquals(o.getName(), o2.getName());
+            assertEquals(o.getCreatedAt().getTime(), o2.getCreatedAt().getTime());
         }
     }
 }

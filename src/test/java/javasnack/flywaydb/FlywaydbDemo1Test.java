@@ -15,7 +15,8 @@
  */
 package javasnack.flywaydb;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,9 +29,9 @@ import java.util.Properties;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.AbstractKeyedHandler;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.googlecode.flyway.core.Flyway;
 import com.googlecode.flyway.core.api.MigrationInfo;
@@ -49,7 +50,7 @@ public class FlywaydbDemo1Test {
         public String hobby;
     }
 
-    @BeforeTest
+    @BeforeEach
     public void prepareDb() throws Exception {
         Class.forName("org.h2.Driver");
         conn = DriverManager.getConnection("jdbc:h2:mem:flywaydb_demo1", "sa",
@@ -61,7 +62,7 @@ public class FlywaydbDemo1Test {
         ps.close();
     }
 
-    @AfterTest
+    @AfterEach
     public void closeDb() throws SQLException {
         conn.close();
     }
@@ -80,15 +81,15 @@ public class FlywaydbDemo1Test {
         assertNotNull(flyway.getDataSource());
         flyway.setLocations("flywaydbdemos/demo1");
         // not initialized -> no target schemas.
-        assertEquals(flyway.getSchemas().length, 0);
+        assertEquals(0, flyway.getSchemas().length);
 
         flyway.init();
-        assertEquals(flyway.getSchemas().length, 1);
-        assertEquals(flyway.getSchemas()[0], "PUBLIC");
-        assertEquals(flyway.getTable(), "schema_version");
+        assertEquals(1, flyway.getSchemas().length);
+        assertEquals("PUBLIC", flyway.getSchemas()[0]);
+        assertEquals("schema_version", flyway.getTable());
 
         MigrationInfoService mis = flyway.info();
-        assertEquals(mis.all().length, 4);
+        assertEquals(4, mis.all().length);
         for (MigrationInfo mi : mis.all()) {
             System.out.println(mi.getVersion());
             System.out.println(mi.getDescription());
@@ -97,24 +98,24 @@ public class FlywaydbDemo1Test {
 
         }
         // 3 migrations (V1.1, V1.2, V1.3) must be pending status.
-        assertEquals(mis.pending().length, 3);
+        assertEquals(3, mis.pending().length);
         // initialized version (V1) applied.
-        assertEquals(mis.applied().length, 1);
+        assertEquals(1, mis.applied().length);
         // current version is initialized version (V1).
         MigrationInfo mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "1");
-        assertEquals(mi.getDescription(), flyway.getInitDescription());
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertEquals("1", mi.getVersion().getVersion());
+        assertEquals(flyway.getInitDescription(), mi.getDescription());
+        assertEquals(MigrationState.SUCCESS, mi.getState());
 
         // migrate to V1.2
         flyway.setTarget(MigrationVersion.fromVersion("1.2"));
         flyway.migrate();
         mis = flyway.info();
-        assertEquals(mis.all().length, 4);
+        assertEquals(4, mis.all().length);
         // no pending, V1.3 -> "ABOVE_TARGET".
-        assertEquals(mis.pending().length, 0);
+        assertEquals(0, mis.pending().length);
         // V1, V1.1, V1.2 were applied.
-        assertEquals(mis.applied().length, 3);
+        assertEquals(3, mis.applied().length);
         for (MigrationInfo _mi : mis.all()) {
             System.out.println(_mi.getVersion());
             System.out.println(_mi.getDescription());
@@ -123,21 +124,21 @@ public class FlywaydbDemo1Test {
 
         }
         mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "1.2");
-        assertEquals(mi.getDescription(), "add t1 hobby column");
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertEquals("1.2", mi.getVersion().getVersion());
+        assertEquals("add t1 hobby column", mi.getDescription());
+        assertEquals(MigrationState.SUCCESS, mi.getState());
 
         // migrate to latest version
         flyway.setTarget(MigrationVersion.LATEST);
         flyway.migrate();
         mis = flyway.info();
-        assertEquals(mis.all().length, 4);
-        assertEquals(mis.pending().length, 0);
-        assertEquals(mis.applied().length, 4);
+        assertEquals(4, mis.all().length);
+        assertEquals(0, mis.pending().length);
+        assertEquals(4, mis.applied().length);
         mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "1.3");
-        assertEquals(mi.getDescription(), "insert t1 data2");
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertEquals("1.3", mi.getVersion().getVersion());
+        assertEquals("insert t1 data2", mi.getDescription());
+        assertEquals(MigrationState.SUCCESS, mi.getState());
 
         // select and validate records.
         QueryRunner run = new QueryRunner();
@@ -159,12 +160,12 @@ public class FlywaydbDemo1Test {
         };
         Map<Long, T1> found = run.query(conn,
                 "select id, name, age, hobby from t1", h);
-        assertEquals(found.size(), 4);
+        assertEquals(4, found.size());
         T1 jon = found.get(1L);
-        assertEquals(jon.name, "jon");
-        assertEquals(jon.hobby, "");
+        assertEquals("jon", jon.name);
+        assertEquals("", jon.hobby);
         T1 alice = found.get(3L);
-        assertEquals(alice.name, "alice");
-        assertEquals(alice.hobby, "swimming");
+        assertEquals("alice", alice.name);
+        assertEquals("swimming", alice.hobby);
     }
 }

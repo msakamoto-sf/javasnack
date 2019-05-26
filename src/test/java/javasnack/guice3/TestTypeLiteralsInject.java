@@ -15,11 +15,11 @@
  */
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
@@ -70,6 +70,6 @@ public class TestTypeLiteralsInject {
     public void testTypeLiteralsInject() {
         Injector i = Guice.createInjector(new TestGenericTypeModule());
         GenericTypeInjectee g = i.getInstance(GenericTypeInjectee.class);
-        assertEquals(g.getResult(100), "type = java.lang.Integer");
+        assertEquals("type = java.lang.Integer", g.getResult(100));
     }
 }

@@ -15,14 +15,16 @@
  */
 package javasnack.enums;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * EnumMap/EnumSet demos by test cases.
@@ -45,7 +47,7 @@ public class TestEnumCollection {
         numerics.put(NumericEnums.FOUR, "four");
         numerics.put(NumericEnums.FIVE, "five");
 
-        assertEquals(numerics.get(NumericEnums.FOUR), "four");
+        assertEquals("four", numerics.get(NumericEnums.FOUR));
 
     }
 
@@ -56,7 +58,7 @@ public class TestEnumCollection {
         assertFalse(s1.contains(NumericEnums.FOUR));
 
         Set<NumericEnums> s2 = EnumSet.noneOf(NumericEnums.class);
-        assertEquals(s2.size(), 0);
+        assertEquals(0, s2.size());
 
         Set<NumericEnums> s3 = EnumSet.range(NumericEnums.TWO,
                 NumericEnums.FOUR);

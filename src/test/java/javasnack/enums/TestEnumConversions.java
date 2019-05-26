@@ -15,12 +15,12 @@
  */
 package javasnack.enums;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestEnumConversions {
 
@@ -34,43 +34,43 @@ public class TestEnumConversions {
 
     @Test
     public void numericBasicEnumToOrdinalInt() {
-        assertEquals(NumericBasicEnums.ONE.ordinal(), 0);
-        assertEquals(NumericBasicEnums.TWO.ordinal(), 1);
-        assertEquals(NumericBasicEnums.THREE.ordinal(), 2);
-        assertEquals(NumericBasicEnums.FOUR.ordinal(), 3);
-        assertEquals(NumericBasicEnums.FIVE.ordinal(), 4);
+        assertEquals(0, NumericBasicEnums.ONE.ordinal());
+        assertEquals(1, NumericBasicEnums.TWO.ordinal());
+        assertEquals(2, NumericBasicEnums.THREE.ordinal());
+        assertEquals(3, NumericBasicEnums.FOUR.ordinal());
+        assertEquals(4, NumericBasicEnums.FIVE.ordinal());
     }
 
     @Test
     public void numericBasicEnumToString() {
-        assertEquals(NumericBasicEnums.ONE.name(), "ONE");
-        assertEquals(NumericBasicEnums.TWO.name(), "TWO");
-        assertEquals(NumericBasicEnums.THREE.name(), "THREE");
-        assertEquals(NumericBasicEnums.FOUR.name(), "FOUR");
-        assertEquals(NumericBasicEnums.FIVE.name(), "FIVE");
+        assertEquals("ONE", NumericBasicEnums.ONE.name());
+        assertEquals("TWO", NumericBasicEnums.TWO.name());
+        assertEquals("THREE", NumericBasicEnums.THREE.name());
+        assertEquals("FOUR", NumericBasicEnums.FOUR.name());
+        assertEquals("FIVE", NumericBasicEnums.FIVE.name());
 
-        assertEquals(NumericBasicEnums.ONE.toString(), "ONE");
-        assertEquals(NumericBasicEnums.TWO.toString(), "TWO");
-        assertEquals(NumericBasicEnums.THREE.toString(), "THREE");
-        assertEquals(NumericBasicEnums.FOUR.toString(), "FOUR");
-        assertEquals(NumericBasicEnums.FIVE.toString(), "FIVE");
+        assertEquals("ONE", NumericBasicEnums.ONE.toString());
+        assertEquals("TWO", NumericBasicEnums.TWO.toString());
+        assertEquals("THREE", NumericBasicEnums.THREE.toString());
+        assertEquals("FOUR", NumericBasicEnums.FOUR.toString());
+        assertEquals("FIVE", NumericBasicEnums.FIVE.toString());
     }
 
     @Test
     public void stringToNumericBasicEnum() {
-        assertEquals(NumericBasicEnums.valueOf("ONE"), NumericBasicEnums.ONE);
-        assertEquals(NumericBasicEnums.valueOf("TWO"), NumericBasicEnums.TWO);
+        assertEquals(NumericBasicEnums.ONE, NumericBasicEnums.valueOf("ONE"));
+        assertEquals(NumericBasicEnums.TWO, NumericBasicEnums.valueOf("TWO"));
     }
 
     @Test
     public void ordinalToNumericBasicEnum() {
         NumericBasicEnums[] ens = NumericBasicEnums.values();
-        assertEquals(ens.length, 5);
-        assertEquals(ens[0], NumericBasicEnums.ONE);
-        assertEquals(ens[1], NumericBasicEnums.TWO);
-        assertEquals(ens[2], NumericBasicEnums.THREE);
-        assertEquals(ens[3], NumericBasicEnums.FOUR);
-        assertEquals(ens[4], NumericBasicEnums.FIVE);
+        assertEquals(5, ens.length);
+        assertEquals(NumericBasicEnums.ONE, ens[0]);
+        assertEquals(NumericBasicEnums.TWO, ens[1]);
+        assertEquals(NumericBasicEnums.THREE, ens[2]);
+        assertEquals(NumericBasicEnums.FOUR, ens[3]);
+        assertEquals(NumericBasicEnums.FIVE, ens[4]);
     }
 
     /*
@@ -112,46 +112,46 @@ public class TestEnumConversions {
 
     @Test
     public void numericConstEnumToOrdinalInt() {
-        assertEquals(NumericConstEnums.UNDEFINED.ordinal(), 0);
-        assertEquals(NumericConstEnums.ONE.ordinal(), 1);
-        assertEquals(NumericConstEnums.TWO.ordinal(), 2);
-        assertEquals(NumericConstEnums.THREE.ordinal(), 3);
+        assertEquals(0, NumericConstEnums.UNDEFINED.ordinal());
+        assertEquals(1, NumericConstEnums.ONE.ordinal());
+        assertEquals(2, NumericConstEnums.TWO.ordinal());
+        assertEquals(3, NumericConstEnums.THREE.ordinal());
     }
 
     @Test
     public void numericConstEnumToString() {
-        assertEquals(NumericConstEnums.UNDEFINED.name(), "UNDEFINED");
-        assertEquals(NumericConstEnums.ONE.name(), "ONE");
-        assertEquals(NumericConstEnums.TWO.name(), "TWO");
-        assertEquals(NumericConstEnums.THREE.name(), "THREE");
+        assertEquals("UNDEFINED", NumericConstEnums.UNDEFINED.name());
+        assertEquals("ONE", NumericConstEnums.ONE.name());
+        assertEquals("TWO", NumericConstEnums.TWO.name());
+        assertEquals("THREE", NumericConstEnums.THREE.name());
 
-        assertEquals(NumericConstEnums.UNDEFINED.toString(), "UNDEFINED");
-        assertEquals(NumericConstEnums.ONE.toString(), "ONE");
-        assertEquals(NumericConstEnums.TWO.toString(), "TWO");
-        assertEquals(NumericConstEnums.THREE.toString(), "THREE");
+        assertEquals("UNDEFINED", NumericConstEnums.UNDEFINED.toString());
+        assertEquals("ONE", NumericConstEnums.ONE.toString());
+        assertEquals("TWO", NumericConstEnums.TWO.toString());
+        assertEquals("THREE", NumericConstEnums.THREE.toString());
     }
 
     @Test
     public void stringToNumericConstEnum() {
-        assertEquals(NumericConstEnums.valueOf("ONE"), NumericConstEnums.ONE);
-        assertEquals(NumericConstEnums.valueOf("TWO"), NumericConstEnums.TWO);
+        assertEquals(NumericConstEnums.ONE, NumericConstEnums.valueOf("ONE"));
+        assertEquals(NumericConstEnums.TWO, NumericConstEnums.valueOf("TWO"));
     }
 
     @Test
     public void ordinalToNumericConstEnum() {
         NumericConstEnums[] ens = NumericConstEnums.values();
-        assertEquals(ens.length, 4);
-        assertEquals(ens[0], NumericConstEnums.UNDEFINED);
-        assertEquals(ens[1], NumericConstEnums.ONE);
-        assertEquals(ens[2], NumericConstEnums.TWO);
-        assertEquals(ens[3], NumericConstEnums.THREE);
+        assertEquals(4, ens.length);
+        assertEquals(NumericConstEnums.UNDEFINED, ens[0]);
+        assertEquals(NumericConstEnums.ONE, ens[1]);
+        assertEquals(NumericConstEnums.TWO, ens[2]);
+        assertEquals(NumericConstEnums.THREE, ens[3]);
     }
 
     @Test
     public void numericConstConversionDemos() {
         NumericConstEnums[] samples = NumericConstEnums.values();
         for (NumericConstEnums e : samples) {
-            assertEquals(NumericConstEnums.from(e.v()), e);
+            assertEquals(e, NumericConstEnums.from(e.v()));
         }
     }
 
@@ -192,40 +192,38 @@ public class TestEnumConversions {
 
     @Test
     public void stringConstEnumToOrdinalInt() {
-        assertEquals(StringConstEnums.ENABLED.ordinal(), 0);
-        assertEquals(StringConstEnums.DISABLED.ordinal(), 1);
+        assertEquals(0, StringConstEnums.ENABLED.ordinal());
+        assertEquals(1, StringConstEnums.DISABLED.ordinal());
     }
 
     @Test
     public void stringConstEnumToString() {
-        assertEquals(StringConstEnums.ENABLED.name(), "ENABLED");
-        assertEquals(StringConstEnums.DISABLED.name(), "DISABLED");
+        assertEquals("ENABLED", StringConstEnums.ENABLED.name());
+        assertEquals("DISABLED", StringConstEnums.DISABLED.name());
 
-        assertEquals(StringConstEnums.ENABLED.toString(), "ENABLED");
-        assertEquals(StringConstEnums.DISABLED.toString(), "DISABLED");
+        assertEquals("ENABLED", StringConstEnums.ENABLED.toString());
+        assertEquals("DISABLED", StringConstEnums.DISABLED.toString());
     }
 
     @Test
     public void stringToStringConstEnum() {
-        assertEquals(StringConstEnums.valueOf("ENABLED"),
-                StringConstEnums.ENABLED);
-        assertEquals(StringConstEnums.valueOf("DISABLED"),
-                StringConstEnums.DISABLED);
+        assertEquals(StringConstEnums.ENABLED, StringConstEnums.valueOf("ENABLED"));
+        assertEquals(StringConstEnums.DISABLED, StringConstEnums.valueOf("DISABLED"));
     }
 
     @Test
     public void ordinalToStringConstEnum() {
         StringConstEnums[] ens = StringConstEnums.values();
-        assertEquals(ens.length, 2);
-        assertEquals(ens[0], StringConstEnums.ENABLED);
-        assertEquals(ens[1], StringConstEnums.DISABLED);
+        assertEquals(2, ens.length);
+        assertEquals(StringConstEnums.ENABLED, ens[0]);
+        assertEquals(StringConstEnums.DISABLED, ens[1]);
     }
 
     @Test
     public void stringConstConversionDemos() {
         StringConstEnums[] samples = StringConstEnums.values();
         for (StringConstEnums e : samples) {
-            assertEquals(StringConstEnums.from(e.v()), e);
+            assertEquals(e, StringConstEnums.from(e.v()));
         }
     }
 

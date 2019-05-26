@@ -15,11 +15,11 @@
  */
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
@@ -89,6 +89,6 @@ public class TestProvidesInject {
     public void testSimpleInject() {
         Injector i = Guice.createInjector(new TestProvidesModule());
         ConstructorArgIsProvided c = i.getInstance(ConstructorArgIsProvided.class);
-        assertEquals(c.getResult(), "Hello, Provides Injection.");
+        assertEquals("Hello, Provides Injection.", c.getResult());
     }
 }

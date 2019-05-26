@@ -15,11 +15,11 @@
  */
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Guice;
@@ -46,7 +46,7 @@ public class TestSimpleInject {
     public void testSimpleInject() {
         Injector i = Guice.createInjector();
         HelloWorld hw = i.getInstance(HelloWorld.class);
-        assertEquals(hw.hello(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello());
     }
 
     public static class HelloWorld2 {
@@ -66,7 +66,7 @@ public class TestSimpleInject {
     public void testConstructorArgInject() {
         Injector i = Guice.createInjector();
         HelloWorld2 hw = i.getInstance(HelloWorld2.class);
-        assertEquals(hw.hello2(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello2());
     }
 
     public static class HelloWorld3 {
@@ -104,9 +104,9 @@ public class TestSimpleInject {
     public void testConstructorAndFieldAndMethodInject() {
         Injector i = Guice.createInjector();
         HelloWorld3 hw = i.getInstance(HelloWorld3.class);
-        assertEquals(hw.hello1(), "Hello Google Guice!!");
-        assertEquals(hw.hello2(), "Hello Google Guice!!");
-        assertEquals(hw.hello3(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello1());
+        assertEquals("Hello Google Guice!!", hw.hello2());
+        assertEquals("Hello Google Guice!!", hw.hello3());
     }
 
     public static class HelloWorld4 extends HelloWorld3 {
@@ -135,10 +135,10 @@ public class TestSimpleInject {
     public void testInheritanceInject() {
         Injector i = Guice.createInjector();
         HelloWorld4 hw = i.getInstance(HelloWorld4.class);
-        assertEquals(hw.hello1(), "Hello Google Guice!!");
-        assertEquals(hw.hello2(), "Hello Google Guice!!");
-        assertEquals(hw.hello3(), "Hello Google Guice!!");
-        assertEquals(hw.hello4(), "Hello Google Guice!!");
-        assertEquals(hw.hello5(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello1());
+        assertEquals("Hello Google Guice!!", hw.hello2());
+        assertEquals("Hello Google Guice!!", hw.hello3());
+        assertEquals("Hello Google Guice!!", hw.hello4());
+        assertEquals("Hello Google Guice!!", hw.hello5());
     }
 }
