@@ -4,7 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 import lombok.Data;
@@ -19,7 +27,7 @@ import lombok.Data;
 public class TestAssertJBasicUsage {
 
     @Data
-    static class Foo {
+    public static class Foo {
         public String name;
         public int age;
     }
@@ -86,5 +94,123 @@ public class TestAssertJBasicUsage {
         }).isInstanceOf(FooException.class)
                 .hasMessageContaining("abc")
                 .hasMessage("%s %s", "abc", "def");
+    }
+
+    @Test
+    public void testStringSpecificAssertions() {
+        assertThat("foo bar baz abc def ghi")
+                .contains("abc")
+                .contains("bar", "ghi")
+                .containsIgnoringCase("ABC")
+                .containsOnlyOnce("baz")
+                .containsPattern(Pattern.compile("abc"))
+                .containsSequence("abc", " def ", "ghi")
+                .doesNotContain("ABC")
+                .doesNotContainOnlyWhitespaces()
+                .doesNotContainPattern(Pattern.compile("xyz"))
+                .startsWith("foo")
+                .endsWith("ghi")
+                .doesNotStartWith("ghi")
+                .doesNotEndWith("foo");
+
+        final SoftAssertions softly = new SoftAssertions();
+        softly.assertThat("").hasLineCount(0);
+        softly.assertThat("\r").hasLineCount(1);
+        softly.assertThat("\n").hasLineCount(1);
+        softly.assertThat("\r\n").hasLineCount(1);
+        softly.assertThat("abc").hasLineCount(1);
+        softly.assertThat("abc\r").hasLineCount(1);
+        softly.assertThat("abc\n").hasLineCount(1);
+        softly.assertThat("abc\r\n").hasLineCount(1);
+        softly.assertThat("abc\ndef").hasLineCount(2);
+        softly.assertThat("abc\rdef").hasLineCount(2);
+        softly.assertThat("abc\r\ndef").hasLineCount(2);
+        softly.assertAll();
+    }
+
+    @Test
+    public void testCollectionSpecificAssertions() {
+        assertThat(new int[0]).hasSize(0).isEmpty();
+        assertThat(new int[] { 1, 2, 3 })
+                .hasSize(3)
+                .hasSizeBetween(2, 4)
+                .hasSizeGreaterThan(2)
+                .hasSizeLessThan(4);
+        assertThat(new ArrayList<String>()).hasSize(0).isEmpty();
+        assertThat(List.of("abc", "def", "ghi"))
+                .hasSize(3)
+                .hasSizeBetween(2, 4)
+                .hasSizeGreaterThan(2)
+                .hasSizeLessThan(4)
+                .isEqualTo(List.of("abc", "def", "ghi"));
+        assertThat(new HashMap<String, String>()).hasSize(0).isEmpty();
+        assertThat(Map.of("k0", "v0", "k1", "v1", "k2", "v2"))
+                .hasSize(3)
+                .hasSizeBetween(2, 4)
+                .hasSizeGreaterThan(2)
+                .hasSizeLessThan(4)
+                .isEqualTo(Map.of("k0", "v0", "k1", "v1", "k2", "v2"));
+        assertThat(new int[] { 1, 2, 3, 3 })
+                .isEqualTo(new int[] { 1, 2, 3, 3 })
+                .isNotEmpty()
+                .isNotNull()
+                .isNotSameAs(new int[] { 1, 2, 3, 3 })
+                .contains(1, 3)
+                .contains(3, 1)
+                .containsAnyOf(1, 3, 5, 7)
+                .containsSequence(1, 2)
+                .containsSequence(2, 3)
+                .containsExactly(1, 2, 3, 3)
+                .containsOnly(1, 3, 2)
+                .containsOnlyOnce(1)
+                .containsSequence(1, 2)
+                .containsSequence(3, 3)
+                .doesNotContain(4, 5, 6);
+    }
+
+    @Data
+    public static class Bar {
+        private final String name;
+        private final int age;
+    }
+
+    @Test
+    public void testStreamingFeatures() {
+        final List<Bar> l0 = List.of(
+                new Bar("abc", 10),
+                new Bar("def", 15),
+                new Bar("ghi", 20),
+                new Bar("jkl", 25),
+                new Bar("mno", 30));
+        assertThat(l0).contains(new Bar("abc", 10));
+        assertThat(l0).extracting("name").containsExactly("abc", "def", "ghi", "jkl", "mno");
+        assertThat(l0).extracting("name", "age").contains(tuple("abc", 10), tuple("jkl", 25));
+        assertThat(l0).extracting(b -> b.getName()).contains("abc", "ghi", "mno");
+        assertThat(l0)
+                .filteredOn(b -> {
+                    return b.getAge() > 15;
+                })
+                .extracting(b -> b.getName())
+                .containsExactly("ghi", "jkl", "mno");
+
+        final Map<String, Bar> m0 = Map.of(
+                "k-abc", new Bar("abc", 10),
+                "k-def", new Bar("def", 15),
+                "k-ghi", new Bar("ghi", 20),
+                "k-jkl", new Bar("jkl", 25),
+                "k-mno", new Bar("mno", 30));
+        assertThat(m0)
+                .contains(Map.entry("k-abc", new Bar("abc", 10)))
+                .containsAnyOf(
+                        Map.entry("k-def", new Bar("def", 15)),
+                        Map.entry("k-xyz", new Bar("xyz", 100)))
+                .containsEntry("k-mno", new Bar("mno", 30))
+                .containsKey("k-abc")
+                .containsKeys("k-abc", "k-jkl", "k-def")
+                .containsValue(new Bar("def", 15))
+                .containsValues(new Bar("def", 15), new Bar("jkl", 25))
+                .extracting("k-abc", "k-ghi")
+                .containsExactly(
+                        new Bar("abc", 10), new Bar("ghi", 20));
     }
 }
