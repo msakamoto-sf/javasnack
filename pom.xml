@@ -208,6 +208,30 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <configuration>
+          <includes>
+            <!--
+            match to normal surefire test case filename patterns.
+            (separate by junit5 tag annotation)
+            -->
+            <include>**/Test*.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+          <groups>junit5-tag-filter-2 | my-junit5-meta-annotation-2</groups>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.2.1</version>
         <executions>

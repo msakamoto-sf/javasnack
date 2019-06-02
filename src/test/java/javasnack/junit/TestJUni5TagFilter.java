@@ -116,7 +116,8 @@ public class TestJUni5TagFilter {
     }
 
     /*
-     * junit5-tag-filter-2 : excluded from maven-surefire-plugin execution
+     * junit5-tag-filter-2 : excluded from maven-surefire-plugin execution,
+     *                       includes in maven-failsafe-plugin (see pom.xml)
      */
 
     @Test
@@ -166,7 +167,8 @@ public class TestJUni5TagFilter {
     }
 
     /*
-     * (my-junit5-meta-annotation-2 tag) : excluded from maven-surefire-plugin execution
+     * (my-junit5-meta-annotation-2 tag) : excluded from maven-surefire-plugin execution,
+     *                                     includes in maven-failsafe-plugin (see pom.xml)
      */
 
     @Test
