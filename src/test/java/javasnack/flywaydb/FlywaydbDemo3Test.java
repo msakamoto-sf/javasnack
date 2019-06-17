@@ -18,26 +18,25 @@ package javasnack.flywaydb;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.AbstractKeyedHandler;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.MigrationInfoService;
+import org.flywaydb.core.api.MigrationState;
+import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.googlecode.flyway.core.Flyway;
-import com.googlecode.flyway.core.api.MigrationInfo;
-import com.googlecode.flyway.core.api.MigrationInfoService;
-import com.googlecode.flyway.core.api.MigrationState;
-import com.googlecode.flyway.core.api.MigrationVersion;
 
 public class FlywaydbDemo3Test {
 
@@ -65,33 +64,26 @@ public class FlywaydbDemo3Test {
 
     @Test
     public void usingPlaceholderAndEncoding() throws Exception {
-        Properties properties = new Properties();
-        properties.setProperty("flyway.user", "sa");
-        properties.setProperty("flyway.password", "");
-        properties.setProperty("flyway.url",
-                "jdbc:h2:mem:flywaydb_demo3;DB_CLOSE_DELAY=-1");
-        properties.setProperty("flyway.driver", "org.h2.Driver");
-
-        final Flyway flyway = new Flyway();
-        flyway.configure(properties);
-        flyway.setLocations("flywaydbdemos/demo3");
-
-        flyway.setEncoding("UTF-8");
-        Map<String, String> placeholders = new HashMap<>();
+        final Map<String, String> placeholders = new HashMap<>();
         placeholders.put("L1", "abc");
         placeholders.put("L2", "def");
         placeholders.put("L3", "abc");
         placeholders.put("L4", "def");
-        flyway.setPlaceholders(placeholders);
+        final Flyway flyway0 = Flyway.configure()
+                .dataSource("jdbc:h2:mem:flywaydb_demo3;DB_CLOSE_DELAY=-1", "sa", "")
+                .locations("flywaydbdemos/demo3")
+                .encoding(StandardCharsets.UTF_8)
+                .placeholders(placeholders)
+                .load();
 
-        MigrationInfoService mis = flyway.info();
+        // before calling baseline() method
+        MigrationInfoService mis = flyway0.info();
         assertEquals(3, mis.all().length);
         for (MigrationInfo mi : mis.all()) {
             System.out.println(mi.getVersion());
             System.out.println(mi.getDescription());
             System.out.println(mi.getState());
             System.out.println(mi.getType());
-
         }
         // 3 migrations (V1, V1.1, V1.2) must be pending status.
         assertEquals(3, mis.pending().length);
@@ -102,9 +94,12 @@ public class FlywaydbDemo3Test {
         assertNull(mi);
 
         // migrate to V1.1
-        flyway.setTarget(MigrationVersion.fromVersion("1.1"));
-        flyway.migrate();
-        mis = flyway.info();
+        final Flyway flyway1 = Flyway.configure()
+                .configuration(flyway0.getConfiguration())
+                .target(MigrationVersion.fromVersion("1.1"))
+                .load();
+        flyway1.migrate();
+        mis = flyway1.info();
         assertEquals(3, mis.all().length);
         // no pending, V1.2 -> "ABOVE_TARGET".
         assertEquals(0, mis.pending().length);
@@ -122,14 +117,16 @@ public class FlywaydbDemo3Test {
         assertEquals("add t1 hobby column", mi.getDescription());
         assertEquals(MigrationState.SUCCESS, mi.getState());
 
-        // change placeholder prefix and suffix.
-        flyway.setPlaceholderPrefix("%{%");
-        flyway.setPlaceholderSuffix("%}%");
-
-        // migrate to latest version
-        flyway.setTarget(MigrationVersion.LATEST);
-        flyway.migrate();
-        mis = flyway.info();
+        final Flyway flyway2 = Flyway.configure()
+                .configuration(flyway0.getConfiguration())
+                // change placeholder prefix and suffix.
+                .placeholderPrefix("%{%")
+                .placeholderSuffix("%}%")
+                // migrate to latest version
+                .target(MigrationVersion.LATEST)
+                .load();
+        flyway2.migrate();
+        mis = flyway2.info();
         assertEquals(3, mis.all().length);
         assertEquals(0, mis.pending().length);
         assertEquals(3, mis.applied().length);
