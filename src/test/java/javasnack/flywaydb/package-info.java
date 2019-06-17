@@ -16,9 +16,9 @@
 /**
  * flywaydb examples.
  * 
- * @see http://flywaydb.org/
+ * @see https://flywaydb.org/
  * @see https://github.com/flyway/flyway
- * @see http://flywaydb.org/documentation/javadoc/
+ * @see https://flywaydb.org/documentation/api/javadoc.html
  * @see http://blog.livedoor.jp/ryu22e/archives/65722084.html
  * @see http://siguniang.wordpress.com/2013/11/10/db-schema-migration-made-easy-with-flyway/
  */
