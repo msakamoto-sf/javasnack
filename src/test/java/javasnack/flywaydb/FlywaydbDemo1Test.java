@@ -67,6 +67,7 @@ public class FlywaydbDemo1Test {
 
     @Test
     public void typicalMigrationFlow() throws Exception {
+        // standard fluent api based configuration
         final Flyway flyway0 = Flyway.configure()
                 .dataSource("jdbc:h2:mem:flywaydb_demo1;DB_CLOSE_DELAY=-1", "sa", "")
                 .locations("flywaydbdemos/demo1")

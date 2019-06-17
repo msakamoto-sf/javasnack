@@ -32,6 +32,8 @@ public class FlywaydbDemo2Test {
 
     @Test
     public void migrateFailThenRepairFlow() throws Exception {
+        // Property based setup
+        // see: https://flywaydb.org/documentation/configfiles
         Properties properties = new Properties();
         properties.setProperty("flyway.user", "sa");
         properties.setProperty("flyway.password", "");
