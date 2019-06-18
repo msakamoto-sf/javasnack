@@ -126,6 +126,48 @@ public class TestAssertJBasicUsage {
         softly.assertThat("abc\rdef").hasLineCount(2);
         softly.assertThat("abc\r\ndef").hasLineCount(2);
         softly.assertAll();
+
+        assertThat("aaa").isEqualToIgnoringCase("Aaa");
+        assertThat("Aaa").isEqualToIgnoringCase("aaa");
+        //assertThat("\ra\nb\r\nc").isEqualToIgnoringNewLines("abc"); // -> fail
+        assertThat("abc").isEqualToIgnoringNewLines("a\nbc");
+        //assertThat("a\rbc").isEqualToIgnoringNewLines("a\nbc"); // -> fail
+        assertThat("a\nbc").isEqualToIgnoringNewLines("abc");
+        assertThat("abc").isEqualToIgnoringNewLines("a\r\nbc");
+        assertThat("ab\r\nc").isEqualToIgnoringNewLines("abc");
+        assertThat("\r\na\nbc").isEqualToIgnoringNewLines("abc");
+        assertThat("abc").isEqualToIgnoringNewLines("a\r\nbc\n");
+        assertThat("\na\nb\nc\n").isEqualToIgnoringNewLines("\r\na\r\nb\r\nc\r\n");
+        assertThat("\r\na\r\nb\r\nc\r\n").isEqualToIgnoringNewLines("\na\nb\nc\n");
+        assertThat("abc").isEqualToIgnoringWhitespace(" a\tb c");
+        assertThat("abc").isEqualToIgnoringWhitespace(" a\nb c");
+        assertThat("abc").isEqualToIgnoringWhitespace(" a\rb c");
+        assertThat("abc").isEqualToIgnoringWhitespace(" a\r\nb c");
+        assertThat(" a\tb c").isEqualToIgnoringWhitespace("abc");
+        assertThat(" a\nb c").isEqualToIgnoringWhitespace("abc");
+        assertThat(" a\rb c").isEqualToIgnoringWhitespace("abc");
+        assertThat(" a\r\nb c").isEqualToIgnoringWhitespace("abc");
+        assertThat("a\rb\nc\t").isEqualToIgnoringWhitespace(" a\tb c");
+        assertThat("a\rb\nc\t").isEqualToIgnoringWhitespace(" a\nb c");
+        assertThat("a\rb\nc\t").isEqualToIgnoringWhitespace(" a\rb c");
+        assertThat("a\rb\nc\t").isEqualToIgnoringWhitespace(" a\r\nb c");
+        assertThat("a\nb\nc").isEqualToNormalizingNewlines("a\r\nb\r\nc");
+        assertThat("a\r\nb\r\nc").isEqualToNormalizingNewlines("a\r\nb\r\nc");
+        assertThat("a\r\nb\r\nc").isEqualToNormalizingNewlines("a\nb\nc");
+        //assertThat("a\rb\r\nc\n").isEqualToNormalizingNewlines("abc"); // -> fail
+        //assertThat("abc").isEqualToNormalizingNewlines("a\rb\r\nc\n"); // -> fail
+        assertThat("\ra\nb\r\nc").isEqualToNormalizingNewlines("\ra\nb\r\nc");
+        //assertThat("\ra\nb\r\nc").isEqualToNormalizingNewlines("\r\na\r\nb\nc"); // -> fail
+        //assertThat("\ra\nb\r\nc").isEqualToNormalizingNewlines("\na\nb\nc"); // -> fail
+        assertThat("a b c").isEqualToNormalizingWhitespace(" a b c\t");
+        assertThat("a b c").isEqualToNormalizingWhitespace("a  b\t\tc");
+        assertThat("a  b\t\tc").isEqualToNormalizingWhitespace("a\t\tb  c");
+        assertThat("a \t b\t \tc").isEqualToNormalizingWhitespace("a\tb c");
+        assertThat("a b\tc").isEqualToNormalizingWhitespace("a\t \tb \t c");
+        assertThat(" a b c ").isEqualToNormalizingWhitespace("a b c");
+        //assertThat(" a b c ").isEqualToNormalizingWhitespace("abc"); // -> fail
+        //assertThat(" abc ").isEqualToNormalizingWhitespace("a b c"); // -> fail
+        assertThat("a\r\nb\t  c").isEqualToNormalizingWhitespace(" a\r\nb c");
     }
 
     @Test
