@@ -15,11 +15,26 @@
  */
 package javasnack.tool;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class StreamTool {
 
-    public static InputStream loadResource(String path) {
+    public static InputStream loadResource(final String path) {
         return StreamTool.class.getClassLoader().getResourceAsStream(path);
+    }
+
+    public static byte[] res2ba(final String path) throws IOException {
+        return loadResource(path).readAllBytes();
+    }
+
+    public static String res2str(final String path) throws IOException {
+        return new String(res2ba(path), StandardCharsets.UTF_8);
+    }
+
+    public static String res2str(final String path, final Charset cs) throws IOException {
+        return new String(res2ba(path), cs);
     }
 }
