@@ -37,6 +37,7 @@ public class ReadConsoleInput implements Runnable {
         // JDK 1.6 : java.io.Console & System.console()
         Console console = System.console();
         if (null == console) {
+            // NOTE: return null on Eclipse Console view :( 
             System.out
                     .println("'System.console()' returns null, Console is disabled.");
         } else {
