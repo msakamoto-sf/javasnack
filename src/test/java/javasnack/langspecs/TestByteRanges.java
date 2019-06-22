@@ -19,18 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
+import javasnack.tool.StreamTool;
 import javasnack.tool.UnsignedByte;
 
 public class TestByteRanges {
-
-    String res2txt(final String location) throws IOException {
-        final byte[] data = this.getClass().getClassLoader().getResourceAsStream(location).readAllBytes();
-        return new String(data, StandardCharsets.UTF_8);
-    }
 
     @Test
     public void test0x00To0xFF() throws IOException {
@@ -43,7 +38,7 @@ public class TestByteRanges {
             sb.append("\n");
             bytes[s] = b;
         }
-        final var expected = res2txt("testdata/print_0x00_to_0xff_bytes.txt");
+        final var expected = StreamTool.res2str("testdata/print_0x00_to_0xff_bytes.txt");
         assertThat(sb.toString()).isEqualToIgnoringNewLines(expected);
         final var baos = new ByteArrayOutputStream(256);
         baos.write(bytes);
@@ -67,7 +62,7 @@ public class TestByteRanges {
             sb.append("\n");
             bytes[s] = b;
         }
-        final var expected = res2txt("testdata/print_0x00_to_0xff_bytes.txt");
+        final var expected = StreamTool.res2str("testdata/print_0x00_to_0xff_bytes.txt");
         assertThat(sb.toString()).isEqualToIgnoringNewLines(expected);
         final var baos = new ByteArrayOutputStream(256);
         baos.write(bytes);
