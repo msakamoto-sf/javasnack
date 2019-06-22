@@ -47,6 +47,18 @@ public class TestUnsignedByte {
     }
 
     @Test
+    public void create0x00To0xFF() {
+        byte b = 0;
+        final byte[] bytes0 = new byte[256];
+        for (short s = 0x00; s <= 0xFF; s++, b++) {
+            bytes0[s] = b;
+        }
+        assertThat(UnsignedByte.create0x00to0xFF()).isEqualTo(bytes0);
+        final String s0 = UnsignedByte.create0x00to0xFFString();
+        assertThat(s0.getBytes(CharsetTool.CS_BINARY)).isEqualTo(bytes0);
+    }
+
+    @Test
     public void hex() {
         byte[] b1 = new byte[0];
         assertThat(UnsignedByte.hex("", b1)).isEqualTo( "");
