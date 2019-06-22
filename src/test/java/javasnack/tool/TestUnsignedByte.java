@@ -61,15 +61,15 @@ public class TestUnsignedByte {
     @Test
     public void hex() {
         byte[] b1 = new byte[0];
-        assertThat(UnsignedByte.hex("", b1)).isEqualTo( "");
-        assertThat(UnsignedByte.hex("a", b1)).isEqualTo( "");
-        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo( "");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo("");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo("");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo("");
 
         b1 = new byte[1];
         b1[0] = 0x0;
-        assertThat(UnsignedByte.hex("", b1)).isEqualTo( "0");
-        assertThat(UnsignedByte.hex("a", b1)).isEqualTo( "a0");
-        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo( "ab0");
+        assertThat(UnsignedByte.hex("", b1)).isEqualTo("0");
+        assertThat(UnsignedByte.hex("a", b1)).isEqualTo("a0");
+        assertThat(UnsignedByte.hex("ab", b1)).isEqualTo("ab0");
         b1[0] = Byte.MAX_VALUE;
         assertThat(UnsignedByte.hex("", b1)).isEqualTo("7f");
         assertThat(UnsignedByte.hex("a", b1)).isEqualTo("a7f");
