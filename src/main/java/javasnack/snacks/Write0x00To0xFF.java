@@ -15,19 +15,30 @@
  */
 package javasnack.snacks;
 
-public class ByteRange1 implements Runnable {
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Write0x00To0xFF implements Runnable {
     @Override
     public void run() {
+        byte[] bdata = new byte[256];
         byte b = 0;
-        for (short s = 0x00; s <= 0xFF; s++, b++) {
-            System.out.print(b);
-            System.out.print("(" + Integer.toHexString(Byte.toUnsignedInt(b)) + ")");
-            System.out.print(",");
-            if (s % 8 == 0) {
-                System.out.println("");
-            }
+        for (short s = 0; s < 256; s++, b++) {
+            bdata[s] = b;
         }
-        System.out.println("(END)");
+        System.out.println("");
+        System.out.print("Enter FileName For Write 0x00 - 0xFF:");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String filename = br.readLine().trim();
+            try (final var fos = new FileOutputStream(filename)) {
+                fos.write(bdata);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -18,10 +18,6 @@ package javasnack;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import javasnack.snacks.ByteRange1;
-import javasnack.snacks.ByteRange2;
-import javasnack.snacks.ByteRange3;
-import javasnack.snacks.ByteRange4;
 import javasnack.snacks.CollectionTypes1;
 import javasnack.snacks.HelloWorld;
 import javasnack.snacks.InfiniteLoop;
@@ -37,6 +33,7 @@ import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
 import javasnack.snacks.UUIDDemo;
 import javasnack.snacks.UnicodeC0C1;
+import javasnack.snacks.Write0x00To0xFF;
 import javasnack.snacks.concurrent.FutureDemos;
 import javasnack.snacks.concurrent.ThreadExecutorDemos;
 import javasnack.snacks.jsch.JSchRemoeExecPasswdAuthDemo;
@@ -73,10 +70,7 @@ public class Main {
         new RunningJREVersionIs(),
         new LivingUserThreads(),
         new InfiniteLoop(),
-        new ByteRange1(),
-        new ByteRange2(),
-        new ByteRange3(),
-        new ByteRange4(),
+        new Write0x00To0xFF(),
         new ReadConsoleInput(),
         new ListAvailableCharsets(),
         new UUIDDemo(),
