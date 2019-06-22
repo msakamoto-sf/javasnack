@@ -15,7 +15,6 @@
  */
 package javasnack.tool;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 public class UnsignedByte {
@@ -111,8 +110,7 @@ public class UnsignedByte {
      * 
      * @return
      */
-    public static String create0x00to0xFFString()
-            throws UnsupportedEncodingException {
-        return new String(create0x00to0xFF(), CharsetTool.BINARY);
+    public static String create0x00to0xFFString() {
+        return new String(create0x00to0xFF(), CharsetTool.CS_BINARY);
     }
 }
