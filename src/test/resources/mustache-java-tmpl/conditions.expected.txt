@@ -1,0 +1,5 @@
+item1=hello
+empty(item2)
+empty(item3)
+empty(item4)
+empty(item5)

@@ -13,8 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.json.pojo;
+package javasnack.json.pojo;
 
-public enum EncodePojoEnum {
-    ONE, TWO, THREE, FOUR, FIVE,
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+
+public class EncodePojoEnumJacksonSerializer extends
+        JsonSerializer<EncodePojoEnum> {
+    @Override
+    public void serialize(EncodePojoEnum value, JsonGenerator jgen,
+            SerializerProvider provider) throws IOException,
+            JsonProcessingException {
+        jgen.writeNumber(value.ordinal());
+    }
 }

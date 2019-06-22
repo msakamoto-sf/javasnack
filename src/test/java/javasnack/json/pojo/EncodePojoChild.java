@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.json.pojo;
+package javasnack.json.pojo;
 
 public class EncodePojoChild {
     public final String strField = "HereAmI.";

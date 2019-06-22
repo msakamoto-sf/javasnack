@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.json.pojo;
+package javasnack.json.pojo;
 
 import java.io.IOException;
 

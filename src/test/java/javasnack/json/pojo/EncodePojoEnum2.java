@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.json.pojo;
+package javasnack.json.pojo;
 
-import java.io.IOException;
+public enum EncodePojoEnum2 {
+    ABC(10, "abc"), DEF(20, "def"), GHI(30, "ghi"), JKL(40, "jkl");
+    final int num;
+    final String name;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+    EncodePojoEnum2(int _num, String _name) {
+        this.num = _num;
+        this.name = _name;
+    }
 
-public class EncodePojoEnumJacksonSerializer extends
-        JsonSerializer<EncodePojoEnum> {
-    @Override
-    public void serialize(EncodePojoEnum value, JsonGenerator jgen,
-            SerializerProvider provider) throws IOException,
-            JsonProcessingException {
-        jgen.writeNumber(value.ordinal());
+    String getContent() {
+        return String.format("num=[%d], name=[%s]", num, name);
     }
 }

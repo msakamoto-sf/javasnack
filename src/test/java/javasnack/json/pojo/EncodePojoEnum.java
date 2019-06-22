@@ -13,19 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.json.pojo;
+package javasnack.json.pojo;
 
-public enum EncodePojoEnum2 {
-    ABC(10, "abc"), DEF(20, "def"), GHI(30, "ghi"), JKL(40, "jkl");
-    final int num;
-    final String name;
-
-    EncodePojoEnum2(int _num, String _name) {
-        this.num = _num;
-        this.name = _name;
-    }
-
-    String getContent() {
-        return String.format("num=[%d], name=[%s]", num, name);
-    }
+public enum EncodePojoEnum {
+    ONE, TWO, THREE, FOUR, FIVE,
 }

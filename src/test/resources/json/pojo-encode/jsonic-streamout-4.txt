@@ -1,0 +1,170 @@
+{
+>>"message": "success",
+>>"count": 10,
+>>"records": [
+>>>>{
+>>>>>>"booleanArray": [true, false],
+>>>>>>"booleanValueFalse": false,
+>>>>>>"booleanValueTrue": true,
+>>>>>>"byteArray": "fwCA",
+>>>>>>"byteValue": 127,
+>>>>>>"calendarObject": 3723456,
+>>>>>>"charArray": "abc",
+>>>>>>"charValue": "￿",
+>>>>>>"charsetObject": "UTF-8",
+>>>>>>"child": {
+>>>>>>>>"age": 10,
+>>>>>>>>"falseGetter": false,
+>>>>>>>>"strField": "HereAmI.",
+>>>>>>>>"trueGetter": true
+>>>>>>},
+>>>>>>"children": [
+>>>>>>>>{
+>>>>>>>>>>"age": 20,
+>>>>>>>>>>"falseGetter": false,
+>>>>>>>>>>"strField": "HereAmI.",
+>>>>>>>>>>"trueGetter": true
+>>>>>>>>},
+>>>>>>>>{
+>>>>>>>>>>"age": 30,
+>>>>>>>>>>"falseGetter": false,
+>>>>>>>>>>"strField": "HereAmI.",
+>>>>>>>>>>"trueGetter": true
+>>>>>>>>}
+>>>>>>],
+>>>>>>"dateObject": 3723456,
+>>>>>>"doubleArray": [1.7976931348623157E308, 0.0, 4.9E-324],
+>>>>>>"doubleValue": 1.7976931348623157E308,
+>>>>>>"enumArray": [
+>>>>>>>>"TWO",
+>>>>>>>>"FOUR"
+>>>>>>],
+>>>>>>"enumList": [
+>>>>>>>>"THREE",
+>>>>>>>>"FIVE"
+>>>>>>],
+>>>>>>"enumObject": "ONE",
+>>>>>>"floatArray": [3.4028235E38, 0.0, 1.4E-45],
+>>>>>>"floatValue": 3.4028234663852886E38,
+>>>>>>"inetAddressObject": "192.168.1.1",
+>>>>>>"intArray": [2147483647, 0, -2147483648],
+>>>>>>"intValue": 2147483647,
+>>>>>>"listObject": [
+>>>>>>>>"UTF-8",
+>>>>>>>>".*",
+>>>>>>>>"abc",
+>>>>>>>>"fwCA",
+>>>>>>>>[32767, 0, -32768]
+>>>>>>],
+>>>>>>"longArray": [9223372036854775807, 0, -9223372036854775808],
+>>>>>>"longValue": 9223372036854775807,
+>>>>>>"mapObject": {
+>>>>>>>>"str": "HelloJson",
+>>>>>>>>"charset": "UTF-8",
+>>>>>>>>"null": null,
+>>>>>>>>"byte_array": "fwCA",
+>>>>>>>>"char_array": "abc",
+>>>>>>>>"int_array": [2147483647, 0, -2147483648],
+>>>>>>>>"list": [
+>>>>>>>>>>"UTF-8",
+>>>>>>>>>>".*",
+>>>>>>>>>>"abc",
+>>>>>>>>>>"fwCA",
+>>>>>>>>>>[32767, 0, -32768]
+>>>>>>>>]
+>>>>>>},
+>>>>>>"nullObject": null,
+>>>>>>"patternObject": ".*",
+>>>>>>"shortArray": [32767, 0, -32768],
+>>>>>>"shortValue": 32767,
+>>>>>>"sqlTimestampObject": 3723456,
+>>>>>>"tzObject": "GMT",
+>>>>>>"uriObject": "dummy://dummy.dummy/dummy",
+>>>>>>"urlObject": "http://www.example.com",
+>>>>>>"日本語ゲッター": "日本語ゲッターの値",
+>>>>>>"日本語プロパティ": "日本語文字列"
+>>>>},
+>>>>{
+>>>>>>"booleanArray": [true, false],
+>>>>>>"booleanValueFalse": false,
+>>>>>>"booleanValueTrue": true,
+>>>>>>"byteArray": "fwCA",
+>>>>>>"byteValue": 127,
+>>>>>>"calendarObject": 3723456,
+>>>>>>"charArray": "abc",
+>>>>>>"charValue": "￿",
+>>>>>>"charsetObject": "UTF-8",
+>>>>>>"child": {
+>>>>>>>>"age": 10,
+>>>>>>>>"falseGetter": false,
+>>>>>>>>"strField": "HereAmI.",
+>>>>>>>>"trueGetter": true
+>>>>>>},
+>>>>>>"children": [
+>>>>>>>>{
+>>>>>>>>>>"age": 20,
+>>>>>>>>>>"falseGetter": false,
+>>>>>>>>>>"strField": "HereAmI.",
+>>>>>>>>>>"trueGetter": true
+>>>>>>>>},
+>>>>>>>>{
+>>>>>>>>>>"age": 30,
+>>>>>>>>>>"falseGetter": false,
+>>>>>>>>>>"strField": "HereAmI.",
+>>>>>>>>>>"trueGetter": true
+>>>>>>>>}
+>>>>>>],
+>>>>>>"dateObject": 3723456,
+>>>>>>"doubleArray": [1.7976931348623157E308, 0.0, 4.9E-324],
+>>>>>>"doubleValue": 1.7976931348623157E308,
+>>>>>>"enumArray": [
+>>>>>>>>"TWO",
+>>>>>>>>"FOUR"
+>>>>>>],
+>>>>>>"enumList": [
+>>>>>>>>"THREE",
+>>>>>>>>"FIVE"
+>>>>>>],
+>>>>>>"enumObject": "ONE",
+>>>>>>"floatArray": [3.4028235E38, 0.0, 1.4E-45],
+>>>>>>"floatValue": 3.4028234663852886E38,
+>>>>>>"inetAddressObject": "192.168.1.1",
+>>>>>>"intArray": [2147483647, 0, -2147483648],
+>>>>>>"intValue": 2147483647,
+>>>>>>"listObject": [
+>>>>>>>>"UTF-8",
+>>>>>>>>".*",
+>>>>>>>>"abc",
+>>>>>>>>"fwCA",
+>>>>>>>>[32767, 0, -32768]
+>>>>>>],
+>>>>>>"longArray": [9223372036854775807, 0, -9223372036854775808],
+>>>>>>"longValue": 9223372036854775807,
+>>>>>>"mapObject": {
+>>>>>>>>"str": "HelloJson",
+>>>>>>>>"charset": "UTF-8",
+>>>>>>>>"null": null,
+>>>>>>>>"byte_array": "fwCA",
+>>>>>>>>"char_array": "abc",
+>>>>>>>>"int_array": [2147483647, 0, -2147483648],
+>>>>>>>>"list": [
+>>>>>>>>>>"UTF-8",
+>>>>>>>>>>".*",
+>>>>>>>>>>"abc",
+>>>>>>>>>>"fwCA",
+>>>>>>>>>>[32767, 0, -32768]
+>>>>>>>>]
+>>>>>>},
+>>>>>>"nullObject": null,
+>>>>>>"patternObject": ".*",
+>>>>>>"shortArray": [32767, 0, -32768],
+>>>>>>"shortValue": 32767,
+>>>>>>"sqlTimestampObject": 3723456,
+>>>>>>"tzObject": "GMT",
+>>>>>>"uriObject": "dummy://dummy.dummy/dummy",
+>>>>>>"urlObject": "http://www.example.com",
+>>>>>>"日本語ゲッター": "日本語ゲッターの値",
+>>>>>>"日本語プロパティ": "日本語文字列"
+>>>>}
+>>]
+}

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.json.pojo;
+package javasnack.json.pojo;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
@@ -40,7 +39,6 @@ public class EncodePojo {
     public final long longValue = Long.MAX_VALUE;
     public final float floatValue = Float.MAX_VALUE;
     public final double doubleValue = Double.MAX_VALUE;
-    public final File fileObject = new File("DUMMY");
     public final Charset charsetObject = Charset.forName("UTF-8");
     public final Pattern patternObject = Pattern.compile(".*");
     public final URL urlObject;
@@ -60,7 +58,7 @@ public class EncodePojo {
     public final long[] longArray = { Long.MAX_VALUE, 0L, Long.MIN_VALUE };
     public final float[] floatArray = { Float.MAX_VALUE, 0.0F, Float.MIN_VALUE };
     public final double[] doubleArray = { Double.MAX_VALUE, 0, Double.MIN_VALUE };
-    public final List<Object> listObject = Arrays.asList(fileObject,
+    public final List<Object> listObject = Arrays.asList(
             charsetObject, patternObject, charArray, byteArray, shortArray);
     public final Map<String, Object> mapObject = new LinkedHashMap<>();
     public final String 日本語プロパティ = "日本語文字列";
@@ -84,7 +82,6 @@ public class EncodePojo {
         this.sqlTimestampObject = new Timestamp(
                 calendarObject.getTimeInMillis());
         this.mapObject.put("str", "HelloJson");
-        this.mapObject.put("file", fileObject);
         this.mapObject.put("charset", charsetObject);
         this.mapObject.put("null", null);
         this.mapObject.put("byte_array", byteArray);

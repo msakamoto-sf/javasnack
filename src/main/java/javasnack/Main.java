@@ -37,12 +37,6 @@ import javasnack.snacks.concurrent.FutureDemos;
 import javasnack.snacks.concurrent.ThreadExecutorDemos;
 import javasnack.snacks.jsch.JSchRemoeExecPasswdAuthDemo;
 import javasnack.snacks.jsch.JSchRemoeExecPubKeyAuthDemo;
-import javasnack.snacks.json.PojoEncodeGroovyJsonBuilder;
-import javasnack.snacks.json.PojoEncodeGson;
-import javasnack.snacks.json.PojoEncodeJackson;
-import javasnack.snacks.json.PojoEncodeJackson2;
-import javasnack.snacks.json.PojoEncodeJsonic;
-import javasnack.snacks.mustache.MustacheExercise;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
 import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
 import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
@@ -88,12 +82,6 @@ public class Main {
         new XercesSax2WithJaxpDemo(),
         new RandomDistrubution(),
         new RandomDistrubutionInt(),
-        new PojoEncodeJsonic(),
-        new PojoEncodeJackson(),
-        new PojoEncodeJackson2(),
-        new PojoEncodeGson(),
-        new PojoEncodeGroovyJsonBuilder(),
-        new MustacheExercise(),
         new NetworkInterface1(),
         new ThreadExecutorDemos(),
         new FutureDemos(),
