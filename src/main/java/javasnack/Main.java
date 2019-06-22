@@ -32,7 +32,6 @@ import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
 import javasnack.snacks.UUIDDemo;
-import javasnack.snacks.UnicodeC0C1;
 import javasnack.snacks.Write0x00To0xFF;
 import javasnack.snacks.concurrent.FutureDemos;
 import javasnack.snacks.concurrent.ThreadExecutorDemos;
@@ -95,7 +94,6 @@ public class Main {
         new PojoEncodeGson(),
         new PojoEncodeGroovyJsonBuilder(),
         new MustacheExercise(),
-        new UnicodeC0C1(),
         new NetworkInterface1(),
         new ThreadExecutorDemos(),
         new FutureDemos(),
