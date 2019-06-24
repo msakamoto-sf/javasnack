@@ -33,7 +33,6 @@ import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
 import javasnack.snacks.UUIDDemo;
 import javasnack.snacks.Write0x00To0xFF;
-import javasnack.snacks.concurrent.FutureDemos;
 import javasnack.snacks.concurrent.ThreadExecutorDemos;
 import javasnack.snacks.jsch.JSchRemoeExecPasswdAuthDemo;
 import javasnack.snacks.jsch.JSchRemoeExecPubKeyAuthDemo;
@@ -84,7 +83,6 @@ public class Main {
         new RandomDistrubutionInt(),
         new NetworkInterface1(),
         new ThreadExecutorDemos(),
-        new FutureDemos(),
         new JSchRemoeExecPasswdAuthDemo(),
         new JSchRemoeExecPubKeyAuthDemo(),
         };
