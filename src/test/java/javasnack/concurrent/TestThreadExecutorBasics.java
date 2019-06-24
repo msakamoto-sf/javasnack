@@ -17,8 +17,8 @@ package javasnack.concurrent;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -124,28 +124,38 @@ public class TestThreadExecutorBasics {
         }
         latch.await();
         es.shutdown(); // REQUIRED.
-        assertEquals(3, tf.count);
-        assertEquals(7, futures.size());
+        assertEquals(3, tf.count, "number of created threads should be 3.");
         for (int i = 0; i < NUM; i++) {
-            assertTrue(futures.get(0).get().startsWith("MyThreadNo."));
+            assertTrue(futures.get(i).get().startsWith("MyThreadNo."));
+        }
+    }
+
+    static class WaitableRunner implements Runnable {
+        final CountDownLatch wait;
+        final CountDownLatch done;
+
+        WaitableRunner(final CountDownLatch wait, final CountDownLatch done) {
+            this.wait = wait;
+            this.done = done;
+        }
+
+        @Override
+        public void run() {
+            try {
+                wait.await();
+            } catch (InterruptedException ignore) {
+            }
+            done.countDown();
         }
     }
 
     @Test
     void testShudown() throws InterruptedException {
-        ExecutorService es = Executors.newSingleThreadExecutor();
+        final ExecutorService es = Executors.newSingleThreadExecutor();
         final int NUM = 5;
-        CountDownLatch latch = new CountDownLatch(NUM);
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ignore) {
-                }
-                latch.countDown();
-            }
-        };
+        final CountDownLatch done = new CountDownLatch(NUM);
+        final CountDownLatch wait = new CountDownLatch(1);
+        final Runnable task = new WaitableRunner(wait, done);
         for (int i = 0; i < NUM; i++) {
             es.submit(task);
         }
@@ -153,14 +163,17 @@ public class TestThreadExecutorBasics {
         es.shutdown();
         assertTrue(es.isShutdown());
         assertFalse(es.isTerminated());
-        try {
+
+        assertThrows(RejectedExecutionException.class, () -> {
             es.submit(task);
-            fail("should not reach here.");
-        } catch (RejectedExecutionException expected) {
-            // already called shutdown(), new submit() was rejected, expected behaviour.
-        }
-        // all task is done, so latch.await() returns :)
-        latch.await();
+        });
+        // -> already called shutdown(), new submit() was rejected, expected behaviour.
+
+        wait.countDown();
+        // -> awake all task
+        done.await();
+        // -> all task is done
+
         assertTrue(es.awaitTermination(60, TimeUnit.MILLISECONDS));
         assertTrue(es.isTerminated());
     }
