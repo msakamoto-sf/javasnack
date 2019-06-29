@@ -51,7 +51,7 @@ import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
  * mvn exec:java -Dexec.mainClass=javasnack.Main
  * </code>
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class Main {
     static Runnable[] snacks = new Runnable[] {

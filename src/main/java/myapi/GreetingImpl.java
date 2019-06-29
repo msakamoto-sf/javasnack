@@ -18,7 +18,7 @@ package myapi;
 /**
  * for JCL, myapi-impl1.jar, myapi-impl2.jar demo.
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class GreetingImpl {
     protected String myFirstname;

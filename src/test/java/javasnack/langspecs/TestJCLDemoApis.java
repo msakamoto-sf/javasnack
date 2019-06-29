@@ -30,7 +30,7 @@ import myapi.GreetingInterface;
 /**
  * Tiny Demonstration for https://github.com/kamranzafar/JCL
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class TestJCLDemoApis {
 

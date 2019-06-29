@@ -30,7 +30,7 @@ import com.google.inject.name.Names;
 
 /**
  * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class TestBindingsVariation {
     public interface Greeting {

@@ -41,7 +41,7 @@ import javasnack.tool.StreamTool;
 /**
  * @see https://github.com/FasterXML/jackson
  * @see https://github.com/FasterXML/jackson-docs
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class TestPojoEncodeJackson {
 

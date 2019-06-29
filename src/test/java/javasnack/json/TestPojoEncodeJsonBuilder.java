@@ -29,7 +29,7 @@ import javasnack.tool.StreamTool;
  * @see https://groovy-lang.org/json.html
  * @see http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_jsonbuilder
  * @see http://npnl.hatenablog.jp/entry/20110226/1298729619
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class TestPojoEncodeJsonBuilder {
 
