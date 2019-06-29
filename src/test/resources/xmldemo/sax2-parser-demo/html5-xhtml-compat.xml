@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>html5demo日本語</title>
+</head>
+<body>
+hello<br/>
+<p>日本語<i>あいうえお</i></p>
+<p>paragraph1.<br/></p>
+<p>paragraph2.<br/></p>
+</body>
+</html>

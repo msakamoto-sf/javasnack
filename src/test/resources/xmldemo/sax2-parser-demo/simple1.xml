@@ -3,13 +3,16 @@
   <MediumElement order="1">
     &#x22;Double Quoted Text&#x22;
   </MediumElement>
-  <!-- comment1 -->
+  <!-- comment1日本語 -->
   <MediumElement order="2">
-    <!-- comment2 -->
+    <!-- comment2日本語 -->
     <![CDATA[
-<hello>"you", '&', me</hello>
+<hello>"you", '&', me 日本語</hello>
     ]]>
   </MediumElement>
+  <日本語要素 日本語属性1="日本語属性値1" 日本語属性2="日本語属性値2">
+    日本語文字列
+  </日本語要素>
   <?foo bar="baz"?>
   <MediumElement2>
     abc <inline>def</inline> ghi.

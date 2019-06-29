@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.xml.sax2;
+package javasnack.xml;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Formatter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -30,37 +31,52 @@ import org.xml.sax.SAXParseException;
 class DebugPrinter {
     int indent = 0;
 
+    final StringWriter swout = new StringWriter();
+    final StringWriter swerr = new StringWriter();
+    final PrintWriter pwout = new PrintWriter(swout, true); // auto flush = true
+    final PrintWriter pwerr = new PrintWriter(swerr, true); // auto flush = true
+
+    String getOut() {
+        return swout.toString();
+    }
+
+    String getErr() {
+        return swerr.toString();
+    }
+
     @SuppressWarnings("resource")
     void start(String f, Object... args) {
         indent++;
         String s = new Formatter().format(f, args).toString();
-        System.out.println(StringUtils.repeat(">", indent) + " " + s);
+        pwout.println(">".repeat(indent) + " " + s);
     }
 
     @SuppressWarnings("resource")
     void print(String f, Object... args) {
         String s = new Formatter().format(f, args).toString();
-        System.out.println(StringUtils.repeat(">", indent) + " " + s);
+        pwout.println(">".repeat(indent) + " " + s);
     }
 
     @SuppressWarnings("resource")
     void end(String f, Object... args) {
         String s = new Formatter().format(f, args).toString();
-        System.out.println(StringUtils.repeat("<", indent) + " " + s);
+        pwout.println("<".repeat(indent) + " " + s);
         indent--;
     }
 
     @SuppressWarnings("resource")
     void oops(String f, Object... args) {
         String s = new Formatter().format(f, args).toString();
-        System.err.println(s);
+        pwerr.println(s);
     }
 
     void saxerr(String level, SAXParseException e) {
         oops("%s : SAXParserException(line:%d, column:%d, publicId:%s, systemId:%s)",
-                level, e.getLineNumber(), e.getColumnNumber(),
-                e.getPublicId(), e.getSystemId());
-        oops(e.toString());
-        oops("...continue");
+                level,
+                e.getLineNumber(),
+                e.getColumnNumber(),
+                e.getPublicId(),
+                e.getSystemId());
+        System.err.println(e);
     }
 }

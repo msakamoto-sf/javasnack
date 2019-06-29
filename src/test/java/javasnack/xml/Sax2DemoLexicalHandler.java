@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javasnack.snacks.xml.sax2;
+package javasnack.xml;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
