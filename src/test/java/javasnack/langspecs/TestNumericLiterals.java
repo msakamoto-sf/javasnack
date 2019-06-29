@@ -19,10 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @see https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
- * @see http://docs.oracle.com/javase/8/docs/technotes/guides/language/binary-literals.html
- * @see http://docs.oracle.com/javase/8/docs/technotes/guides/language/underscores-literals.html
+/* see:
+ * https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+ * http://docs.oracle.com/javase/8/docs/technotes/guides/language/binary-literals.html
+ * http://docs.oracle.com/javase/8/docs/technotes/guides/language/underscores-literals.html
  */
 public class TestNumericLiterals {
 

@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javasnack.tool.CharsetTool;
-
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTableMetaData;
@@ -46,6 +44,8 @@ import org.dbunit.dataset.stream.IDataSetProducer;
 import org.dbunit.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javasnack.tool.CharsetTool;
 
 /**
  * @author Federico Spinazzi
@@ -147,11 +147,6 @@ public class CsvBase64BinarySafeProducer implements IDataSetProducer {
         }
     }
 
-	/**
-	 * Get a list of tables that this producer will create
-	 * @return a list of Strings, where each item is a CSV file relative to the base URL
-	 * @throws IOException when IO on the base URL has issues.
-	 */
 	public static List getTables(URL base, String tableList) throws IOException {
         logger.debug("getTables(base={}, tableList={}) - start", base, tableList);
 

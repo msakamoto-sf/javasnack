@@ -15,13 +15,14 @@
  */
 /**
  * Basic Java Serialize Examples.
- * 
- * @see http://www.ibm.com/developerworks/jp/java/library/j-5things1/
- * @see http://www.ne.jp/asahi/hishidama/home/tech/java/serial.html
- * @see http://d.hatena.ne.jp/amachang/20100326/1269585997
- * @see http://d.hatena.ne.jp/daisuke-m/20100414/1271228333
- * @see http://d.hatena.ne.jp/daisuke-m/20110527/1306492097
- * @see http://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
- * @see http://stackoverflow.com/questions/2836646/java-serializable-object-to-byte-array
+ */
+/* see:
+ * http://www.ibm.com/developerworks/jp/java/library/j-5things1/
+ * http://www.ne.jp/asahi/hishidama/home/tech/java/serial.html
+ * http://d.hatena.ne.jp/amachang/20100326/1269585997
+ * http://d.hatena.ne.jp/daisuke-m/20100414/1271228333
+ * http://d.hatena.ne.jp/daisuke-m/20110527/1306492097
+ * http://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
+ * http://stackoverflow.com/questions/2836646/java-serializable-object-to-byte-array
  */
 package javasnack.ser;

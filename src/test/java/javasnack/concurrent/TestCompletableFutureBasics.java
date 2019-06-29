@@ -31,13 +31,13 @@ import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * sample test codes for CompletableFuture, CompletionStage
- *
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html
- * @see https://qiita.com/subaru44k/items/d98ad79d21abccedb20b
- * @see https://qiita.com/subaru44k/items/c55d9b9fc419f0d09c64
+/* sample test codes for CompletableFuture, CompletionStage
+ * 
+ * see:
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletionStage.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/CompletableFuture.html
+ * https://qiita.com/subaru44k/items/d98ad79d21abccedb20b
+ * https://qiita.com/subaru44k/items/c55d9b9fc419f0d09c64
  */
 public class TestCompletableFutureBasics {
 

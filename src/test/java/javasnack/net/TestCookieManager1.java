@@ -260,12 +260,9 @@ public class TestCookieManager1 {
         assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
     }
 
-    /**
-     * @see https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie2
-     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie2
-     * 
-     * @throws URISyntaxException
-     * @throws IOException
+    /* see:
+     * https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie2
+     * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie2
      */
     @Test
     public void testSetCookie2() throws URISyntaxException, IOException {

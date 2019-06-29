@@ -50,8 +50,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-/**
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/time/package-summary.html
+/* see:
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/time/package-summary.html
  */
 public class TestBasicDemo {
 

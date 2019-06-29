@@ -24,8 +24,8 @@ import java.util.function.IntSupplier;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
+/* see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
  */
 public class TestLambdaDemo {
 

@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @see http://docs.oracle.com/javase/8/docs/technotes/guides/language/strings-switch.html
+/* see:
+ * http://docs.oracle.com/javase/8/docs/technotes/guides/language/strings-switch.html
  */
 public class TestStringSwitch {
 

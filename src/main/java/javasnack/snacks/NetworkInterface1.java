@@ -8,10 +8,11 @@ import java.util.List;
 
 /**
  * Original source code:
+ * - http://itpro.nikkeibp.co.jp/article/COLUMN/20070801/278834/
+ * - http://d.hatena.ne.jp/nowokay/20120803
+ * - https://gist.github.com/takashi209/3057659
  * 
- * @see http://itpro.nikkeibp.co.jp/article/COLUMN/20070801/278834/
- * @see http://d.hatena.ne.jp/nowokay/20120803
- * @see https://gist.github.com/takashi209/3057659
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class NetworkInterface1 implements Runnable {
     @Override
@@ -28,8 +29,7 @@ public class NetworkInterface1 implements Runnable {
 
     /**
      * copied from:
-     * 
-     * @see http://itpro.nikkeibp.co.jp/article/COLUMN/20070801/278834/
+     * - http://itpro.nikkeibp.co.jp/article/COLUMN/20070801/278834/
      * 
      *      (adding some changes for sysout.) thanx!
      */

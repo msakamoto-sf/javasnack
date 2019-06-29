@@ -29,13 +29,14 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Basic try-with-resources examples.
- * 
- * @see http://docs.oracle.com/javase/jp/7/technotes/guides/language/try-with-resources.html
- * @see http://d.hatena.ne.jp/chiheisen/20110724/1311484252
+ */
+/* see:
+ * http://docs.oracle.com/javase/jp/7/technotes/guides/language/try-with-resources.html
+ * http://d.hatena.ne.jp/chiheisen/20110724/1311484252
  * 
  * Advanced Topics (resource leak : not tested)
- * @see http://qiita.com/nesheep5/items/6a68d862c5902e5994a4
- * @see http://mike-neck.hatenadiary.com/entry/2015/04/12/210000
+ * http://qiita.com/nesheep5/items/6a68d862c5902e5994a4
+ * http://mike-neck.hatenadiary.com/entry/2015/04/12/210000
  */
 public class TestTryWithResources1 {
 

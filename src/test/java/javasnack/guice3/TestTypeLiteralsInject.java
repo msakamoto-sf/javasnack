@@ -28,8 +28,10 @@ import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestTypeLiteralsInject {
     public interface AcceptGenericTypeInterface<T> {

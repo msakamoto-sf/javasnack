@@ -42,10 +42,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JUnit5 basic annotation and assertion samples.
- * 
- * @see https://junit.org/junit5/docs/current/user-guide/#writing-tests-annotations
- * @see https://junit.org/junit5/docs/current/user-guide/#writing-tests-assertions
- * @see http://www.ne.jp/asahi/hishidama/home/tech/java/junit/5/assertion.html
+ */
+/* see:
+ * https://junit.org/junit5/docs/current/user-guide/#writing-tests-annotations
+ * https://junit.org/junit5/docs/current/user-guide/#writing-tests-assertions
+ * http://www.ne.jp/asahi/hishidama/home/tech/java/junit/5/assertion.html
  */
 @DisplayName("TestExercise01, ლ(´ڡ`ლ)")
 public class TestJUnit5BasicAnnotationAssertion {

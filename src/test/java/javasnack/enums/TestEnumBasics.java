@@ -21,14 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 /**
- * enum demos by test cases.
- * 
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
- * @see http://www.atmarkit.co.jp/ait/articles/1103/03/news107.html
- * @see http://d.hatena.ne.jp/amachang/20100225/1267114471
- * @see http://d.hatena.ne.jp/ashigeru/20090116/1232128313
- * @see http://d.hatena.ne.jp/ashigeru/20090119/1232365391
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* enum demos by test cases.
+ * 
+ * see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
+ * http://www.atmarkit.co.jp/ait/articles/1103/03/news107.html
+ * http://d.hatena.ne.jp/amachang/20100225/1267114471
+ * http://d.hatena.ne.jp/ashigeru/20090116/1232128313
+ * http://d.hatena.ne.jp/ashigeru/20090119/1232365391
  */
 public class TestEnumBasics {
 

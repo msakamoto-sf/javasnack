@@ -32,12 +32,12 @@ import org.junit.jupiter.api.Test;
 
 import lombok.Data;
 
-/**
- * @see https://joel-costigliola.github.io/assertj/
- * @see https://assertj.github.io/doc/
- * @see https://qiita.com/opengl-8080/items/b07307ab0d33422be9c5
- * @see https://qiita.com/disc99/items/31fa7abb724f63602dc9
- * @see https://www.casleyconsulting.co.jp/blog/engineer/960/
+/* see:
+ * https://joel-costigliola.github.io/assertj/
+ * https://assertj.github.io/doc/
+ * https://qiita.com/opengl-8080/items/b07307ab0d33422be9c5
+ * https://qiita.com/disc99/items/31fa7abb724f63602dc9
+ * https://www.casleyconsulting.co.jp/blog/engineer/960/
  */
 public class TestAssertJBasicUsage {
 

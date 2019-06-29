@@ -27,10 +27,11 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /**
- * EnumMap/EnumSet demos by test cases.
- * 
- * @see http://www.atmarkit.co.jp/ait/articles/1103/03/news107.html
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* EnumMap/EnumSet demos by test cases.
+ * see:
+ * http://www.atmarkit.co.jp/ait/articles/1103/03/news107.html
  */
 public class TestEnumCollection {
 

@@ -28,9 +28,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Convert relative URL to absolute URL by URL constructor.
- * 
- * @see https://www.ietf.org/rfc/rfc2396.txt
- * @see https://www.ietf.org/rfc/rfc7230.txt
+ */
+/* see:
+ * https://www.ietf.org/rfc/rfc2396.txt
+ * https://www.ietf.org/rfc/rfc7230.txt
  */
 public class TestURLNormalize1 {
 

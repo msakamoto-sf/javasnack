@@ -26,10 +26,12 @@ import javasnack.tool.StreamTool;
 /**
  * Groovy JsonBuilder JSON Encoder Demo : POJO to JSON
  * 
- * @see https://groovy-lang.org/json.html
- * @see http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_jsonbuilder
- * @see http://npnl.hatenablog.jp/entry/20110226/1298729619
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * https://groovy-lang.org/json.html
+ * http://docs.groovy-lang.org/latest/html/documentation/core-domain-specific-languages.html#_jsonbuilder
+ * http://npnl.hatenablog.jp/entry/20110226/1298729619
  */
 public class TestPojoEncodeJsonBuilder {
 

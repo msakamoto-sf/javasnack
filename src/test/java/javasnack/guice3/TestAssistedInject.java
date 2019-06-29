@@ -28,8 +28,10 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestAssistedInject {
     public static class InjectedArgument {

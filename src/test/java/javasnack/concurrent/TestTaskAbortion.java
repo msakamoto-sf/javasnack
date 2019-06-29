@@ -35,12 +35,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * Examples for CERT Oracle Coding Standard for Java, 
+/* Examples for CERT Oracle Coding Standard for Java, 
  * "TPS03-J Ensure that tasks executing in a thread pool do not fail silently"
  * 
- * @see https://www.securecoding.cert.org/confluence/display/java/TPS03-J.+Ensure+that+tasks+executing+in+a+thread+pool+do+not+fail+silently
- * @see https://www.jpcert.or.jp/java-rules/tps03-j.html
+ * see:
+ * https://www.securecoding.cert.org/confluence/display/java/TPS03-J.+Ensure+that+tasks+executing+in+a+thread+pool+do+not+fail+silently
+ * https://www.jpcert.or.jp/java-rules/tps03-j.html
  */
 public class TestTaskAbortion {
 

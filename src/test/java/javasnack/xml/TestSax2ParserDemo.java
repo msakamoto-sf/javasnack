@@ -33,27 +33,28 @@ import org.xml.sax.SAXParseException;
 
 import javasnack.tool.StreamTool;
 
-/**
- * もともと cli 起動するjavasnackとして Xerces2 の SAX2 のデモコードを置いていた。
+/* もともと cli 起動するjavasnackとして Xerces2 の SAX2 のデモコードを置いていた。
  * Xerces2をわざわざ使っていたのは、当時の仕事関連で興味があったから。
  * 
  * -> Java11に移行する際、特にXerces2にこだわる必要も無く、また標準のJAXPの範囲内で
  * デモを作成したほうが後々メンテや使い回しが良さそうなので、Xerces2の依存を削除し、
  * 標準JAXPの範囲内で動作するようなテストコードにマイグレーションしている。
  * 
+ * see:
+ * 
  * JAXP : Java API for XML Processing
- * @see https://docs.oracle.com/javase/tutorial/jaxp/index.html
+ * https://docs.oracle.com/javase/tutorial/jaxp/index.html
  * 
  * SAX : Simple API for XML
- * @see https://docs.oracle.com/javase/tutorial/jaxp/sax/index.html
- * @see http://www.saxproject.org/quickstart.html
- * @see https://docstore.mik.ua/orelly/xml/sax2/ch01_04.htm
- * @see http://msugai.fc2web.com/java/XML/SAX.html
+ * https://docs.oracle.com/javase/tutorial/jaxp/sax/index.html
+ * http://www.saxproject.org/quickstart.html
+ * https://docstore.mik.ua/orelly/xml/sax2/ch01_04.htm
+ * http://msugai.fc2web.com/java/XML/SAX.html
  * 
  * Xerces:
- * @see https://xerces.apache.org/
- * @see http://xerces.apache.org/xerces2-j/
- * @see http://msugai.fc2web.com/java/XML/xerces.html
+ * https://xerces.apache.org/
+ * http://xerces.apache.org/xerces2-j/
+ * http://msugai.fc2web.com/java/XML/xerces.html
  */
 public class TestSax2ParserDemo {
 

@@ -30,8 +30,8 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see https://junit.org/junit5/docs/current/user-guide/#writing-tests-test-instance-lifecycle
+/* see:
+ * https://junit.org/junit5/docs/current/user-guide/#writing-tests-test-instance-lifecycle
  */
 @TestInstance(Lifecycle.PER_CLASS)
 public class TestJUni5PerClassLifecycle {

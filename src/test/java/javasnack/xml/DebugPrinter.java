@@ -23,10 +23,11 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Tiny "printf" shortcuts, variable arguments demo :)
- * 
- * @see http://www.ne.jp/asahi/hishidama/home/tech/java/varargs.html
- * @see http://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/Varargs/Varargs.html
- * @see http://news.mynavi.jp/column/java/008/index.html
+ */
+/* see:
+ * http://www.ne.jp/asahi/hishidama/home/tech/java/varargs.html
+ * http://www.javainthebox.net/laboratory/J2SE1.5/LangSpec/Varargs/Varargs.html
+ * http://news.mynavi.jp/column/java/008/index.html
  */
 class DebugPrinter {
     int indent = 0;

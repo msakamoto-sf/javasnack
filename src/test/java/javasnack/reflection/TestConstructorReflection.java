@@ -109,8 +109,8 @@ public class TestConstructorReflection {
     }
 
     /* SPECIAL THANKS:
-     * @see http://d.hatena.ne.jp/Nagise/20131121/1385046248
-     * @see https://stackoverflow.com/questions/75175/create-instance-of-generic-type-in-java
+     * http://d.hatena.ne.jp/Nagise/20131121/1385046248
+     * https://stackoverflow.com/questions/75175/create-instance-of-generic-type-in-java
      */
 
     public static class DemoPojo1 {

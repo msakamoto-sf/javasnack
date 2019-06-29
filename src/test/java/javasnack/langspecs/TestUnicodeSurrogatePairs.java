@@ -21,20 +21,21 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Unicode Surrogate Pair exercise (include JIS X 2013:2004)
- * 
- * @see http://codezine.jp/article/detail/1592
- * @see http://maplesystems.co.jp/blog/all/programming/4709.html
- * @see "JIS X 0213:2004 / Unicode 実装ガイド - Microsoft"
- * @see https://www.ibm.com/developerworks/jp/ysl/library/java/j-unicode_surrogate/
- * @see https://jsfiddle.net/msakamoto_sf/xp9mzzxb/
- * @see http://qiita.com/masakielastic/items/ec483b00ff6337a02878
- * @see http://www.w3.org/TR/html4/charset.html
- * @see https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Values,_variables,_and_literals#Unicode
- * @see http://0xcc.net/jsescape/
- * @see http://blog.ohgaki.net/javascript-string-escape
- * @see https://mathiasbynens.be/notes/javascript-escapes
- * @see http://blog.ohgaki.net/json-escape
- * @see http://json.org/
+ */
+/* see:
+ * http://codezine.jp/article/detail/1592
+ * http://maplesystems.co.jp/blog/all/programming/4709.html
+ * "JIS X 0213:2004 / Unicode 実装ガイド - Microsoft"
+ * https://www.ibm.com/developerworks/jp/ysl/library/java/j-unicode_surrogate/
+ * https://jsfiddle.net/msakamoto_sf/xp9mzzxb/
+ * http://qiita.com/masakielastic/items/ec483b00ff6337a02878
+ * http://www.w3.org/TR/html4/charset.html
+ * https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Values,_variables,_and_literals#Unicode
+ * http://0xcc.net/jsescape/
+ * http://blog.ohgaki.net/javascript-string-escape
+ * https://mathiasbynens.be/notes/javascript-escapes
+ * http://blog.ohgaki.net/json-escape
+ * http://json.org/
  */
 public class TestUnicodeSurrogatePairs {
 

@@ -27,16 +27,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import lombok.EqualsAndHashCode;
 
-/**
- * @see http://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html
- * @see http://hydrocul.github.io/wiki/blog/2014/1127-unicode-nfkd-mb-convert-kana.html
- * @see http://nomenclator.la.coocan.jp/unicode/normalization.htm
- * @see http://itpro.nikkeibp.co.jp/article/COLUMN/20071130/288467/
- * @see http://docs.oracle.com/javase/tutorial/i18n/text/normalizerapi.html
- * @see http://www.javainthebox.net/laboratory/JavaSE6/normalizer/normalizer.html
- * @see http://blog.mwsoft.jp/article/34823291.html
+/* see:
+ * http://hydrocul.github.io/wiki/blog/2014/1101-hyphen-minus-wave-tilde.html
+ * http://hydrocul.github.io/wiki/blog/2014/1127-unicode-nfkd-mb-convert-kana.html
+ * http://nomenclator.la.coocan.jp/unicode/normalization.htm
+ * http://itpro.nikkeibp.co.jp/article/COLUMN/20071130/288467/
+ * http://docs.oracle.com/javase/tutorial/i18n/text/normalizerapi.html
+ * http://www.javainthebox.net/laboratory/JavaSE6/normalizer/normalizer.html
+ * http://blog.mwsoft.jp/article/34823291.html
  * 
- *      NFKC is useful to simple string normalization. (with some exception)
+ * -> NFKC is useful to simple string normalization. (with some exception)
  */
 public class TestUnicodeNormalize1 {
 

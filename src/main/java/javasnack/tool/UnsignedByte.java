@@ -90,9 +90,7 @@ public class UnsignedByte {
     }
 
     /**
-     * create 256(0x100) byte buffer from 0x00 to 0xFF
-     * 
-     * @return
+     * @return created 256(0x100) byte buffer from 0x00 to 0xFF
      */
     public static byte[] create0x00to0xFF() {
         ByteBuffer bf = ByteBuffer.allocate(256);
@@ -106,9 +104,7 @@ public class UnsignedByte {
     }
 
     /**
-     * create 256(0x100) String(LATIN1) from 0x00 to 0xFF
-     * 
-     * @return
+     * @return created 256(0x100) String(LATIN1) from 0x00 to 0xFF
      */
     public static String create0x00to0xFFString() {
         return new String(create0x00to0xFF(), CharsetTool.CS_BINARY);

@@ -27,11 +27,11 @@ import com.jcraft.jsch.Session;
 
 import javasnack.tool.ConsoleUtil;
 
-/**
- * @see https://qiita.com/tool-taro/items/ab68353970ee792163c6
- * @see https://dev.classmethod.jp/server-side/java/exec_remote_program/
- * @see http://www.jcraft.com/jsch/examples/Exec.java.html
- * @see http://www.jcraft.com/jsch/examples/UserAuthPubKey.java.html
+/* see:
+ * https://qiita.com/tool-taro/items/ab68353970ee792163c6
+ * https://dev.classmethod.jp/server-side/java/exec_remote_program/
+ * http://www.jcraft.com/jsch/examples/Exec.java.html
+ * http://www.jcraft.com/jsch/examples/UserAuthPubKey.java.html
  */
 public class JSchRemoeExecPubKeyAuthDemo implements Runnable {
     @Override

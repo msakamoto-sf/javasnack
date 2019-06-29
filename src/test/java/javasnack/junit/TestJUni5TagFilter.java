@@ -32,9 +32,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see https://junit.org/junit5/docs/current/user-guide/#writing-tests-tagging-and-filtering
- * @see http://nowokay.hatenablog.com/entry/20171012/1507769090
+/* see:
+ * https://junit.org/junit5/docs/current/user-guide/#writing-tests-tagging-and-filtering
+ * http://nowokay.hatenablog.com/entry/20171012/1507769090
  */
 public class TestJUni5TagFilter {
 

@@ -27,9 +27,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * try-with-resources with "catch" examples.
- * 
- * @see http://docs.oracle.com/javase/jp/7/technotes/guides/language/try-with-resources.html
- * @see http://d.hatena.ne.jp/sardine/20130402
+ */
+/* see:
+ * http://docs.oracle.com/javase/jp/7/technotes/guides/language/try-with-resources.html
+ * http://d.hatena.ne.jp/sardine/20130402
  */
 public class TestTryWithResources2 {
 

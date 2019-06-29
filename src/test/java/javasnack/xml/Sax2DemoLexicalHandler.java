@@ -18,8 +18,8 @@ package javasnack.xml;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
-/**
- * @see http://d.hatena.ne.jp/vh5150/20071114
+/* see:
+ * http://d.hatena.ne.jp/vh5150/20071114
  */
 class Sax2DemoLexicalHandler implements LexicalHandler {
     DebugPrinter p;

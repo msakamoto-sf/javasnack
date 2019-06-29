@@ -89,11 +89,13 @@ public class TestEnumConversions {
             return this.n;
         }
 
+        /* see:
+         * http://javatechnology.net/java/int-enum/
+         * http://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java
+         * http://stackoverflow.com/questions/5292790/convert-integer-value-to-matching-java-enum
+         * http://stackoverflow.com/questions/7996335/how-to-match-int-to-enum
+         */
         /**
-         * @see http://javatechnology.net/java/int-enum/
-         * @see http://stackoverflow.com/questions/5878952/cast-int-to-enum-in-java
-         * @see http://stackoverflow.com/questions/5292790/convert-integer-value-to-matching-java-enum
-         * @see http://stackoverflow.com/questions/7996335/how-to-match-int-to-enum
          * @param t
          * @return
          */

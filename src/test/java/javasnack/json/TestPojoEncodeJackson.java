@@ -39,9 +39,11 @@ import javasnack.json.pojo.EncodePojoEnumJacksonSerializer;
 import javasnack.tool.StreamTool;
 
 /**
- * @see https://github.com/FasterXML/jackson
- * @see https://github.com/FasterXML/jackson-docs
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * https://github.com/FasterXML/jackson
+ * https://github.com/FasterXML/jackson-docs
  */
 public class TestPojoEncodeJackson {
 

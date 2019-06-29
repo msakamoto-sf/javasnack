@@ -20,9 +20,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @see http://stackoverflow.com/questions/5939575/generics-and-class-assubclass
- * @see http://waman.hatenablog.com/entry/20101007/1286440563
+/* see:
+ * http://stackoverflow.com/questions/5939575/generics-and-class-assubclass
+ * http://waman.hatenablog.com/entry/20101007/1286440563
  */
 public class TestClassAsSubclass {
 

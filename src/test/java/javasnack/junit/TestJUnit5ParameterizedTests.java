@@ -39,9 +39,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests
- * @see http://www.ne.jp/asahi/hishidama/home/tech/java/junit/5/ParameterizedTest.html
+/* see:
+ * https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests
+ * http://www.ne.jp/asahi/hishidama/home/tech/java/junit/5/ParameterizedTest.html
  */
 public class TestJUnit5ParameterizedTests {
 

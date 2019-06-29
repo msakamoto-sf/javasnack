@@ -25,8 +25,8 @@ import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see https://junit.org/junit5/docs/current/user-guide/#writing-tests-repeated-tests
+/* see:
+ * https://junit.org/junit5/docs/current/user-guide/#writing-tests-repeated-tests
  */
 public class TestJUnit5RepeatedTests {
     private static final Logger LOG = LoggerFactory.getLogger(TestJUnit5RepeatedTests.class);

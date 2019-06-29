@@ -23,8 +23,8 @@ import java.util.function.IntSupplier;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
+/* see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
  */
 public class TestMethodRefDemo {
 

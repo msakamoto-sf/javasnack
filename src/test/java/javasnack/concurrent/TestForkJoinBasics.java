@@ -27,13 +27,13 @@ import java.util.concurrent.RecursiveTask;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @see https://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/ForkJoinPool.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/ForkJoinTask.html
- * @see http://waman.hatenablog.com/entry/20111203/1322942842
- * @see http://d.hatena.ne.jp/Kazuhira/20120923/1348394888
- * @see http://d.hatena.ne.jp/miyakawa_taku/20110620/1308525439
+/* see:
+ * https://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/ForkJoinPool.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/concurrent/ForkJoinTask.html
+ * http://waman.hatenablog.com/entry/20111203/1322942842
+ * http://d.hatena.ne.jp/Kazuhira/20120923/1348394888
+ * http://d.hatena.ne.jp/miyakawa_taku/20110620/1308525439
  */
 public class TestForkJoinBasics {
 

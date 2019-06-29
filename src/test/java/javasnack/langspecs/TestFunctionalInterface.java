@@ -40,9 +40,9 @@ import java.util.function.UnaryOperator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-/**
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/function/package-summary.html
+/* see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/function/package-summary.html
  */
 public class TestFunctionalInterface {
 

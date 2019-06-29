@@ -24,10 +24,10 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-/**
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Pattern.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Matcher.html
- * @see http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html
+/* see:
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Pattern.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Matcher.html
+ * http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html
  */
 public class TestRegexp1 {
     @Test
