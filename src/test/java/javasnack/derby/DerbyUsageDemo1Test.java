@@ -41,7 +41,6 @@ public class DerbyUsageDemo1Test {
 
     @BeforeAll
     public void prepareDb() throws Exception {
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
         conn = DriverManager.getConnection("jdbc:derby:memory:db1;create=true");
         PreparedStatement ps = conn
                 .prepareStatement(
