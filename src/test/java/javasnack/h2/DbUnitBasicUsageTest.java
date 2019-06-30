@@ -60,7 +60,7 @@ import org.junit.jupiter.api.Test;
 import javasnack.tool.FileDirHelper;
 import javasnack.tool.UnsignedByte;
 
-public class DbUnitCsvUsageTest {
+public class DbUnitBasicUsageTest {
 
     /**
      * simple T1 table object
