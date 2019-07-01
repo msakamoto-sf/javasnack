@@ -74,7 +74,7 @@ public class EncodePojo {
         calendarObject.set(Calendar.YEAR, 1970);
         calendarObject.set(Calendar.MONTH, 0);
         calendarObject.set(Calendar.DAY_OF_MONTH, 1);
-        calendarObject.set(Calendar.HOUR, 1);
+        calendarObject.set(Calendar.HOUR_OF_DAY, 1);
         calendarObject.set(Calendar.MINUTE, 2);
         calendarObject.set(Calendar.SECOND, 3);
         calendarObject.set(Calendar.MILLISECOND, 456);
