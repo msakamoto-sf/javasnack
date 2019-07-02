@@ -14,7 +14,6 @@ Tinny Java Excersise, Experimental, Practices Programms.
 to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
 - Eclipse install how-to
 - Clean Up/Formatter configuration
-- Required plugin : TestNG
 
 ## how to build and execute main()
 
