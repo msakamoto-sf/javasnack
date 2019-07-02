@@ -119,5 +119,56 @@ $ ./mvnw package
 
 $ java -jar target/javasnack-1.0-SNAPSHOT.jar
 or
-$ mvnw exec:java
+$ ./mvnw exec:java
 ```
+
+### 5. test and reports.
+
+surefire test only (excluding `@Tag("junit5-tag-filter-2")` and `@MyJUnit5MetaAnnotation2` annotated test cases):
+
+```
+$ ./mvnw test
+```
+
+NOTE: some thread feature test cases may be fail cause of timing sensitivity.
+
+all test cases (surefire + failsafe : including `@Tag("junit5-tag-filter-2")` and `@MyJUnit5MetaAnnotation2` annotated test cases):
+
+```
+$ ./mvnw integration-test
+```
+
+generate report:
+
+```
+$ ./mvnw site
+```
+
+all:
+
+```
+$ ./mvnw clean integration-test site
+```
+
+## references
+
+jdk11:
+
+- `JDK 11 Documentation - Home`
+  - https://docs.oracle.com/en/java/javase/11/
+- `JDK 11ドキュメント - ホーム`
+  - https://docs.oracle.com/javase/jp/11/
+- API JavaDoc(en)
+  - https://docs.oracle.com/en/java/javase/11/docs/api/index.html
+- API JavaDoc(ja)
+  - https://docs.oracle.com/javase/jp/11/docs/api/index.html
+
+javadoc:
+
+- `Javadoc ドキュメンテーションコメントの書き方 - Qiita`
+  - https://qiita.com/maku77/items/6410c67ce95e08d8d1bd
+- `Javadocメモ(Hishidama's Javadoc Memo)`
+  - http://www.ne.jp/asahi/hishidama/home/tech/java/javadoc.html
+- `Javadocの記述`
+  - https://www.javadrive.jp/javadoc/
+
