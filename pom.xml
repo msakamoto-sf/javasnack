@@ -22,6 +22,8 @@
 
     <junit5.version>5.4.2</junit5.version>
     <surefire.version>3.0.0-M3</surefire.version>
+    <checkstyle.version>3.1.0</checkstyle.version>
+    <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
   </properties>
 
   <repositories>
@@ -328,6 +330,12 @@
         <version>3.7.1</version>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.version}</version>
+      </plugin>
+
     </plugins>
 
   </build>
@@ -361,6 +369,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <version>${surefire.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.version}</version>
       </plugin>
 
     </plugins>
