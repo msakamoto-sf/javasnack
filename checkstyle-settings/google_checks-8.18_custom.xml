@@ -52,6 +52,11 @@ https://github.com/checkstyle/checkstyle/blob/checkstyle-8.18/src/main/resources
   - https://checkstyle.org/config_blocks.html#EmptyCatchBlock
   - もとの設定では "expected" という変数名でexceptionを受けていればOKとなっている(exceptionVariableName)。
   - ただ、sleepに対するinterruptのようにexpectedというよりは単に無視する "ignore", "ignored" という変数名も多用しているので、expected|ignoreに変更した。
+- CommentsIndentation
+  - https://checkstyle.org/config_misc.html#CommentsIndentation
+  - もとの設定では checkstyle のデフォルト設定で有効化されているだけだった。
+  - ただそれだと、テストコードのデータ定義でインデントを調整するために頻用している // @formatter:off と // @formatter:on の手動インデント調整に対応できない。
+  - よって、チェック対象をブロックコメント開始のみに限定し、single line comment については無視するよう調整した。
 
 NOTE: 以下のJavaDoc関連は全般的に無効化していますが、それはこのプロジェクトが実験/テスト用のためです。
 通常のプロジェクトであればもとの設定そのままで始めて良いと思います(テストコードについては suppression filter で除外するなど調整)。
@@ -354,6 +359,11 @@ NOTE: 以下のJavaDoc関連は全般的に無効化していますが、それ�
              -->
             <property name="exceptionVariableName" value="expected|ignore"/>
         </module>
+        <!-- 
         <module name="CommentsIndentation"/>
+         -->
+        <module name="CommentsIndentation">
+            <property name="tokens" value="BLOCK_COMMENT_BEGIN" />
+        </module>
     </module>
 </module>

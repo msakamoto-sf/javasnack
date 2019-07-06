@@ -239,7 +239,7 @@ public class TestClassMetaInfo {
     @MethodSource("provideTypicalClassMetaInfoArguments")
     public void testTypicalClassMetaInfo(final Class<?> c, final TypicalClassMetaInfo expected) {
         TypicalClassMetaInfo actual = new TypicalClassMetaInfo(
-        // @formatter:off
+            // @formatter:off
             c.getName(),
             c.getCanonicalName(),
             c.getSimpleName(),

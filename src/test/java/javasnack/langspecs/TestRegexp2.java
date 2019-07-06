@@ -103,7 +103,7 @@ public class TestRegexp2 {
         arguments(Pattern.UNIX_LINES, "111a" + '\u0085' + "b222", false),
         arguments(Pattern.UNIX_LINES, "111a" + '\u2028' + "b222", false),
         arguments(Pattern.UNIX_LINES, "111a" + '\u2029' + "b222", false)
-         // @formatter:on
+        // @formatter:on
         );
     }
 
