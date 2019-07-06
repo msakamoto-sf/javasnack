@@ -53,14 +53,14 @@ import org.junit.jupiter.api.Test;
 
 public class TestMethodReflection {
     public static class Base {
-        int a;
+        int a0;
 
-        public Base(int a) {
-            this.a = a;
+        public Base(int a0) {
+            this.a0 = a0;
         }
 
         public int getA() {
-            return a;
+            return a0;
         }
 
         public void none() {
@@ -68,29 +68,29 @@ public class TestMethodReflection {
         }
 
         protected int minus(int b) {
-            return a - b;
+            return a0 - b;
         }
 
         public int multiply(int b) {
-            return a * b;
+            return a0 * b;
         }
     }
 
     public static class Ext extends Base {
-        int b;
+        int b0;
 
-        public Ext(int a, int b) {
-            super(a);
-            this.b = b;
+        public Ext(int a0, int b0) {
+            super(a0);
+            this.b0 = b0;
         }
 
         public int plus(int c) {
-            return a + b + c;
+            return a0 + b0 + c;
         }
 
         @SuppressWarnings("unused")
         private int div() {
-            return a / b;
+            return a0 / b0;
         }
     }
 
@@ -98,7 +98,7 @@ public class TestMethodReflection {
     public void testDeclaredMethodInfoAndCallNonPublicMethods()
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Class<?> c0 = Base.class;
-        Base o0 = new Base(10);
+        final Base o0 = new Base(10);
         Method[] methods = c0.getDeclaredMethods();
         assertEquals(4, methods.length);
         // (? ?) sort order of getDeclaredMethods() return array is not same between several times.
@@ -130,7 +130,7 @@ public class TestMethodReflection {
         assertEquals(30, (int) m0.invoke(o0, 3));
 
         c0 = Ext.class;
-        Ext o1 = new Ext(30, 10);
+        final Ext o1 = new Ext(30, 10);
         methods = c0.getDeclaredMethods();
         assertEquals(2, methods.length);
         n2m = new HashMap<>();

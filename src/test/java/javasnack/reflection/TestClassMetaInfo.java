@@ -90,23 +90,23 @@ public class TestClassMetaInfo {
         }
     }
 
-    public static final class publicStaticFinalClass {
-    };
+    public static final class PublicStaticFinalClass {
+    }
 
-    public static abstract class publicStaticAbstractClass {
-    };
+    public abstract static class PublicStaticAbstractClass {
+    }
 
-    public static interface publicStaticInterface {
-    };
+    public static interface PublicStaticInterface {
+    }
 
-    private static final class privateStaticFinalClass {
-    };
+    private static final class PrivateStaticFinalClass {
+    }
 
-    protected static final class protectedStaticFinalClass {
-    };
+    protected static final class ProtectedStaticFinalClass {
+    }
 
-    static class packagedStaticClass {
-    };
+    static class PackagedStaticClass {
+    }
 
     static Stream<Arguments> provideTypicalClassMetaInfoArguments() {
         final String pkg = TestClassMetaInfo.class.getPackage().getName();
@@ -178,7 +178,7 @@ public class TestClassMetaInfo {
                     "java.util", "public",
                     false, false, false)),
         arguments(
-            publicStaticFinalClass.class,
+            PublicStaticFinalClass.class,
             new TypicalClassMetaInfo(
                     staticPrefix + "$publicStaticFinalClass",
                     staticPrefix + ".publicStaticFinalClass",
@@ -187,7 +187,7 @@ public class TestClassMetaInfo {
                     pkg, "public static final",
                     false, false, false)),
         arguments(
-            publicStaticAbstractClass.class,
+            PublicStaticAbstractClass.class,
             new TypicalClassMetaInfo(
                     staticPrefix + "$publicStaticAbstractClass",
                     staticPrefix + ".publicStaticAbstractClass",
@@ -196,7 +196,7 @@ public class TestClassMetaInfo {
                     pkg, "public abstract static",
                     false, false, false)),
         arguments(
-            publicStaticInterface.class,
+            PublicStaticInterface.class,
             new TypicalClassMetaInfo(
                     staticPrefix + "$publicStaticInterface",
                     staticPrefix + ".publicStaticInterface",
@@ -205,7 +205,7 @@ public class TestClassMetaInfo {
                     pkg, "public abstract static interface",
                     false, true, false)),
         arguments(
-            privateStaticFinalClass.class,
+            PrivateStaticFinalClass.class,
             new TypicalClassMetaInfo(
                     staticPrefix + "$privateStaticFinalClass",
                     staticPrefix + ".privateStaticFinalClass",
@@ -214,7 +214,7 @@ public class TestClassMetaInfo {
                     pkg, "private static final",
                     false, false, false)),
         arguments(
-            protectedStaticFinalClass.class,
+            ProtectedStaticFinalClass.class,
             new TypicalClassMetaInfo(
                     staticPrefix + "$protectedStaticFinalClass",
                     staticPrefix + ".protectedStaticFinalClass",
@@ -223,7 +223,7 @@ public class TestClassMetaInfo {
                     pkg, "protected static final",
                     false, false, false)),
         arguments(
-            packagedStaticClass.class,
+            PackagedStaticClass.class,
             new TypicalClassMetaInfo(
                     staticPrefix + "$packagedStaticClass",
                     staticPrefix + ".packagedStaticClass",
@@ -266,7 +266,7 @@ public class TestClassMetaInfo {
     public void testTypeParameters() {
         Object o0 = new Object();
         Class<?> c0 = o0.getClass();
-        TypeVariable<? extends GenericDeclaration> tv[] = c0.getTypeParameters();
+        TypeVariable<? extends GenericDeclaration>[] tv = c0.getTypeParameters();
         assertEquals(0, tv.length);
         c0 = List.class;
         tv = c0.getTypeParameters();
@@ -283,8 +283,8 @@ public class TestClassMetaInfo {
     public void testImplementedInterfaces() {
         Object o0 = new Object();
         Class<?> c0 = o0.getClass();
-        Class<?> ifs[] = c0.getInterfaces();
-        Type gifs[] = c0.getGenericInterfaces();
+        Class<?>[] ifs = c0.getInterfaces();
+        Type[] gifs = c0.getGenericInterfaces();
         assertEquals(0, ifs.length);
         assertEquals(0, gifs.length);
 
@@ -334,22 +334,22 @@ public class TestClassMetaInfo {
     }
 
     public static interface BaseInterface0 {
-    };
+    }
 
     public static interface ExtendInterface1 extends BaseInterface0 {
-    };
+    }
 
     public static interface ExtendInterface2 extends ExtendInterface1 {
-    };
+    }
 
     public static class Base0 implements BaseInterface0 {
-    };
+    }
 
     public static class Extend1 extends Base0 implements ExtendInterface1 {
-    };
+    }
 
     public static class Extend2 extends Extend1 implements ExtendInterface2 {
-    };
+    }
 
     @Test
     public void testSuperclass() {

@@ -37,10 +37,11 @@ public class PerfTreeMapFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
+    static final int MASS = 500;
+
     @Override
     public void run() {
 
-        int MASS = 500;
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
@@ -48,23 +49,23 @@ public class PerfTreeMapFinePutGet implements Runnable {
 
         TreeMap<String, String> m = new TreeMap<String, String>();
 
-        BigInteger putting_sum = new BigInteger("0");
+        BigInteger sumOfPutting = new BigInteger("0");
         for (int i = 0; i < MASS; i++) {
             long elapsed = putting(m, keys[i]);
             System.out.println(String.format("put()[%d] = %d nano sec.", i,
                     elapsed));
-            putting_sum = putting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = putting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg1 = sumOfPutting.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = new BigInteger("0");
         for (int i = 0; i < MASS; i++) {
             long elapsed = getting(m, keys[i]);
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(MASS)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format("put() avg = %d nano (%d milli) sec.",

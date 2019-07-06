@@ -75,7 +75,7 @@ public class TestFieldReflection {
     @Test
     public void testPublicFieldReadWrite() throws IllegalArgumentException, IllegalAccessException {
         Class<?> c0 = Base.class;
-        Base o0 = new Base();
+        final Base o0 = new Base();
         Field[] fields = c0.getFields();
         assertEquals(2, fields.length);
         Field f0 = fields[0];
@@ -95,7 +95,7 @@ public class TestFieldReflection {
         assertEquals(Base.PUBLIC_FINAL_STR, f0.get(c0)); // from class object
 
         c0 = Ext.class;
-        Ext o1 = new Ext();
+        final Ext o1 = new Ext();
         fields = c0.getFields();
         assertEquals(4, fields.length);
         f0 = fields[0];
@@ -207,7 +207,7 @@ public class TestFieldReflection {
     @Test
     public void testNonPublicFieldReadWrite() throws IllegalArgumentException, IllegalAccessException {
         Class<?> c0 = Base.class;
-        Base o0 = new Base();
+        final Base o0 = new Base();
         Field[] fields = c0.getDeclaredFields();
         assertEquals(7, fields.length);
 
@@ -268,7 +268,7 @@ public class TestFieldReflection {
         assertEquals(Base.PUBLIC_FINAL_STR, f0.get(c0)); // from class object
 
         c0 = Ext.class;
-        Ext o1 = new Ext();
+        final Ext o1 = new Ext();
         fields = c0.getDeclaredFields();
         assertEquals(4, fields.length);
 

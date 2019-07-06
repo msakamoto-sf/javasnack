@@ -114,7 +114,7 @@ public class TestSimpleInject {
 
     public static class HelloWorld4 extends HelloWorld3 {
 
-        final private HelloWorld hw4;
+        private final HelloWorld hw4;
 
         @Inject
         public HelloWorld4(HelloWorld hw, HelloWorld hw4) {

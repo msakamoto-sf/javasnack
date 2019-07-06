@@ -25,10 +25,10 @@ import org.xml.sax.helpers.DefaultHandler;
  * Sample Handler (DefaultHandler = ContentHandler, DTDHandler, EntityResolver, ErrorHandler)
  */
 class Sax2DemoHandler extends DefaultHandler {
-    DebugPrinter p;
+    DebugPrinter dp;
 
-    Sax2DemoHandler(DebugPrinter _p) {
-        this.p = _p;
+    Sax2DemoHandler(DebugPrinter dp) {
+        this.dp = dp;
     }
 
     /*
@@ -37,42 +37,42 @@ class Sax2DemoHandler extends DefaultHandler {
 
     @Override
     public void startDocument() {
-        p.start("Start document");
+        dp.start("Start document");
     }
 
     @Override
     public void endDocument() {
-        p.end("End document");
+        dp.end("End document");
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName,
+    public void startElement(String uri, String localName, String qualifiedName,
             Attributes attrs) {
-        p.start("start[local:%s / qname:%s](uri=[%s])", localName, qName,
+        dp.start("start[local:%s / qname:%s](uri=[%s])", localName, qualifiedName,
                 uri);
         for (int i = 0; i < attrs.getLength(); i++) {
-            p.print("   attrs[%d].getLocalName() =%s", i,
+            dp.print("   attrs[%d].getLocalName() =%s", i,
                     attrs.getLocalName(i));
-            p.print("   attrs[%d].getQName()     =%s", i, attrs.getQName(i));
-            p.print("   attrs[%d].getValue()     =%s", i, attrs.getValue(i));
+            dp.print("   attrs[%d].getQName()     =%s", i, attrs.getQName(i));
+            dp.print("   attrs[%d].getValue()     =%s", i, attrs.getValue(i));
         }
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) {
-        p.end("end[local:%s / qname:%s](uri=[%s])", localName, qName, uri);
+    public void endElement(String uri, String localName, String qualifiedName) {
+        dp.end("end[local:%s / qname:%s](uri=[%s])", localName, qualifiedName, uri);
     }
 
     @Override
     public void characters(char[] ch, int start, int length)
             throws SAXException {
-        p.print("characters([%s])", new String(ch, start, length));
+        dp.print("characters([%s])", new String(ch, start, length));
     }
 
     @Override
     public void ignorableWhitespace(char[] ch, int start, int length)
             throws SAXException {
-        p.print("ignorableWhitespace([%s])", new String(ch, start, length));
+        dp.print("ignorableWhitespace([%s])", new String(ch, start, length));
     }
 
     /*
@@ -81,16 +81,16 @@ class Sax2DemoHandler extends DefaultHandler {
 
     @Override
     public void error(SAXParseException e) {
-        p.saxerr("error", e);
+        dp.saxerr("error", e);
     }
 
     @Override
     public void fatalError(SAXParseException e) {
-        p.saxerr("fatal", e);
+        dp.saxerr("fatal", e);
     }
 
     @Override
     public void warning(SAXParseException e) {
-        p.saxerr("warning", e);
+        dp.saxerr("warning", e);
     }
 }

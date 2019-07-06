@@ -104,6 +104,7 @@ public class TestExecutorFutureBasics {
                 return this.futureR;
             }
         }
+
         Future<Long> f1 = es.submit(new CallableDemo(100L));
         assertFalse(f1.isCancelled());
         assertFalse(f1.isDone());

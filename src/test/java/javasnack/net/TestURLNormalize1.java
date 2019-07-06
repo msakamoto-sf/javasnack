@@ -55,7 +55,7 @@ public class TestURLNormalize1 {
     @MethodSource("provideNomalizeUrlSamples")
     public void testNormalizeSampleUrls(String ctx, String relative, String expected) throws MalformedURLException {
         URL ctxUrl = new URL(ctx);
-        URL rUrl = new URL(ctxUrl, relative);
-        assertThat(rUrl.toExternalForm()).isEqualTo(expected);
+        URL resolvedUrl = new URL(ctxUrl, relative);
+        assertThat(resolvedUrl.toExternalForm()).isEqualTo(expected);
     }
 }

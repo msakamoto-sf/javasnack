@@ -19,7 +19,7 @@ package javasnack.tool;
 import java.nio.ByteBuffer;
 
 public class UnsignedByte {
-    public final static byte[] conv = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8,
+    public static final byte[] conv = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8,
             9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
             26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
             43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
@@ -50,16 +50,16 @@ public class UnsignedByte {
     }
 
     public static byte random() {
-        int r = (int) Math.floor(Math.random() * (0xFF - 1));
+        final int r = (int) Math.floor(Math.random() * (0xFF - 1));
         return UnsignedByte.from(r);
     }
 
     public static byte[] random(int size) {
-        byte[] e = new byte[0];
+        final byte[] e = new byte[0];
         if (size <= 0) {
             return e;
         }
-        byte[] r = new byte[size];
+        final byte[] r = new byte[size];
         for (int i = 0; i < size; i++) {
             r[i] = UnsignedByte.random();
         }
@@ -67,13 +67,13 @@ public class UnsignedByte {
     }
 
     public static String hex(String prefix, byte[] src) {
-        int src_len = src.length;
-        if (0 == src_len) {
+        final int len = src.length;
+        if (0 == len) {
             return "";
         }
 
-        StringBuilder sb = new StringBuilder(src_len * (prefix.length() + 2));
-        for (int i = 0; i < src_len; i++) {
+        StringBuilder sb = new StringBuilder(len * (prefix.length() + 2));
+        for (int i = 0; i < len; i++) {
             byte b = src[i];
             sb.append(prefix);
             sb.append(Integer.toHexString(b & 0xFF));
@@ -82,7 +82,7 @@ public class UnsignedByte {
     }
 
     public static String bits(byte[] src) {
-        StringBuilder sb = new StringBuilder(src.length * Byte.SIZE);
+        final StringBuilder sb = new StringBuilder(src.length * Byte.SIZE);
         for (int i = 0; i < Byte.SIZE * src.length; i++) {
             sb.append((src[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0'
                     : '1');
@@ -94,12 +94,12 @@ public class UnsignedByte {
      * @return created 256(0x100) byte buffer from 0x00 to 0xFF
      */
     public static byte[] create0x00to0xFF() {
-        ByteBuffer bf = ByteBuffer.allocate(256);
+        final ByteBuffer bf = ByteBuffer.allocate(256);
         for (int d = 0x00; d <= 0xFF; d++) {
             bf.put(UnsignedByte.from(d));
         }
         bf.flip();
-        byte[] src = new byte[bf.limit()];
+        final byte[] src = new byte[bf.limit()];
         bf.get(src);
         return src;
     }

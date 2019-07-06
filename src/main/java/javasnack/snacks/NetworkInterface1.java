@@ -62,7 +62,7 @@ public class NetworkInterface1 implements Runnable {
         System.out.println(nic.isPointToPoint() ? "PPP" : "NO PPP");
         System.out.println(nic.supportsMulticast() ? "MULTICAST Supported" : "MULTICAST NOT Supported");
 
-        byte hwAddress[] = nic.getHardwareAddress();
+        byte[] hwAddress = nic.getHardwareAddress();
         if (null != hwAddress) {
             System.out.print("MAC Address: ");
             for (byte segment : hwAddress) {

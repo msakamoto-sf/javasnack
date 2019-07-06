@@ -108,6 +108,7 @@ public class TestThreadExecutorBasics {
                 return t;
             }
         }
+
         MyThreadFactory tf = new MyThreadFactory();
         ExecutorService es = Executors.newFixedThreadPool(3, tf);
         final int NUM = 7;
@@ -119,6 +120,7 @@ public class TestThreadExecutorBasics {
                 return Thread.currentThread().getName();
             }
         }
+
         List<Future<String>> futures = new ArrayList<>();
         for (int i = 0; i < NUM; i++) {
             futures.add(es.submit(new MyTask()));
@@ -281,7 +283,7 @@ public class TestThreadExecutorBasics {
     void testGracefulShutdownExample() throws InterruptedException {
         ExecutorService es = Executors.newSingleThreadExecutor();
         final int NUM = 4;
-        BreakableTask tasks[] = new BreakableTask[NUM];
+        final BreakableTask[] tasks = new BreakableTask[NUM];
         for (int i = 0; i < NUM; i++) {
             tasks[i] = new BreakableTask(100, 2);
             es.submit(tasks[i]);
@@ -395,8 +397,8 @@ public class TestThreadExecutorBasics {
     @Test
     void testGracefulShutdownBlockingIOTaskDemo() throws InterruptedException {
         final int NUM = 4;
-        ExecutorService es = Executors.newFixedThreadPool(NUM);
-        BlockingIOTask tasks[] = new BlockingIOTask[NUM];
+        final ExecutorService es = Executors.newFixedThreadPool(NUM);
+        final BlockingIOTask[] tasks = new BlockingIOTask[NUM];
         for (int i = 0; i < NUM; i++) {
             tasks[i] = new BlockingIOTask(i, this.blackholeTcpServerPort);
             es.submit(tasks[i]);

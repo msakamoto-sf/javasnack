@@ -19,19 +19,19 @@ package javasnack.testee;
 import java.util.List;
 
 public class MockitoExercise01 {
-    List<String> m;
+    List<String> list0;
 
     public MockitoExercise01(List<String> mock) {
-        this.m = mock;
+        this.list0 = mock;
     }
 
     public void doSomething() {
-        this.m.add("Bonjour");
-        this.m.clear();
+        this.list0.add("Bonjour");
+        this.list0.clear();
     }
 
     public String getIndex2() {
-        return this.m.get(2);
+        return this.list0.get(2);
     }
 
 }

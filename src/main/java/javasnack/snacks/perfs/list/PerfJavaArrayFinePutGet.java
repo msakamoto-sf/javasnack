@@ -28,36 +28,38 @@ public class PerfJavaArrayFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
+    String bufForGetting = "";
+
     long getting(String[] arr, int index) {
-        String r = null;
         long startTime = System.nanoTime();
-        r = arr[index];
+        bufForGetting = arr[index];
         return System.nanoTime() - startTime;
     }
+
+    static final int MASS = 500;
 
     @Override
     public void run() {
 
-        int MASS = 500;
         String[] arr = new String[MASS];
 
-        BigInteger setting_sum = new BigInteger("0");
+        BigInteger sumOfSetting = new BigInteger("0");
         for (int i = 0; i < MASS; i++) {
             long elapsed = setting(arr, i, RandomString.get(10, 30));
             System.out.println(String.format("arr[%d] = %d nano sec.", i,
                     elapsed));
-            setting_sum = setting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfSetting = sumOfSetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = setting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg1 = sumOfSetting.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = new BigInteger("0");
         for (int i = 0; i < MASS; i++) {
             long elapsed = getting(arr, i);
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(MASS)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format("arr() avg = %d nano (%d milli) sec.",

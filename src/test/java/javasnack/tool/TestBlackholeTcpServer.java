@@ -28,15 +28,15 @@ public class TestBlackholeTcpServer {
 
     @Test
     public void testReceivedData() throws IOException, InterruptedException {
-        BlackholeTcpServer server = new BlackholeTcpServer();
+        final BlackholeTcpServer server = new BlackholeTcpServer();
         Map<InetSocketAddress, byte[]> receivedData = server.getReceivedBytes();
         assertThat(receivedData).isEmpty();
 
         final int localPort = server.start();
-        InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", localPort);
+        final InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", localPort);
         Socket socket = new Socket();
         socket.connect(connectTo);
-        InetSocketAddress local1 = (InetSocketAddress) socket.getLocalSocketAddress();
+        final InetSocketAddress local1 = (InetSocketAddress) socket.getLocalSocketAddress();
         OutputStream out = socket.getOutputStream();
         out.write(new byte[] { 0x00, 0x01, 0x02 });
         out.write(new byte[] { 0x03, 0x04, 0x05 });
@@ -45,7 +45,7 @@ public class TestBlackholeTcpServer {
 
         socket = new Socket();
         socket.connect(connectTo);
-        InetSocketAddress local2 = (InetSocketAddress) socket.getLocalSocketAddress();
+        final InetSocketAddress local2 = (InetSocketAddress) socket.getLocalSocketAddress();
         out = socket.getOutputStream();
         out.write(new byte[] { 0x06, 0x07, 0x08 });
         out.write(new byte[] { 0x09, 0x0a, 0x0b });

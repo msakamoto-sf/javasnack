@@ -68,14 +68,14 @@ public class TestMustacheDemo {
 
     @Test
     public void mapmiss() throws Exception {
-        MustacheFactory mf = new DefaultMustacheFactory();
-        Mustache mustache = mf.compile("mustache-java-tmpl/mapmiss.mustache");
-        Map<String, Object> m1 = new HashMap<>();
+        final MustacheFactory mf = new DefaultMustacheFactory();
+        final Mustache mustache = mf.compile("mustache-java-tmpl/mapmiss.mustache");
+        final Map<String, Object> m1 = new HashMap<>();
         m1.put("k1", Integer.valueOf(100));
         m1.put("k2", "abc");
-        Map<String, Object> boundScope = new HashMap<>();
+        final Map<String, Object> boundScope = new HashMap<>();
         boundScope.put("m1", m1);
-        StringWriter out = new StringWriter();
+        final StringWriter out = new StringWriter();
         mustache.execute(out, boundScope).flush();
         assertThat(out.toString().trim())
                 .isEqualToNormalizingNewlines(StreamTool.res2str("mustache-java-tmpl/mapmiss.expected.txt").trim());

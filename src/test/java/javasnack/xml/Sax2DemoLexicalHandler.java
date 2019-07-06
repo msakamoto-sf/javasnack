@@ -23,47 +23,47 @@ import org.xml.sax.ext.LexicalHandler;
  * http://d.hatena.ne.jp/vh5150/20071114
  */
 class Sax2DemoLexicalHandler implements LexicalHandler {
-    DebugPrinter p;
+    DebugPrinter dp;
 
-    Sax2DemoLexicalHandler(DebugPrinter _p) {
-        this.p = _p;
+    Sax2DemoLexicalHandler(DebugPrinter dp) {
+        this.dp = dp;
     }
 
     @Override
     public void startDTD(String name, String publicId, String systemId)
             throws SAXException {
-        p.start("startDTD(name:%s, publicId:%s, systemId:%s)", name,
+        dp.start("startDTD(name:%s, publicId:%s, systemId:%s)", name,
                 publicId, systemId);
     }
 
     @Override
     public void endDTD() throws SAXException {
-        p.end("endDTD");
+        dp.end("endDTD");
     }
 
     @Override
     public void startEntity(String name) throws SAXException {
-        p.start("startEntity(%s)", name);
+        dp.start("startEntity(%s)", name);
     }
 
     @Override
     public void endEntity(String name) throws SAXException {
-        p.end("endEntity(%s)", name);
+        dp.end("endEntity(%s)", name);
     }
 
     @Override
     public void startCDATA() throws SAXException {
-        p.start("startCDATA");
+        dp.start("startCDATA");
     }
 
     @Override
     public void endCDATA() throws SAXException {
-        p.end("endCDATA");
+        dp.end("endCDATA");
     }
 
     @Override
     public void comment(char[] ch, int start, int length)
             throws SAXException {
-        p.print("comment([%s])", new String(ch, start, length));
+        dp.print("comment([%s])", new String(ch, start, length));
     }
 }

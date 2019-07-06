@@ -34,38 +34,38 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-class Foo implements Serializable {
-    private static final long serialVersionUID = 7388974747804746922L;
-    protected int num;
-    protected String name;
-    protected Date createdAt;
-
-    public void setNum(int v) {
-        this.num = v;
-    }
-
-    public int getNum() {
-        return this.num;
-    }
-
-    public void setName(String v) {
-        this.name = v;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setCreatedAt(Date v) {
-        this.createdAt = v;
-    }
-
-    public Date getCreatedAt() {
-        return this.createdAt;
-    }
-}
-
 public class TestSerializeBasics {
+    static class Foo implements Serializable {
+        private static final long serialVersionUID = 7388974747804746922L;
+        protected int num;
+        protected String name;
+        protected Date createdAt;
+
+        public void setNum(int v) {
+            this.num = v;
+        }
+
+        public int getNum() {
+            return this.num;
+        }
+
+        public void setName(String v) {
+            this.name = v;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setCreatedAt(Date v) {
+            this.createdAt = v;
+        }
+
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
+    }
+
     @Test
     public void simpleClassSerialize() throws IOException,
             ClassNotFoundException {
@@ -103,7 +103,7 @@ public class TestSerializeBasics {
     @Test
     public void serializeArrayList() throws IOException, ClassNotFoundException {
 
-        List<Foo> l = new ArrayList<>();
+        final List<Foo> l = new ArrayList<>();
 
         Calendar cal = Calendar.getInstance();
         Foo o = new Foo();
@@ -163,7 +163,7 @@ public class TestSerializeBasics {
     @Test
     public void serializeHashMap() throws IOException, ClassNotFoundException {
 
-        Map<String, Foo> m = new HashMap<>();
+        final Map<String, Foo> m = new HashMap<>();
 
         Calendar cal = Calendar.getInstance();
         Foo o = new Foo();

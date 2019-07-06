@@ -35,10 +35,11 @@ public class PerfLinkedListFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
+    static final int MASS = 500;
+
     @Override
     public void run() {
 
-        int MASS = 500;
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
@@ -46,23 +47,23 @@ public class PerfLinkedListFinePutGet implements Runnable {
 
         LinkedList<String> list = new LinkedList<String>();
 
-        BigInteger adding_sum = new BigInteger("0");
+        BigInteger sumOfAdding = new BigInteger("0");
         for (int i = 0; i < MASS; i++) {
             long elapsed = adding(list, keys[i]);
             System.out.println(String.format("add()[%d] = %d nano sec.", i,
                     elapsed));
-            adding_sum = adding_sum.add(BigInteger.valueOf(elapsed));
+            sumOfAdding = sumOfAdding.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = adding_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg1 = sumOfAdding.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = new BigInteger("0");
         for (int i = 0; i < MASS; i++) {
             long elapsed = getting(list, i);
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(MASS)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format("add() avg = %d nano (%d milli) sec.",

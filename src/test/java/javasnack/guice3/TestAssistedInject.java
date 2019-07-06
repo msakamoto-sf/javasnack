@@ -66,15 +66,15 @@ public class TestAssistedInject {
     }
 
     public static class SomeInterfaceUser {
-        final SomeInterfaceFactory f;
+        final SomeInterfaceFactory factory;
 
         @Inject
         public SomeInterfaceUser(SomeInterfaceFactory factory) {
-            this.f = factory;
+            this.factory = factory;
         }
 
         public String getResult() {
-            SomeInterface i = this.f.create(100);
+            SomeInterface i = this.factory.create(100);
             return i.getResult();
         }
     }

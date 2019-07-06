@@ -25,9 +25,9 @@ public class GreetingImpl {
     protected String myFirstname;
     protected String myLastname;
 
-    public GreetingImpl(String _myFirstname, String _myLastname) {
-        this.myFirstname = _myFirstname;
-        this.myLastname = _myLastname;
+    public GreetingImpl(String myFirstname, String myLastname) {
+        this.myFirstname = myFirstname;
+        this.myLastname = myLastname;
     }
 
     public String morning(String to) {

@@ -41,21 +41,21 @@ public class PerfLinkedHashMapTotalAvg implements Runnable {
         return System.nanoTime() - startTime;
     }
 
+    static final int MASS = 500000;
+    static final int ITER = 50;
+
     @Override
     public void run() {
 
-        int MASS = 500000;
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
         }
 
-        int ITER = 50;
-
         @SuppressWarnings("unchecked")
         LinkedHashMap<String, String>[] maps = new LinkedHashMap[ITER];
 
-        BigInteger putting_sum = new BigInteger("0");
+        BigInteger sumOfPutting = new BigInteger("0");
         for (int i = 0; i < ITER; i++) {
             LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(
                     16, 0.75f);
@@ -63,19 +63,19 @@ public class PerfLinkedHashMapTotalAvg implements Runnable {
             maps[i] = m;
             System.out.println(String.format("puttings[%d] = %d nano sec.", i,
                     elapsed));
-            putting_sum = putting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = putting_sum.divide(BigInteger.valueOf(ITER)).longValue();
+        long avg1 = sumOfPutting.divide(BigInteger.valueOf(ITER)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = new BigInteger("0");
         for (int i = 0; i < ITER; i++) {
             LinkedHashMap<String, String> m = maps[i];
             long elapsed = getting(m, keys, MASS);
             System.out.println(String.format("gettings[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(ITER)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(ITER)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format(

@@ -21,9 +21,9 @@ public enum EncodePojoEnum2 {
     final int num;
     final String name;
 
-    EncodePojoEnum2(int _num, String _name) {
-        this.num = _num;
-        this.name = _name;
+    EncodePojoEnum2(int num, String name) {
+        this.num = num;
+        this.name = name;
     }
 
     String getContent() {

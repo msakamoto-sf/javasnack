@@ -56,33 +56,34 @@ import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
  */
 public class Main {
     static Runnable[] snacks = new Runnable[] {
-        new HelloWorld(),
-        new RunningJREVersionIs(),
-        new LivingUserThreads(),
-        new InfiniteLoop(),
-        new Write0x00To0xFF(),
-        new ReadConsoleInput(),
-        new ListAvailableCharsets(),
-        new UUIDDemo(),
-        new SystemPropertiesAndEnvs(),
-        new PerfJavaArrayFinePutGet(),
-        new PerfArrayListFinePutGet(),
-        new PerfLinkedListFinePutGet(),
-        new PerfHashMapFinePutGet(),
-        new PerfHashMapTotalAvg(),
-        new PerfLinkedHashMapFinePutGet(),
-        new PerfLinkedHashMapTotalAvg(),
-        new PerfTreeMapFinePutGet(),
-        new PerfTreeMapTotalAvg(),
-        new CollectionTypes1(),
-        new LocalJarDemo(),
-        new JCLDemo(),
-        new RandomDistrubution(),
-        new RandomDistrubutionInt(),
-        new NetworkInterface1(),
-        new JSchRemoeExecPasswdAuthDemo(),
-        new JSchRemoeExecPubKeyAuthDemo(),
-        };
+            new HelloWorld(),
+            new RunningJREVersionIs(),
+            new LivingUserThreads(),
+            new InfiniteLoop(),
+            new Write0x00To0xFF(),
+            new ReadConsoleInput(),
+            new ListAvailableCharsets(),
+            new UUIDDemo(),
+            new SystemPropertiesAndEnvs(),
+            new PerfJavaArrayFinePutGet(),
+            new PerfArrayListFinePutGet(),
+            new PerfLinkedListFinePutGet(),
+            new PerfHashMapFinePutGet(),
+            new PerfHashMapTotalAvg(),
+            new PerfLinkedHashMapFinePutGet(),
+            new PerfLinkedHashMapTotalAvg(),
+            new PerfTreeMapFinePutGet(),
+            new PerfTreeMapTotalAvg(),
+            new CollectionTypes1(),
+            new LocalJarDemo(),
+            new JCLDemo(),
+            new RandomDistrubution(),
+            new RandomDistrubutionInt(),
+            new NetworkInterface1(),
+            new JSchRemoeExecPasswdAuthDemo(),
+            new JSchRemoeExecPubKeyAuthDemo(),
+    };
+
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
         for (int i = 0; i < snacks.length; i++) {
@@ -102,7 +103,7 @@ public class Main {
             }
             new Thread(snacks[i]).start();
         } catch (NumberFormatException e) {
-            System.out.println("Enter 0 - " + (snacks.length -1) + " number.");
+            System.out.println("Enter 0 - " + (snacks.length - 1) + " number.");
         } finally {
             System.out.println("Exiting main thread...");
         }

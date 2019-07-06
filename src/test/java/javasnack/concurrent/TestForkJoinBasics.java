@@ -41,7 +41,7 @@ public class TestForkJoinBasics {
     static class RecursiveTaskSample extends RecursiveTask<Integer> {
         private static final long serialVersionUID = 1L;
         static final int THRESHOLD = 10;
-        final String taskName;;
+        final String taskName;
         final List<String> strings;
 
         RecursiveTaskSample(final List<String> strings) {
