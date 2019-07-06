@@ -204,6 +204,9 @@
               <version>${maven-checkstyle-engine.version}</version>
             </dependency>
           </dependencies>
+          <configuration>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          </configuration>
         </plugin>
     
       </plugins>
