@@ -80,14 +80,14 @@ public class TestEnumConversions {
 
     enum NumericConstEnums {
         UNDEFINED(-1), ONE(1), TWO(2), THREE(3);
-        final int n;
+        final int num;
 
-        NumericConstEnums(int n) {
-            this.n = n;
+        NumericConstEnums(int num) {
+            this.num = num;
         }
 
-        int v() {
-            return this.n;
+        int val() {
+            return this.num;
         }
 
         /* see:
@@ -96,15 +96,11 @@ public class TestEnumConversions {
          * http://stackoverflow.com/questions/5292790/convert-integer-value-to-matching-java-enum
          * http://stackoverflow.com/questions/7996335/how-to-match-int-to-enum
          */
-        /**
-         * @param t
-         * @return
-         */
         static NumericConstEnums from(int t) {
             // maybe faster than HashMap<Integer, NumericConstEnums> solution :p
             NumericConstEnums[] ens = NumericConstEnums.values();
             for (NumericConstEnums e : ens) {
-                if (e.n == t) {
+                if (e.num == t) {
                     return e;
                 }
             }
@@ -154,7 +150,7 @@ public class TestEnumConversions {
     public void numericConstConversionDemos() {
         NumericConstEnums[] samples = NumericConstEnums.values();
         for (NumericConstEnums e : samples) {
-            assertEquals(e, NumericConstEnums.from(e.v()));
+            assertEquals(e, NumericConstEnums.from(e.val()));
         }
     }
 
@@ -165,14 +161,14 @@ public class TestEnumConversions {
     enum StringConstEnums {
         ENABLED("true"), DISABLED("false");
 
-        final String n;
+        final String str;
 
-        StringConstEnums(String n) {
-            this.n = n;
+        StringConstEnums(String str) {
+            this.str = str;
         }
 
-        String v() {
-            return this.n;
+        String val() {
+            return this.str;
         }
 
         // from Effective Java (2nd) (with some customized)
@@ -181,7 +177,7 @@ public class TestEnumConversions {
 
         static {
             for (StringConstEnums e : StringConstEnums.values()) {
-                stringToEnum.put(e.v(), e);
+                stringToEnum.put(e.val(), e);
             }
         }
 
@@ -226,7 +222,7 @@ public class TestEnumConversions {
     public void stringConstConversionDemos() {
         StringConstEnums[] samples = StringConstEnums.values();
         for (StringConstEnums e : samples) {
-            assertEquals(e, StringConstEnums.from(e.v()));
+            assertEquals(e, StringConstEnums.from(e.val()));
         }
     }
 

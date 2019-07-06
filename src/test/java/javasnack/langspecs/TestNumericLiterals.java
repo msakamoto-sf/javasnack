@@ -69,7 +69,7 @@ public class TestNumericLiterals {
     public void underscoredLiteral() {
         assertThat(1_1).isEqualTo(11);
         assertThat(100_200_300).isEqualTo(100200300);
-        assertThat(100_200_300L).isEqualTo(100200300l);
+        assertThat(100_200_300L).isEqualTo(100200300L);
         assertThat(3.14_159).isEqualTo(3.14159);
         assertThat(3.14_159F).isEqualTo(3.14159f);
     }

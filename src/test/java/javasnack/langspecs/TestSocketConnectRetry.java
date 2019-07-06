@@ -45,12 +45,6 @@ public class TestSocketConnectRetry {
      * This method returns excepiton list ocurrered internally whenn retrying.
      * 
      * So, use {@link Socket#isConnected()} to decide connection success or fail.
-     * 
-     * @param socket
-     * @param sa
-     * @param toms
-     * @param retrymax
-     * @return
      */
     List<Exception> connectWithRetry(Socket socket, SocketAddress sa, int toms,
             int retrymax) {

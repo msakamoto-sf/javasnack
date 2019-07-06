@@ -55,12 +55,12 @@ public class TestFunctionalInterface {
         Supplier<String> sup1 = new Supplier<String>() {
             private String msg1 = "Hello";
             private String msg2 = "Bonjour";
-            int c = 0;
+            int cnt = 0;
 
             @Override
             public String get() {
-                c++;
-                return (c % 2 == 1) ? msg1 : msg2;
+                cnt++;
+                return (cnt % 2 == 1) ? msg1 : msg2;
             }
         };
         assertThat(sup1.get()).isEqualTo("Hello");
@@ -69,12 +69,12 @@ public class TestFunctionalInterface {
         assertThat(sup1.get()).isEqualTo("Bonjour");
 
         IntSupplier cycle123 = new IntSupplier() {
-            int c = 2;
+            int cnt = 2;
 
             @Override
             public int getAsInt() {
-                c++;
-                return (c % 3) + 1;
+                cnt++;
+                return (cnt % 3) + 1;
             }
         };
         assertThat(cycle123.getAsInt()).isEqualTo(1);

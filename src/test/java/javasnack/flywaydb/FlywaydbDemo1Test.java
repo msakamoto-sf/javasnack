@@ -111,11 +111,11 @@ public class FlywaydbDemo1Test {
         assertEquals(0, mis.pending().length);
         // V1, V1.1, V1.2 were applied.
         assertEquals(3, mis.applied().length);
-        for (MigrationInfo _mi : mis.all()) {
-            System.out.println(_mi.getVersion());
-            System.out.println(_mi.getDescription());
-            System.out.println(_mi.getState());
-            System.out.println(_mi.getType());
+        for (MigrationInfo tmpmi : mis.all()) {
+            System.out.println(tmpmi.getVersion());
+            System.out.println(tmpmi.getDescription());
+            System.out.println(tmpmi.getState());
+            System.out.println(tmpmi.getType());
 
         }
         mi = mis.current();
@@ -131,11 +131,11 @@ public class FlywaydbDemo1Test {
         assertEquals(0, mis.pending().length);
         // V1, V1.1, V1.2 were applied.
         assertEquals(3, mis.applied().length);
-        for (MigrationInfo _mi : mis.all()) {
-            System.out.println(_mi.getVersion());
-            System.out.println(_mi.getDescription());
-            System.out.println(_mi.getState());
-            System.out.println(_mi.getType());
+        for (MigrationInfo tmpmi : mis.all()) {
+            System.out.println(tmpmi.getVersion());
+            System.out.println(tmpmi.getDescription());
+            System.out.println(tmpmi.getState());
+            System.out.println(tmpmi.getType());
 
         }
         // => no side effect (nothing changed)

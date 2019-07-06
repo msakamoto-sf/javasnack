@@ -48,6 +48,7 @@ public class TestTryWithResources2 {
                 }
             }
         }
+
         @SuppressWarnings("unused")
         int dummy = 0;
         try (Closeable1 c1 = new Closeable1();) {
@@ -74,6 +75,7 @@ public class TestTryWithResources2 {
                 }
             }
         }
+
         @SuppressWarnings("unused")
         int dummy = 0;
         try (Closeable1 c1 = new Closeable1();) {
@@ -103,6 +105,7 @@ public class TestTryWithResources2 {
                 // dummy
             }
         }
+
         try {
             try (Closeable1 c1 = new Closeable1();) {
                 c1.throwSomething();
@@ -136,6 +139,7 @@ public class TestTryWithResources2 {
                 }
             }
         }
+
         try {
             try (Closeable1 c1 = new Closeable1();) {
                 c1.throwSomething();
@@ -182,6 +186,7 @@ public class TestTryWithResources2 {
                 }
             }
         }
+
         List<String> messageBox = new ArrayList<>();
         try (Closeable1 c1 = new Closeable1("res1", messageBox);
                 Closeable1 c2 = new Closeable1("res2", messageBox);

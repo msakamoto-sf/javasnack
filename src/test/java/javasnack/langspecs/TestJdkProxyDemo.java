@@ -24,20 +24,20 @@ import java.lang.reflect.Proxy;
 
 import org.junit.jupiter.api.Test;
 
-interface DrinkDripperInterface {
-
-    public void setTeaType(String teaType);
-
-    public void setTeaType(String teaType, int temp);
-
-    public int getTemperature();
-
-    public int addWater(int cc);
-
-    public String drip();
-}
-
 public class TestJdkProxyDemo {
+
+    static interface DrinkDripperInterface {
+
+        public void setTeaType(String teaType);
+
+        public void setTeaType(String teaType, int temp);
+
+        public int getTemperature();
+
+        public int addWater(int cc);
+
+        public String drip();
+    }
 
     @Test
     public void testJdkProxyDemo() {
@@ -55,8 +55,11 @@ public class TestJdkProxyDemo {
                     case 2:
                         teaType = (String) args[0];
                         temp = ((Integer) args[1]).intValue();
+                        break;
                     case 1:
                         teaType = (String) args[0];
+                        break;
+                    default:
                     }
                 } else if ("getTemperature".equals(mname)) {
                     return Integer.valueOf(temp);

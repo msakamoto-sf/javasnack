@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class TestRegexp2 {
 
     @Test
-    public void TestPatternCompileAndFlags() {
+    public void testPatternCompileAndFlags() {
         String regexp1 = "hello,\\s+\"\\w+\". //comment";
         Pattern p = Pattern.compile(regexp1);
         assertThat(p.flags()).isEqualTo(0);
@@ -47,7 +47,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestSplitByPattern() {
+    public void testSplitByPattern() {
         Pattern p = Pattern.compile("\n");
         String[] r = p.split("abc\ndef\nghi");
         assertThat(r).isEqualTo(new String[] { "abc", "def", "ghi" });
@@ -75,7 +75,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestQuote() {
+    public void testQuote() {
         String regexp = "\\Qabc\\ndef\\ghi\\E";
         Pattern p = Pattern.compile(regexp);
         assertThat(p.pattern()).isEqualTo(regexp);
@@ -91,25 +91,25 @@ public class TestRegexp2 {
     static Stream<Arguments> providesUnixLineFlag() {
         return Stream.of(
         //@formatter:off
-        arguments( 0, "111a\nb222", true ),
-        arguments( 0, "111a" + '\r' + "b222", true ),
-        arguments( 0, "111a" + '\r' + '\n' + "b222", true ),
-        arguments( 0, "111a" + '\u0085' + "b222", true ),
-        arguments( 0, "111a" + '\u2028' + "b222", true ),
-        arguments( 0, "111a" + '\u2029' + "b222", true ),
-        arguments( Pattern.UNIX_LINES, "111a\nb222", true ),
-        arguments( Pattern.UNIX_LINES, "111a" + '\r' + "b222", false ),
-        arguments( Pattern.UNIX_LINES, "111a" + '\r' + '\n' + "b222", false ),
-        arguments( Pattern.UNIX_LINES, "111a" + '\u0085' + "b222", false ),
-        arguments( Pattern.UNIX_LINES, "111a" + '\u2028' + "b222", false ),
-        arguments( Pattern.UNIX_LINES, "111a" + '\u2029' + "b222", false )
+        arguments(0, "111a\nb222", true),
+        arguments(0, "111a" + '\r' + "b222", true),
+        arguments(0, "111a" + '\r' + '\n' + "b222", true),
+        arguments(0, "111a" + '\u0085' + "b222", true),
+        arguments(0, "111a" + '\u2028' + "b222", true),
+        arguments(0, "111a" + '\u2029' + "b222", true),
+        arguments(Pattern.UNIX_LINES, "111a\nb222", true),
+        arguments(Pattern.UNIX_LINES, "111a" + '\r' + "b222", false),
+        arguments(Pattern.UNIX_LINES, "111a" + '\r' + '\n' + "b222", false),
+        arguments(Pattern.UNIX_LINES, "111a" + '\u0085' + "b222", false),
+        arguments(Pattern.UNIX_LINES, "111a" + '\u2028' + "b222", false),
+        arguments(Pattern.UNIX_LINES, "111a" + '\u2029' + "b222", false)
          // @formatter:on
         );
     }
 
     @ParameterizedTest
     @MethodSource("providesUnixLineFlag")
-    public void TestUnixLineFlag(int pflag, String target, boolean expected) {
+    public void testUnixLineFlag(int pflag, String target, boolean expected) {
         String regexp = "(?m)a$";
         Pattern p = Pattern.compile(regexp, pflag);
         Matcher m = p.matcher(target);
@@ -117,7 +117,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestMatcherBasicUsage1() {
+    public void testMatcherBasicUsage1() {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("abc");
         assertThat(m.groupCount()).isEqualTo(0);
@@ -132,7 +132,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestMatcherBasicUsage2() {
+    public void testMatcherBasicUsage2() {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("abc def ghi");
         assertThat(m.groupCount()).isEqualTo(0);
@@ -147,7 +147,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestMatcherBasicUsage3() {
+    public void testMatcherBasicUsage3() {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("aaa abc bbb abc ccc abc\nddd abc\nabc");
         assertFalse(m.matches()); // CAUTION!
@@ -176,7 +176,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestGroupMatch1() {
+    public void testGroupMatch1() {
         Pattern p = Pattern.compile("(ab)");
         Matcher m = p.matcher("aaa ab ccc\nddd ab eee");
         assertFalse(m.matches());
@@ -200,7 +200,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestGroupMatch2() {
+    public void testGroupMatch2() {
         Pattern p = Pattern.compile("(ab)(cd)");
         Matcher m = p.matcher("aaa abcd ccc\nddd abcd eee");
         assertFalse(m.matches());
@@ -236,7 +236,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestGroupMatch3() {
+    public void testGroupMatch3() {
         Pattern p = Pattern.compile("((ab)(cd))");
         Matcher m = p.matcher("aaa abcd ccc\nddd abcd eee");
         assertFalse(m.matches());
@@ -278,7 +278,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestGroupMatch4() {
+    public void testGroupMatch4() {
         Pattern p = Pattern.compile("((ab)cd(ef))");
         Matcher m = p.matcher("aaa abcdef ccc\nddd abcdef eee");
         assertFalse(m.matches());
@@ -320,7 +320,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestGroupMatch5() {
+    public void testGroupMatch5() {
         Pattern p = Pattern.compile("((ab)cd(?:ef|EF))");
         Matcher m = p.matcher("aaa abcdef ccc\nddd abcdEF eee");
         assertFalse(m.matches());
@@ -356,10 +356,9 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestGroupMatch6() {
+    public void testGroupMatch6() {
         Pattern p = Pattern.compile("<(div|p)>.*<(h1|h2)>.*<\\/\\2>.*<\\/\\1>");
-        Matcher m = p
-                .matcher("abc<div>def<h2>heading1</h2>ghi</div><p>jkl<h1>mno</h1>pqr</p>");
+        Matcher m = p.matcher("abc<div>def<h2>heading1</h2>ghi</div><p>jkl<h1>mno</h1>pqr</p>");
         assertFalse(m.matches());
         assertFalse(m.lookingAt());
         assertThat(m.groupCount()).isEqualTo(2);
@@ -393,7 +392,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestMultiLine1() {
+    public void testMultiLine1() {
         Pattern p = Pattern.compile("^abc");
         Matcher m = p.matcher("abc aaa abc\nabc bbb\nccc abc\nabc");
         assertFalse(m.matches());
@@ -409,7 +408,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestMultiLine2() {
+    public void testMultiLine2() {
         Pattern p = Pattern.compile("^abc", Pattern.MULTILINE);
         Matcher m = p.matcher("abc aaa abc\nabc bbb\nccc abc\nabc");
         assertFalse(m.matches());
@@ -439,7 +438,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestMultiLine3() {
+    public void testMultiLine3() {
         Pattern p = Pattern.compile("(?m)^abc");
         Matcher m = p.matcher("abc aaa abc\nabc bbb\nccc abc\nabc");
         assertTrue(m.find());
@@ -460,7 +459,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestDotAll1() {
+    public void testDotAll1() {
         Pattern p = Pattern.compile("ab.*g");
         Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
         assertFalse(m.matches());
@@ -476,7 +475,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestDotAll2() {
+    public void testDotAll2() {
         // see: http://stackoverflow.com/questions/3651725/match-multiline-text-using-regular-expression
         Pattern p = Pattern.compile("ab.*g", Pattern.DOTALL);
         Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
@@ -493,7 +492,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestDotAll3() {
+    public void testDotAll3() {
         // reluctant quantifier
         // see: http://docs.oracle.com/javase/tutorial/essential/regex/quant.html
         // see: http://stackoverflow.com/questions/5319840/greedy-vs-reluctant-vs-possessive-quantifiers
@@ -516,7 +515,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestReplaceFirst() {
+    public void testReplaceFirst() {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("abc def\nabc ghi\nabc jkl");
         assertThat(m.replaceFirst("AAA")).isEqualTo("AAA def\nabc ghi\nabc jkl");
@@ -525,7 +524,7 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestReplaceAll() {
+    public void testReplaceAll() {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("abc def\nabc ghi\nabc jkl");
         assertThat(m.replaceAll("AAA")).isEqualTo("AAA def\nAAA ghi\nAAA jkl");
@@ -533,10 +532,9 @@ public class TestRegexp2 {
     }
 
     @Test
-    public void TestReplaceWithDollarReference() {
+    public void testReplaceWithDollarReference() {
         Pattern p = Pattern.compile("aaa((ab|AB)(cd|CD)ef)bbb");
-        Matcher m = p
-                .matcher("AAA aaaABcdefbbb BBB\nCCC aaaabCDefbbb DDD\naaaABCDefbbb");
+        Matcher m = p.matcher("AAA aaaABcdefbbb BBB\nCCC aaaabCDefbbb DDD\naaaABCDefbbb");
         assertThat(m.replaceFirst("([0]=$0;[1]=$1\\\\[2]=$2\\$3=$3)")).isEqualTo(
                 "AAA ([0]=aaaABcdefbbb;[1]=ABcdef\\[2]=AB$3=cd) BBB\n"
                         + "CCC aaaabCDefbbb DDD\naaaABCDefbbb");

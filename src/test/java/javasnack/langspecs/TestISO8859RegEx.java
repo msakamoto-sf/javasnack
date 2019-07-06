@@ -64,10 +64,10 @@ public class TestISO8859RegEx {
 
     @Test
     public void randomByteRegExDemo2() throws UnsupportedEncodingException {
-        String needle_japanese_aiueo = "\u3042\u3044\u3046\u3048\u304A";
-        byte[] japanese_aiueo_utf8 = needle_japanese_aiueo
+        String needleForJapaneseAiueo = "\u3042\u3044\u3046\u3048\u304A";
+        byte[] japaneseAiueoUtf8 = needleForJapaneseAiueo
                 .getBytes(CharsetTool.UTF8);
-        String japanese_aiueo_utf8_binary = new String(japanese_aiueo_utf8,
+        String japaneseAiueoUtf8Binary = new String(japaneseAiueoUtf8,
                 CharsetTool.CS_BINARY);
 
         // prepare random byte string including "needle"
@@ -75,7 +75,7 @@ public class TestISO8859RegEx {
         byte[] r = UnsignedByte.random(100);
         o.write(r, 0, 10);
         o.write(UnsignedByte.from(0));
-        byte[] needle = ("Hello, " + needle_japanese_aiueo + " Bar!")
+        byte[] needle = ("Hello, " + needleForJapaneseAiueo + " Bar!")
                 .getBytes(CharsetTool.UTF8);
         o.write(needle, 0, needle.length);
         o.write(UnsignedByte.from(0));
@@ -84,12 +84,12 @@ public class TestISO8859RegEx {
         // simple String#indexOf() matching
         byte[] d = o.toByteArray();
         String haystack = new String(d, CharsetTool.BINARY);
-        int pos = haystack.indexOf(japanese_aiueo_utf8_binary);
+        int pos = haystack.indexOf(japaneseAiueoUtf8Binary);
         assertThat(pos).isEqualTo(18);
 
-        String japanese_aiueo_utf8_regex = UnsignedByte.hex("\\x", japanese_aiueo_utf8);
+        String japaneseAiueoUtf8Regex = UnsignedByte.hex("\\x", japaneseAiueoUtf8);
         // regex pattern matching
-        Pattern p = Pattern.compile(japanese_aiueo_utf8_regex);
+        Pattern p = Pattern.compile(japaneseAiueoUtf8Regex);
         Matcher m = p.matcher(haystack);
         Assertions.assertTrue(m.find());
     }

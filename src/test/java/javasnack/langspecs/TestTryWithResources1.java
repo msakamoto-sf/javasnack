@@ -114,6 +114,7 @@ public class TestTryWithResources1 {
                 }
             }
         }
+
         assertThatThrownBy(() -> {
             @SuppressWarnings("unused")
             int dummy = 0;
@@ -138,6 +139,7 @@ public class TestTryWithResources1 {
                 }
             }
         }
+
         assertThatThrownBy(() -> {
             @SuppressWarnings("unused")
             int dummy = 0;
@@ -165,6 +167,7 @@ public class TestTryWithResources1 {
                 // dummy
             }
         }
+
         final Throwable thrown0 = catchThrowable(() -> {
             try (Closeable1 c1 = new Closeable1();) {
                 c1.throwSomething();
@@ -195,6 +198,7 @@ public class TestTryWithResources1 {
                 }
             }
         }
+
         final Throwable thrown0 = catchThrowable(() -> {
             try (Closeable1 c1 = new Closeable1();) {
                 c1.throwSomething();
@@ -235,6 +239,7 @@ public class TestTryWithResources1 {
                 }
             }
         }
+
         List<String> messageBox = new ArrayList<>();
         final Throwable thrown0 = catchThrowable(() -> {
             try (Closeable1 c1 = new Closeable1("res1", messageBox);

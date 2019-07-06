@@ -93,9 +93,9 @@ public class TestEnumBasics {
         final int num;
         final String name;
 
-        ConstructableEnums(int _num, String _name) {
-            this.num = _num;
-            this.name = _name;
+        ConstructableEnums(int num, String name) {
+            this.num = num;
+            this.name = name;
         }
 
         String getContent() {
@@ -145,8 +145,8 @@ public class TestEnumBasics {
         };
         final String greeting;
 
-        EnumsWithMethod(String _greeting) {
-            this.greeting = _greeting;
+        EnumsWithMethod(String greeting) {
+            this.greeting = greeting;
         }
 
         abstract String hello(String yourName);
@@ -188,8 +188,8 @@ public class TestEnumBasics {
         };
         final String myName;
 
-        EnumWithInterface(String _myName) {
-            myName = _myName;
+        EnumWithInterface(String myName) {
+            this.myName = myName;
         }
     }
 

@@ -65,20 +65,20 @@ public class TestLambdaDemo {
         assertThat(repeater2.apply("ABC", 3)).isEqualTo("ABCABCABC");
     }
 
-    int c = 3;
+    int cnt = 3;
 
     @Test
     public void lambdaScope() throws Exception {
         IntSupplier cycle123a = new IntSupplier() {
-            int c = 2;
+            int cnt = 2;
 
             @Override
             public int getAsInt() {
-                this.c++;
-                return (this.c % 3) + 1;
+                this.cnt++;
+                return (this.cnt % 3) + 1;
             }
         };
-        IntSupplier cycle123b = () -> (this.c++ % 3) + 1;
+        IntSupplier cycle123b = () -> (this.cnt++ % 3) + 1;
         assertThat(cycle123a.getAsInt()).isEqualTo(1);
         assertThat(cycle123a.getAsInt()).isEqualTo(2);
         assertThat(cycle123a.getAsInt()).isEqualTo(3);
@@ -91,6 +91,6 @@ public class TestLambdaDemo {
         assertThat(cycle123b.getAsInt()).isEqualTo(1);
         assertThat(cycle123b.getAsInt()).isEqualTo(2);
         assertThat(cycle123b.getAsInt()).isEqualTo(3);
-        assertThat(this.c).isEqualTo(9);
+        assertThat(this.cnt).isEqualTo(9);
     }
 }
