@@ -37,6 +37,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package javasnack.myutils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

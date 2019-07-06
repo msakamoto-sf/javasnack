@@ -25,4 +25,5 @@
  * http://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
  * http://stackoverflow.com/questions/2836646/java-serializable-object-to-byte-array
  */
+
 package javasnack.ser;

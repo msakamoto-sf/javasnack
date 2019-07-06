@@ -25,4 +25,5 @@
  * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  * http://qiita.com/opengl-8080/items/6fb69cd2493e149cac3a
  */
+
 package javasnack.guice3;

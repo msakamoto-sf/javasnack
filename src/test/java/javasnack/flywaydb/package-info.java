@@ -23,4 +23,5 @@
  * http://blog.livedoor.jp/ryu22e/archives/65722084.html
  * http://siguniang.wordpress.com/2013/11/10/db-schema-migration-made-easy-with-flyway/
  */
+
 package javasnack.flywaydb;
