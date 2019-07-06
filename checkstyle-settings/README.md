@@ -29,3 +29,10 @@ about google java style:
 - Checkstyle 使い方メモ - Qiita
   - https://qiita.com/opengl-8080/items/cb4122a19269e8e683a4
 
+## TIPS & MEMO
+
+元になるSunやGoogleのスタイル設定を extend/inherit/include などで部分的に拡張できないか？→無い。
+- https://github.com/checkstyle/checkstyle/issues/2873
+- https://github.com/checkstyle/checkstyle/issues/3738
+- https://github.com/checkstyle/checkstyle/issues/4484
+

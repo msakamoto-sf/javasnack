@@ -14,6 +14,30 @@ Tinny Java Excersise, Experimental, Practices Programms.
 to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
 - Eclipse install how-to
 - Clean Up/Formatter configuration
+- Required plugin: [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
+
+### Eclipse/STS checkstyle plugin configuration
+
+import checkstyle configuration xml into eclipse:
+
+1. import xml into eclipse global configuration.
+   1. Window -> Preferences -> Checkstyle -> Global Check Configurations : click "New"
+   2. Select: "Project Relative Configuration"
+   3. Location: click "Browse" -> then select project -> select `javasnack/checkstyle-settings/google_checks-8.18_custom.xml`
+   4. Name: set proper name
+   5. Apply and Close
+2. setup project specific setting
+   1. right-click project -> Properties (ALT + Enter)
+   2. Checkstyle -> check "Checkstyle active for this project"
+   3. select imported xml configration
+   4. Apply and Close
+3. run first checkstyle
+   1. right-click project -> Checkstyle -> "Check Code with Checkstyle"
+
+reload updated xml to Eclipse/STS: (unstable way)
+1. some operations in Window -> Preferences -> Checkstyle config then "Apply and Click". (e.g. checkbox on <> off)
+2. project setting -> switch checkstyle activate / deactivate some times.
+3. rebuild project.
 
 ## how to build and execute main()
 
@@ -135,6 +159,12 @@ all test cases (surefire + failsafe : including `@Tag("junit5-tag-filter-2")` an
 
 ```
 $ ./mvnw integration-test
+```
+
+run checkstyle from command line:
+
+```
+$ ./mvnw checkstyle:check
 ```
 
 generate report:
