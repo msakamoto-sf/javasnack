@@ -234,10 +234,12 @@ public class TestExecutorFutureBasics {
 
         assertEquals("hello", futures.get(0).get(1, TimeUnit.SECONDS));
         assertEquals("hello", futures.get(1).get(1, TimeUnit.SECONDS));
+        boolean isFutureNo2Interrupted = false;
         try {
             final String f2result = futures.get(2).get(1, TimeUnit.SECONDS);
             // if no TimeoutException
             assertEquals("interrupted", f2result);
+            isFutureNo2Interrupted = true;
         } catch (TimeoutException maybeHappens) {
             // in some situation (timing or execution environment), timeout happens.
             // THIS IS EXPECTED BEHAVIOUR.
@@ -259,7 +261,17 @@ public class TestExecutorFutureBasics {
         assertTrue(futures.get(1).isDone());
 
         assertFalse(futures.get(2).isCancelled());
-        assertTrue(futures.get(2).isDone());
+        if (isFutureNo2Interrupted) {
+            /* future[2] については不安定で、例えばEclipseのJUnit pluginから起動したときは100% interruptedとなるのに
+             * mvn test で起動すると TimeoutException が時々発生したりする。
+             * そのため、isDone() についても interrupted 発生時は true だが、TimeoutException 発生時は false 
+             * となるため、わざわざフラグで assert を切り替えている。
+             * NOTE: 自分の理解不足もあるかもなので、もしかしたら将来修正するかも。
+             */
+            assertTrue(futures.get(2).isDone());
+        } else {
+            assertFalse(futures.get(2).isDone());
+        }
 
         assertFalse(futures.get(3).isCancelled());
         assertFalse(futures.get(3).isDone());
