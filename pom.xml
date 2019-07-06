@@ -25,7 +25,7 @@
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
     <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
-    <checkstyle.config.location>google_checks.xml</checkstyle.config.location>
+    <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.18_custom.xml</checkstyle.config.location>
     <!--
     see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html
     -> enforce specific version same to what eclipse checkstyle plugin is using at 2019-07.
@@ -193,6 +193,10 @@
     <pluginManagement>
       <plugins>
 
+        <!--
+        mvn checkstyle:checkstyle (<build>設定) と mvn site (<reporting>設定) で checkstyle の動作を揃えるため、
+        <build>の<pluginManagement>側で設定を調整する。
+        -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
@@ -206,6 +210,7 @@
           </dependencies>
           <configuration>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <propertyExpansion>samedir=${project.basedir}/checkstyle-settings</propertyExpansion>
           </configuration>
         </plugin>
     

@@ -1,0 +1,359 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+          "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+          "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!--
+    Checkstyle configuration that checks the Google coding conventions from Google Java Style
+    that can be found at https://google.github.io/styleguide/javaguide.html.
+
+    Checkstyle is very configurable. Be sure to read the documentation at
+    http://checkstyle.sf.net (or in your downloaded distribution).
+
+    To completely disable a check, just comment it out or delete it from the file.
+
+    Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
+ -->
+
+<!-- 
+v8.18 の google_checks.xml からコピーしてカスタマイズしたものになります。
+https://github.com/checkstyle/checkstyle/blob/checkstyle-8.18/src/main/resources/google_checks.xml
+なぜ v8.18 かというと、2019-07時点の eclipse checkstyle plugin が使用しているバージョンに揃えたためです。
+
+カスタマイズ内容: (「もとの設定」とは上記オリジナルの google_checks.xml のことを指します)
+
+- Indentation 設定を無効化
+  - https://checkstyle.org/config_misc.html#Indentation
+  - もとの設定だとインデントの種類によって 2/4/0 を使い分けてますが、そうなるとIDEやEditorのフォーマッタもそれに対応する必要があります。
+  - 特定のIDEだけを考えるならそれでも良いでしょうが、Eclipse系/NetBeans/IDEA三種 + vim/emacs/vscode 全てに柔軟に対応するとなるとかなり難しいのではないかと。
+  - checkstyle のデフォルトとしては brace 以外は4で、上記IDE/editorのフォーマッタ全てで無難に対応できる確度が高いです。
+  - (全部検証したわけではないですが、よくあるエディタのフォーマッタなら、brace以外はすべて4スペインデントというのはまず問題ないはず)
+  - よって、google java style のインデント規約は無視します。
+- CustomImportOrder 設定を無効化
+  - https://checkstyle.org/config_imports.html#CustomImportOrder
+  - もとの設定では sortImportsInGroupAlphabetically でアルファベット順のimportを強制していました。
+  - しかし Eclipse の Java -> Code Style -> Organize Imports のデフォルト設定はそうなっていないのと、
+  Eclipse上でもこれはFormatterとしてimport/exportできる設定になっていない、つまり簡単に設定をimportできるものではない点、
+  また他のIDE/editorでの自動補完の状況も不明なため、特別な検査を行わないcheckstyleのデフォルトに任せるという判断に倒しました。
+  - (import organize機能のないeditorなどでimportを手書きしている人が混ざる状況であれば強制したほうが良いかもしれません。) 
+- AbbreviationAsWordInName で許容文字数(allowedAbbreviationLength)を5に拡張
+  - https://checkstyle.org/config_naming.html#AbbreviationAsWordInName
+  - もとの設定では 1 になっていて、つまり大文字2つ以上を全てNG扱いにしていた。
+  - ただ、IOExceptionやURLDecoderなどJavaですでに大文字2つ以上を使っているクラスのテストや実験であるのをわかりやすくするため、クラスやメソッドに
+  "...IOException" や "...URL..." など直接つかっているものもある。
+  そのため、本プロジェクトに限定して allowedAbbreviationLength を5に拡張し、許容度を広げた。
+  - NOTE: 通常のプロジェクトであればもとの設定そのままで始めて良いと思われる。checkstyleのデフォルトは2.
+- LineLength
+  - https://checkstyle.org/config_sizes.html#LineLength
+  - もとの設定では100文字までになっているが、テスト/実験コードということもあり 200 文字まで許容に変更している。
+  - なお一部ではさらにそれ以上の文字列もあり、これはsuppress filterにより除外した。
+  - NOTE: 通常のプロジェクトであればもとの設定で100文字程度で始めて良いと思われる。
+- EmptyCatchBlock
+  - https://checkstyle.org/config_blocks.html#EmptyCatchBlock
+  - もとの設定では "expected" という変数名でexceptionを受けていればOKとなっている(exceptionVariableName)。
+  - ただ、sleepに対するinterruptのようにexpectedというよりは単に無視する "ignore", "ignored" という変数名も多用しているので、expected|ignoreに変更した。
+
+NOTE: 以下のJavaDoc関連は全般的に無効化していますが、それはこのプロジェクトが実験/テスト用のためです。
+通常のプロジェクトであればもとの設定そのままで始めて良いと思います(テストコードについては suppression filter で除外するなど調整)。
+  (個人的には、ライブラリ開発であれば必須だが、アプリケーション側の開発では不要と思う)
+
+- JavadocMethod
+  - https://checkstyle.org/config_javadoc.html#JavadocMethod
+  - テスト/実験コードという本プロジェクトの性質上、JavaDocは特に必要ないためコメントアウトして無効化してます。
+- SummaryJavadoc
+  - https://checkstyle.org/config_javadoc.html#SummaryJavadoc
+  - テスト/実験コードという本プロジェクトの性質上、JavaDocは特に必要ないため要約有無及び要約末尾の"."チェックはコメントアウトして無効化してます。
+- JavadocParagraph
+  - https://checkstyle.org/config_javadoc.html#JavadocParagraph
+  - 本プロジェクトは実験/テスト目的ということもあり、JavaDocのルールは重要視していない。そのためコメントアウトして無効化しています。
+
+ -->
+
+<module name = "Checker">
+    <property name="charset" value="UTF-8"/>
+
+    <property name="severity" value="warning"/>
+
+    <property name="fileExtensions" value="java, properties, xml"/>
+
+    <!--
+    NOTE: checkstyleの除外フィルタ(suppression filter) には癖があり、本体のXMLファイルから
+    suppression filterのXMLを参照する仕組みとなる。
+    ではファイルを参照する時の相対パス解決はどうするかだが、IDE plugin 経由と Maven/Gradle 等のビルドツール経由
+    でそれぞれ微妙に設定アプローチのバリエーションが存在する。
+    Eclipse 経由 : eclipse checkstyle plugin 側で独自の専用プロパティを組み込んで実行しているため、それを使う。
+      -> 今回はこのXMLファイルと同じディレクトリを意味する ${samedir} を使用した。
+      see: https://checkstyle.org/eclipse-cs/#!/properties
+    maven-checkstyle-plugin 経由 : <suppressionsLocation> でpom.xml側からsuppression filterを指定することができる。
+      see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/suppressions-filter.html
+
+    maven-checkstyle-plugin の <suppressionsLocation> 方式ではEclipse側が利用できない。
+    Eclipse側の利用を考慮するなら、eclipse checkstyle plugin 側の専用プロパティ ${samedir} を組み合わせて、
+    本来の王道である本体XMLからの SuppressionFilter moduleによる外部XML参照にするのが良い。
+    -> そうなると maven-checkstyle-plugin 側をどうするかだが、
+    こちらで Eclipse と同等の ${samedir} プロパティを設定することができる。
+    これにより、Eclipse用の設定がmavenでも同様に動作可能となる。
+
+    see: https://checkstyle.org/config_filters.html#SuppressionFilter
+    see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/suppressions-filter.html
+    see: https://kazurof.github.io/GoogleJavaStyle-ja/
+    see: http://hideoku.hatenablog.jp/entry/2015/10/23/065739
+    see: https://stackoverflow.com/questions/198244/checkstyle-suppression-filters
+    see: https://checkstyle.org/config.html#Properties
+    -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${samedir}/checkstyle-suppressions.xml"/>
+    </module>
+
+    <!-- Checks for whitespace                               -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+
+    <module name="TreeWalker">
+        <module name="OuterTypeFilename"/>
+        <module name="IllegalTokenText">
+            <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+            <property name="format"
+             value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+            <property name="message"
+             value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+        </module>
+        <module name="AvoidEscapedUnicodeCharacters">
+            <property name="allowEscapesForControlCharacters" value="true"/>
+            <property name="allowByTailComment" value="true"/>
+            <property name="allowNonPrintableEscapes" value="true"/>
+        </module>
+        <module name="LineLength">
+            <!-- 
+            <property name="max" value="100"/>
+             -->
+            <property name="max" value="200"/>
+            <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        </module>
+        <module name="AvoidStarImport"/>
+        <module name="OneTopLevelClass"/>
+        <module name="NoLineWrap"/>
+        <module name="EmptyBlock">
+            <property name="option" value="TEXT"/>
+            <property name="tokens"
+             value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+        </module>
+        <module name="NeedBraces"/>
+        <module name="LeftCurly"/>
+        <module name="RightCurly">
+            <property name="id" value="RightCurlySame"/>
+            <property name="tokens"
+             value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO"/>
+        </module>
+        <module name="RightCurly">
+            <property name="id" value="RightCurlyAlone"/>
+            <property name="option" value="alone"/>
+            <property name="tokens"
+             value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+            <message key="ws.notFollowed"
+             value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+            <message key="ws.notPreceded"
+             value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+        </module>
+        <module name="OneStatementPerLine"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="FallThrough"/>
+        <module name="UpperEll"/>
+        <module name="ModifierOrder"/>
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapDot"/>
+            <property name="tokens" value="DOT"/>
+            <property name="option" value="nl"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapComma"/>
+            <property name="tokens" value="COMMA"/>
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
+            <property name="id" value="SeparatorWrapEllipsis"/>
+            <property name="tokens" value="ELLIPSIS"/>
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
+            <property name="id" value="SeparatorWrapArrayDeclarator"/>
+            <property name="tokens" value="ARRAY_DECLARATOR"/>
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapMethodRef"/>
+            <property name="tokens" value="METHOD_REF"/>
+            <property name="option" value="nl"/>
+        </module>
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+            <message key="name.invalidPattern"
+             value="Package name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="TypeName">
+            <message key="name.invalidPattern"
+             value="Type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+             value="Member name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="ParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+             value="Parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="LambdaParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+                     value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="CatchParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+             value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+             value="Local variable name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+             value="Class type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+             value="Method type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="InterfaceTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+             value="Interface type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="NoFinalizer"/>
+        <module name="GenericWhitespace">
+            <message key="ws.followed"
+             value="GenericWhitespace ''{0}'' is followed by whitespace."/>
+            <message key="ws.preceded"
+             value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
+            <message key="ws.illegalFollow"
+             value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+            <message key="ws.notPreceded"
+             value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
+        </module>
+        <!-- 
+        <module name="Indentation">
+            <property name="basicOffset" value="2"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="2"/>
+            <property name="throwsIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+            <property name="arrayInitIndent" value="2"/>
+        </module>
+         -->
+        <module name="AbbreviationAsWordInName">
+            <property name="ignoreFinal" value="false"/>
+            <!-- 
+            <property name="allowedAbbreviationLength" value="1"/>
+             -->
+            <property name="allowedAbbreviationLength" value="5"/>
+        </module>
+        <module name="OverloadMethodsDeclarationOrder"/>
+        <module name="VariableDeclarationUsageDistance"/>
+        <!-- 
+        <module name="CustomImportOrder">
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="separateLineBetweenGroups" value="true"/>
+            <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+        </module>
+         -->
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceBefore">
+            <property name="tokens"
+             value="COMMA, SEMI, POST_INC, POST_DEC, DOT, ELLIPSIS, METHOD_REF"/>
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+        <module name="ParenPad"/>
+        <module name="OperatorWrap">
+            <property name="option" value="NL"/>
+            <property name="tokens"
+             value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
+        </module>
+        <module name="AnnotationLocation">
+            <property name="id" value="AnnotationLocationMostCases"/>
+            <property name="tokens"
+             value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+        </module>
+        <module name="AnnotationLocation">
+            <property name="id" value="AnnotationLocationVariables"/>
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="allowSamelineMultipleAnnotations" value="true"/>
+        </module>
+        <module name="NonEmptyAtclauseDescription"/>
+        <module name="JavadocTagContinuationIndentation"/>
+        <!-- 
+        <module name="SummaryJavadoc">
+            <property name="forbiddenSummaryFragments"
+             value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )"/>
+        </module>
+         -->
+        <!-- 
+        <module name="JavadocParagraph"/>
+         -->
+        <module name="AtclauseOrder">
+            <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+            <property name="target"
+             value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+        </module>
+        <!-- 
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingParamTags" value="true"/>
+            <property name="allowMissingThrowsTags" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
+            <property name="allowThrowsTagsForSubclasses" value="true"/>
+        </module>
+         -->
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+            <message key="name.invalidPattern"
+             value="Method name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="SingleLineJavadoc">
+            <property name="ignoreInlineTags" value="false"/>
+        </module>
+        <module name="EmptyCatchBlock">
+            <!-- 
+            <property name="exceptionVariableName" value="expected"/>
+             -->
+            <property name="exceptionVariableName" value="expected|ignore"/>
+        </module>
+        <module name="CommentsIndentation"/>
+    </module>
+</module>
