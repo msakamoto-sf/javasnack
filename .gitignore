@@ -67,4 +67,4 @@ bin/*
 *.log
 *.bak
 *.orig
-
+.checkstyle
