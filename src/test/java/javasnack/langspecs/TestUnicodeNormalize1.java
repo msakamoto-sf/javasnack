@@ -66,11 +66,11 @@ public class TestUnicodeNormalize1 {
             return sb.toString();
         }
 
-        public NormalizeResult(String nFC, String nFD, String nFKC, String nFKD) {
-            NFC = nFC;
-            NFD = nFD;
-            NFKC = nFKC;
-            NFKD = nFKD;
+        public NormalizeResult(String nfc, String nfd, String nfkc, String nfkd) {
+            this.NFC = nfc;
+            this.NFD = nfd;
+            this.NFKC = nfkc;
+            this.NFKD = nfkd;
         }
 
         public NormalizeResult() {
@@ -307,7 +307,7 @@ public class TestUnicodeNormalize1 {
         arguments("\u00bd", new NormalizeResult("\u00bd", "\u00bd", "\u0031\u2044\u0032", "\u0031\u2044\u0032")),
         // vulgar faction three quarters
         arguments("\u00be", new NormalizeResult("\u00be", "\u00be", "\u0033\u2044\u0034", "\u0033\u2044\u0034")),
-        arguments("", new NormalizeResult("", "", "", "") )
+        arguments("", new NormalizeResult("", "", "", ""))
         // @formatter:on
         );
     }
