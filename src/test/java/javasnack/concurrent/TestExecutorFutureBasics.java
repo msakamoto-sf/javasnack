@@ -148,12 +148,9 @@ public class TestExecutorFutureBasics {
             throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
         Future<?> f = es.submit(new Runnable() {
-            @SuppressWarnings("null")
             @Override
             public void run() {
-                String s = "hello";
-                s = null;
-                s.length();
+                throw new NullPointerException("xxx");
             }
         });
         final ExecutionException expectedException = assertThrows(ExecutionException.class, () -> {
