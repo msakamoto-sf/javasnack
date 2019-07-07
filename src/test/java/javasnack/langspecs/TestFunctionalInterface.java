@@ -60,7 +60,7 @@ public class TestFunctionalInterface {
             @Override
             public String get() {
                 cnt++;
-                return (cnt % 2 == 1) ? msg1 : msg2;
+                return ((cnt & 1) == 1) ? msg1 : msg2;
             }
         };
         assertThat(sup1.get()).isEqualTo("Hello");
