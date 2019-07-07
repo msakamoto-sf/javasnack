@@ -214,6 +214,10 @@
           </configuration>
         </plugin>
 
+        <!--
+        mvn spotbugs:check (<build>設定) と mvn site (<reporting>設定) で spotbugs の動作を揃えるため、
+        <build>の<pluginManagement>側で設定を調整する。
+        -->
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
@@ -223,9 +227,65 @@
             <dependency>
               <groupId>com.github.spotbugs</groupId>
               <artifactId>spotbugs</artifactId>
-              <version>4.0.0-beta3</version>
+              <!--
+              see: https://spotbugs.readthedocs.io/en/latest/maven.html
+              see: https://spotbugs.readthedocs.io/ja/latest/maven.html
+              -> enforce specific version same to what eclipse spotbugs plugin is using at 2019-07.
+               -->
+              <version>4.0.0-beta1</version>
             </dependency>
           </dependencies>
+          <!--
+          see: https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html
+          see: https://spotbugs.github.io/spotbugs-maven-plugin/spotbugs-mojo.html
+           -->
+          <configuration>
+            <!--
+            see: https://spotbugs.readthedocs.io/ja/latest/filter.html
+            see: https://spotbugs.readthedocs.io/en/latest/filter.html
+            see: https://spotbugs.github.io/spotbugs-maven-plugin/usage.html
+             -->
+            <excludeFilterFile>${project.basedir}/spotbugs-exclude-filter.xml</excludeFilterFile>
+            <includeFilterFile>${project.basedir}/spotbugs-include-filter.xml</includeFilterFile>
+            <!--
+            maven plugin ではテストコードがデフォルトでは対象外なので、明示的に対象に含める。
+            (eclipse plugin ではデフォルトで対象に含めてくれる。)
+            -->
+            <includeTests>true</includeTests>
+            <!--
+            NOTE: 以下の設定値については maven plugin のドキュメントには特に説明が無い。
+            see: https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html
+            -> 以下のコメントにある値例については、コマンドライン実行時の説明 /
+            eclipse plugin 上で実際に選べる選択肢 / 実際にそれぞれの設定値で 
+            maven plugin の正常動作確認して検出結果を eclipse plugin 上での
+            各選択肢の結果と比較などして検証した結果となっている。
+            see: https://spotbugs.readthedocs.io/ja/latest/running.html
+            see: https://spotbugs.readthedocs.io/en/latest/running.html 
+             -->
+            <!--
+            "分析力"(eclipse plugin 上の表記)[Min/Less/Default/More/Max] を明示的に指定する。
+            "Default" = "More" と思われる。
+            eclipse plugin 上は [最小/デフォルト/最大] 表記となっていて、明記はないものの 最小=Min, 最大=Maxと思われる。
+            したがって eclipse plugin 上からは "Less" が選べないものと思われる。
+            eclipse plugin のデフォルトが Default で、特にそれで支障は無さそうなので、それに明示的に揃える。
+            see: https://spotbugs.readthedocs.io/en/latest/effort.html
+            see: https://spotbugs.readthedocs.io/ja/latest/effort.html
+             -->
+            <effort>Default</effort>
+            <!--
+            "報告する最小ランク"(eclipse plugin 上の表記)[1 - 20] を明示的に指定する。
+            maven plugin の場合のデフォルト値が不明だが、eclipse plugin のデフォルトが 15 で、
+            実際の検出内容も支障無さそうなので、それに明示的に揃える。
+            16以上にするとかなり細かい指摘も増えてくるが、役立つものもありそうなので、実プロダクトでは多少試行錯誤してみると良さそう。
+             -->
+            <maxRank>15</maxRank>
+            <!--
+            "レポートする最低の信頼度"(eclipse plugin 上の表記)[Low/Medium(=Default)/High] を明示的に指定する。
+            maven plugin の場合のデフォルト値は "Default" で eclipse plugin 側のデフォルト値 "Medium" と同等だが、
+            明示的に Medium として eclipse plugin 側の表記に揃える。
+             -->
+            <threshold>Medium</threshold>
+          </configuration>
         </plugin>
 
       </plugins>
