@@ -18,6 +18,7 @@ package javasnack;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 import javasnack.snacks.CollectionTypes1;
 import javasnack.snacks.HelloWorld;
@@ -92,8 +93,12 @@ public class Main {
         }
         System.out.print("Enter snack number (exit for -1):");
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            int i = Integer.parseInt(br.readLine().trim());
+            final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            final String readLine = br.readLine();
+            if (Objects.isNull(readLine)) {
+                return;
+            }
+            int i = Integer.parseInt(readLine.trim());
             if (i >= snacks.length) {
                 System.out.println("Enter 0 - " + (snacks.length - 1) + " number.");
                 return;

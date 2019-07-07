@@ -26,11 +26,11 @@ public class ReadConsoleInput implements Runnable {
 
         // Traditional STDIN Read
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(
+            final BufferedReader br = new BufferedReader(new InputStreamReader(
                     System.in));
             System.out.print("prompot:>");
-            String input = br.readLine().trim();
-            System.out.println("Input = [" + input + "]");
+            final String readLine = br.readLine();
+            System.out.println("Input = [" + readLine + "]");
         } catch (Exception e) {
             e.printStackTrace();
         }

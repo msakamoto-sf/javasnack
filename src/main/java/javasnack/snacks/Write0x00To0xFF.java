@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class Write0x00To0xFF implements Runnable {
     @Override
@@ -31,9 +32,14 @@ public class Write0x00To0xFF implements Runnable {
         }
         System.out.println("");
         System.out.print("Enter FileName For Write 0x00 - 0xFF:");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String filename = br.readLine().trim();
+            final String readLine = br.readLine();
+            if (Objects.isNull(readLine)) {
+                System.out.println("canceled.");
+                return;
+            }
+            String filename = readLine.trim();
             try (final var fos = new FileOutputStream(filename)) {
                 fos.write(bdata);
             }
