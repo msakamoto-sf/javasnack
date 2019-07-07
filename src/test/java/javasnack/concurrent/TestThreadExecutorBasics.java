@@ -57,8 +57,8 @@ public class TestThreadExecutorBasics {
 
     @BeforeAll
     public void beforeAll() throws IOException {
-        BlackholeTcpServer server = new BlackholeTcpServer();
-        this.blackholeTcpServerPort = server.start();
+        blackholeTcpServer = new BlackholeTcpServer();
+        this.blackholeTcpServerPort = blackholeTcpServer.start();
     }
 
     @AfterAll
