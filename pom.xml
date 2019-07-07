@@ -4,11 +4,30 @@
 
   <groupId>javasnack</groupId>
   <artifactId>javasnack</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-java11-SNAPSHOT</version>
   <packaging>jar</packaging>
-
   <name>javasnack</name>
-  <url>http://maven.apache.org</url>
+  <description>Tinny Java (and other libraries) example, demo, excersise sample code.</description>
+  <url>https://github.com/msakamoto-sf/javasnack/</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/msakamoto-sf/javasnack/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:https://github.com/msakamoto-sf/javasnack.git</connection>
+    <developerConnection>scm:git:git@github.com:msakamoto-sf/javasnack</developerConnection>
+    <url>scm:git:git@github.com:msakamoto-sf/javasnack.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <!-- see : https://maven.apache.org/general.html#encoding-warning  -->
