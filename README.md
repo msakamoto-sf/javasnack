@@ -14,7 +14,9 @@ Tinny Java Excersise, Experimental, Practices Programms.
 to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
 - Eclipse install how-to
 - Clean Up/Formatter configuration
-- Required plugin: [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
+- Recommended plugin:
+  - [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
+  - [SpotBugs Eclipse plugin](https://spotbugs.readthedocs.io/en/latest/eclipse.html)
 
 ### Eclipse/STS checkstyle plugin configuration
 
@@ -38,6 +40,37 @@ reload updated xml to Eclipse/STS: (unstable way)
 1. some operations in Window -> Preferences -> Checkstyle config then "Apply and Click". (e.g. checkbox on <> off)
 2. project setting -> switch checkstyle activate / deactivate some times.
 3. rebuild project.
+
+### Eclipse/STS SpotBugs plugin configuration
+
+1. import project specific include/exclude filter.
+   1. right-click project -> Properties -> SpotBugs -> check "Enable project specific settings"
+   2. at filter file tab, add "spotbugs-exclude-filter.xml" to exclude filter file, add "spotbugs-include-filter.xml" to include filter file.
+2. SpotBugs plugin setting (see pom.xml configuration)
+   1. set effort (分析力) to "Default"
+   2. set max rank (報告する最小ランク) to 15
+   3. set threshold (レポートする最低の信頼度) to "Medium"
+   4. check below categories (see spotbugs-include-filter.xml)
+      1. "Bad practice"
+      2. "Malicious code vulnerability"
+      3. "Correctness"
+      4. "Performance"
+      5. "Security"
+      6. "Dodgy code"
+      7. "Multithreaded correctness"
+      8. "Internationalization"
+   5. do NOT check "Experimental" category.
+3. run SpotBugs check manually:
+   1. right-click project -> SpotBugs -> click "Find Bugs"
+
+If you edited exclude/include xml filter, then right-click project -> SpotBugs -> clear markers and Find Bugs again.
+
+SpotBugs reference:
+
+- https://spotbugs.github.io/
+- https://spotbugs.github.io/spotbugs-maven-plugin/
+- https://spotbugs.readthedocs.io/en/latest/
+- https://spotbugs.readthedocs.io/ja/latest/
 
 ## how to build and execute main()
 
@@ -140,7 +173,7 @@ $ cd javasnack/
 
 $ ./mvnw package
 
-$ java -jar target/javasnack-1.0-SNAPSHOT.jar
+$ java -jar target/javasnack-(version).jar
 or
 $ ./mvnw exec:java
 ```
@@ -165,6 +198,12 @@ run checkstyle from command line:
 
 ```
 $ ./mvnw checkstyle:check
+```
+
+run SpotBugs from command line:
+
+```
+$ ./mvnw spotbugs:check
 ```
 
 generate report:
