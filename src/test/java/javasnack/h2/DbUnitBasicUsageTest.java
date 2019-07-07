@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.dbunit.Assertion;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
@@ -108,13 +107,15 @@ public class DbUnitBasicUsageTest {
         void setup(Connection targetDbConn) throws SQLException {
             PreparedStatement ps = targetDbConn
                     .prepareStatement("create table t1("
-                            + StringUtils.join(new String[] {
-                                    "id identity primary key ",
-                                    "boolean_c boolean", "int_c int",
-                                    "decimal_c decimal", "double_c double",
-                                    "time_c time", "date_c date",
-                                    "timestamp_c timestamp",
-                                    "varchar_c varchar" }, ", ")
+                            + "id identity primary key, "
+                            + "boolean_c boolean, "
+                            + "int_c int, "
+                            + "decimal_c decimal, "
+                            + "double_c double, "
+                            + "time_c time, "
+                            + "date_c date, "
+                            + "timestamp_c timestamp, "
+                            + "varchar_c varchar"
                             + ")");
             ps.execute();
             ps.close();
