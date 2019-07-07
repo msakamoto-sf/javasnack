@@ -70,7 +70,9 @@ public class TestNumericLiterals {
         assertThat(1_1).isEqualTo(11);
         assertThat(100_200_300).isEqualTo(100200300);
         assertThat(100_200_300L).isEqualTo(100200300L);
-        assertThat(3.14_159).isEqualTo(3.14159);
-        assertThat(3.14_159F).isEqualTo(3.14159f);
+        assertThat(1.23_456).isEqualTo(1.23456);
+        assertThat(1.23_456F).isEqualTo(1.23456f);
+        //assertThat(3.14_159).isEqualTo(3.14159); // this cause SpotBugs' CNT_ROUGH_CONSTANT_VALUE
+        //assertThat(3.14_159F).isEqualTo(3.14159f); // this cause SpotBugs' CNT_ROUGH_CONSTANT_VALUE
     }
 }
