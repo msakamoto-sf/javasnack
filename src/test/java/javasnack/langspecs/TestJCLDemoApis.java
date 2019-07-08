@@ -43,10 +43,9 @@ public class TestJCLDemoApis {
         JclObjectFactory factory = JclObjectFactory.getInstance();
 
         // call constructor with arguments.
-        Object obj = factory.create(jcl, "myapi.GreetingImpl", new String[] {
-                "Firstname", "Lastname" },
-                new Class[] { String.class,
-                        String.class });
+        Object obj = factory.create(jcl, "myapi.GreetingImpl",
+                new String[] { "Firstname", "Lastname" },
+                new Class[] { String.class, String.class });
 
         return JclUtils.cast(obj, GreetingInterface.class);
     }

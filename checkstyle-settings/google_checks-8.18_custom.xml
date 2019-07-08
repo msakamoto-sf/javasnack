@@ -29,6 +29,10 @@ https://github.com/checkstyle/checkstyle/blob/checkstyle-8.18/src/main/resources
   - checkstyle のデフォルトとしては brace 以外は4で、上記IDE/editorのフォーマッタ全てで無難に対応できる確度が高いです。
   - (全部検証したわけではないですが、よくあるエディタのフォーマッタなら、brace以外はすべて4スペインデントというのはまず問題ないはず)
   - よって、google java style のインデント規約は無視します。
+  - ただし完全に無視するのではなく、Eclipse標準ベースのフォーマッタに対応した設定でチェックをするようカスタマイズしています。
+    - caseIndent は 0 にしています。
+    - arrayInitIndent は 8 にしています。
+    - これで https://github.com/msakamoto-sf/howto-eclipse-setup/tree/msakamoto-sf-custom/setup-type2 のフォーマッタがpassします。
 - CustomImportOrder 設定を無効化
   - https://checkstyle.org/config_imports.html#CustomImportOrder
   - もとの設定では sortImportsInGroupAlphabetically でアルファベット順のimportを強制していました。
@@ -279,6 +283,10 @@ NOTE: 以下のJavaDoc関連は全般的に無効化していますが、それ�
             <property name="arrayInitIndent" value="2"/>
         </module>
          -->
+        <module name="Indentation">
+            <property name="caseIndent" value="0"/>
+            <property name="arrayInitIndent" value="8"/>
+        </module>
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
             <!-- 

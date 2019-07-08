@@ -64,8 +64,7 @@ public class EncodePojo {
     public final Map<String, Object> mapObject = new LinkedHashMap<>();
     public final String 日本語プロパティ = "日本語文字列";
     public final EncodePojoEnum enumObject = EncodePojoEnum.ONE;
-    public final EncodePojoEnum[] enumArray = { EncodePojoEnum.TWO,
-            EncodePojoEnum.FOUR };
+    public final EncodePojoEnum[] enumArray = { EncodePojoEnum.TWO, EncodePojoEnum.FOUR };
     public final List<EncodePojoEnum> enumList = Arrays.asList(
             EncodePojoEnum.THREE, EncodePojoEnum.FIVE);
 

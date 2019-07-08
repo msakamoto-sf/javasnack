@@ -42,8 +42,8 @@ public class JCLDemo implements Runnable {
 
             // call constructor with arguments.
             Object obj = factory.create(jcl, "myapi.GreetingImpl",
-                    new String[] { "Firstname", "Lastname" }, new Class[] {
-                            String.class, String.class });
+                    new String[] { "Firstname", "Lastname" },
+                    new Class[] { String.class, String.class });
 
             GreetingInterface gi = JclUtils.cast(obj, GreetingInterface.class);
             System.out.println(gi.morning("Darjeeling"));
