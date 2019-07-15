@@ -31,6 +31,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -50,6 +51,11 @@ import javasnack.junit.model.PersonModel;
 import javasnack.junit.model.PersonRepository;
 import javasnack.testee.MockitoExercise01;
 
+/* see-also:
+ * - https://site.mockito.org/
+ * - https://github.com/mockito/mockito
+ * - https://static.javadoc.io/org.mockito/mockito-core/3.0.0/org/mockito/Mockito.html
+ */
 public class TestMockitoExercise01 {
 
     @Test
@@ -190,7 +196,7 @@ public class TestMockitoExercise01 {
     }
 
     @Test
-    public void testMockVerifyInvocations() {
+    public void testMockVerifyInvocationsAndResetMockInteractions() {
         final PersonRepository repo = mock(PersonRepository.class);
 
         repo.create("aaa", "bbb", 10, List.of("a", "b"));
@@ -238,5 +244,54 @@ public class TestMockitoExercise01 {
         assertThat(firstNameCaptor.getAllValues()).isEqualTo(List.of("aaa", "aaa", "bbb"));
         assertThat(lastNameCaptor.getAllValues()).isEqualTo(List.of("bbb", "ccc", "ccc"));
         assertThat(ageCaptor.getAllValues()).isEqualTo(List.of(10, 20, 30));
+    }
+
+    @Test
+    public void testSpyVerifyInvocations() {
+        final PersonRepository repo = new PersonRepository();
+        final PersonRepository spiedRepo = spy(repo);
+        final long id1 = spiedRepo.create("aaa", "bbb", 10, List.of("a", "b"));
+        final long id2 = spiedRepo.create("bbb", "ccc", 20, List.of("b", "c"));
+        final long id3 = spiedRepo.create("ccc", "ddd", 30, List.of("c", "d"));
+        int affectedRows = spiedRepo.update(id1, "AAA", "BBB", 15, List.of("A", "B"));
+        assertThat(affectedRows).isEqualTo(1);
+        affectedRows = spiedRepo.delete(id2);
+        assertThat(affectedRows).isEqualTo(1);
+        final Optional<Person> opt = spiedRepo.getOne(id3);
+        final Person expected3 = new Person(id3, "ccc", "ddd", 30, List.of("c", "d"));
+        assertThat(opt.get()).isEqualTo(expected3);
+
+        verify(spiedRepo, times(3)).create(anyString(), anyString(), anyInt(), anyList());
+        verify(spiedRepo, times(1)).update(anyLong(), anyString(), anyString(), anyInt(), anyList());
+        verify(spiedRepo, times(1)).delete(anyLong());
+        final ArgumentCaptor<Long> longac = ArgumentCaptor.forClass(Long.class);
+        verify(spiedRepo).getOne(longac.capture());
+        assertThat(longac.getValue()).isEqualTo(id3);
+
+        // real object:
+        final Optional<Person> opt1 = repo.getOne(id1);
+        final Person expected1 = new Person(id1, "AAA", "BBB", 15, List.of("A", "B"));
+        assertThat(opt1.get()).isEqualTo(expected1);
+        final Optional<Person> opt2 = repo.getOne(id2);
+        assertThat(opt2.isEmpty()).isTrue();
+        final Optional<Person> opt3 = repo.getOne(id3);
+        assertThat(opt3.get()).isEqualTo(expected3);
+    }
+
+    @Test
+    public void testSpyStubRealMethod() {
+        final PersonRepository repo = new PersonRepository();
+        final PersonRepository spiedRepo = spy(repo);
+        final long id1 = spiedRepo.create("aaa", "bbb", 10, List.of("a", "b"));
+
+        doReturn(99).when(spiedRepo).update(anyLong(), anyString(), anyString(), anyInt(), anyList());
+        int affectedRows = spiedRepo.update(id1, "AAA", "BBB", 15, List.of("A", "B"));
+        assertThat(affectedRows).isEqualTo(99);
+        verify(spiedRepo, times(1)).update(id1, "AAA", "BBB", 15, List.of("A", "B"));
+
+        // doXxxx does not affect spied object.
+        final Optional<Person> opt = spiedRepo.getOne(id1);
+        final Person expected1 = new Person(id1, "aaa", "bbb", 10, List.of("a", "b"));
+        assertThat(opt.get()).isEqualTo(expected1);
     }
 }
