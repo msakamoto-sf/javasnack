@@ -3,6 +3,9 @@ package javasnack.diff.jgit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.diff.EditList;
@@ -18,7 +21,7 @@ public class TestHistogramDiffDemo {
     }
 
     @Test
-    public void testBasicUsage() {
+    public void testLineBasedDemoUsage() {
         final HistogramDiff hd = new HistogramDiff();
         RawText t1 = rawtext("");
         RawText t2 = rawtext("");
@@ -105,4 +108,173 @@ public class TestHistogramDiffDemo {
         //            System.out.println(e);
         //        });
     }
+
+    public static class LineBasedDiffBiFormatted {
+        public String s1 = "";
+        public String s2 = "";
+    }
+
+    public static class LineBasedDiffBiFormatter {
+        public static LineBasedDiffBiFormatted format(
+                final List<String> lines1,
+                final List<String> lines2,
+                final EditList editList) {
+            if (lines1.size() == 0 && lines2.size() == 0) {
+                return new LineBasedDiffBiFormatted();
+            }
+            final List<String> buf1 = new ArrayList<>(lines1.size() + lines2.size());
+            final List<String> buf2 = new ArrayList<>(lines1.size() + lines2.size());
+            // TODO
+            System.out.println("###########");
+            System.out.println(lines1);
+            System.out.println(lines2);
+            int lastIndex1 = 0;
+            int lastIndex2 = 0;
+            for (final Edit e : editList) {
+                switch (e.getType()) {
+                case INSERT:
+                    for (int i = lastIndex1; i < e.getBeginA(); i++) {
+                        final String line1 = lines1.get(i);
+                        buf1.add(line1);
+                    }
+                    for (int i = lastIndex2; i < e.getBeginB(); i++) {
+                        final String line2 = lines2.get(i);
+                        buf2.add(line2);
+                    }
+                    for (int i = e.getBeginB(); i < e.getEndB(); i++) {
+                        final String line2 = lines2.get(i);
+                        buf1.add("-" + line2 + "-");
+                        buf2.add(line2);
+                    }
+                    lastIndex1 = e.getEndA() + 1;
+                    lastIndex2 = e.getEndB();
+                    break;
+                case REPLACE:
+                    for (int i = e.getBeginA(); i < e.getEndA(); i++) {
+                        final String line1 = lines1.get(i);
+                        buf1.add("-" + line1 + "-");
+                    }
+                    for (int i = e.getBeginB(); i < e.getEndB(); i++) {
+                        final String line2 = lines2.get(i);
+                        buf2.add("+" + line2 + "+");
+                    }
+                    lastIndex1 = e.getEndA() + 1;
+                    lastIndex2 = e.getEndB() + 1;
+                    break;
+                case DELETE:
+                    for (int i = lastIndex1; i < e.getBeginA(); i++) {
+                        final String line1 = lines1.get(i);
+                        buf1.add(line1);
+                    }
+                    for (int i = lastIndex2; i < e.getBeginB(); i++) {
+                        final String line2 = lines2.get(i);
+                        buf2.add(line2);
+                    }
+                    for (int i = e.getBeginA(); i < e.getEndA(); i++) {
+                        final String line1 = lines1.get(i);
+                        buf1.add(line1);
+                        buf2.add("-" + line1 + "-");
+                    }
+                    lastIndex1 = e.getEndA();
+                    lastIndex2 = e.getEndB() + 1;
+                    break;
+                default:
+                    // illegal type : do nothing.
+                }
+            }
+            // TODO
+            System.out.println("[1]=" + lastIndex1);
+            System.out.println("[2]=" + lastIndex2);
+            for (int i = lastIndex1; i < lines1.size(); i++) {
+                final String line1 = lines1.get(i);
+                buf1.add(line1);
+            }
+            for (int i = lastIndex2; i < lines2.size(); i++) {
+                final String line2 = lines2.get(i);
+                buf2.add(line2);
+            }
+            // TODO
+            System.out.println(buf1);
+            System.out.println(buf2);
+            final LineBasedDiffBiFormatted r = new LineBasedDiffBiFormatted();
+            r.s1 = String.join("\n", buf1);
+            r.s2 = String.join("\n", buf2);
+            return r;
+        }
+    }
+
+    public static List<String> split(final String src) {
+        final String normalized = src.replace("\r\n", "\n");
+        final String[] lines = normalized.split("\\n");
+        final boolean isTerminatedByLf = src.endsWith("\n");
+        System.out.println(lines.length); // TODO
+        if (lines.length == 1 && "".equals(lines[0])) {
+            return Collections.emptyList();
+        }
+        final List<String> r = new ArrayList<>(lines.length);
+        for (int i = 0; i < lines.length; i++) {
+            if ((i == lines.length - 1) && isTerminatedByLf) {
+                r.add(lines[i] + "\n");
+            } else {
+                r.add(lines[i]);
+            }
+        }
+        return Collections.unmodifiableList(r);
+    }
+
+    @Test
+    public void testLineBasedDiffFormatter() {
+        final HistogramDiff hd = new HistogramDiff();
+        String s1 = "";
+        String s2 = "";
+        EditList el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        LineBasedDiffBiFormatted f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("");
+        assertThat(f.s2).isEqualTo("");
+
+        s1 = "";
+        s2 = "aaa";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        // TODO
+        el.forEach(e -> {
+            System.out.println(e);
+        });
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-aaa-");
+        assertThat(f.s2).isEqualTo("aaa");
+
+        s1 = "aaa";
+        s2 = "";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        // TODO
+        el.forEach(e -> {
+            System.out.println(e);
+        });
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa");
+        assertThat(f.s2).isEqualTo("-aaa-");
+
+        s1 = "aaa";
+        s2 = "bbb";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        // TODO
+        el.forEach(e -> {
+            System.out.println(e);
+        });
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-aaa-");
+        assertThat(f.s2).isEqualTo("+bbb+");
+
+        s1 = "aaa\nbbb\nccc\n";
+        s2 = "aaa\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        // TODO
+        el.forEach(e -> {
+            System.out.println(e);
+        });
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\nccc\n");
+        assertThat(f.s2).isEqualTo("aaa\n-bbb-\nccc\n");
+    }
+
 }
