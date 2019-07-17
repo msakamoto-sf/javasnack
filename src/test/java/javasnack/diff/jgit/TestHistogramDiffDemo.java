@@ -148,7 +148,7 @@ public class TestHistogramDiffDemo {
                         buf1.add("-" + line2 + "-");
                         buf2.add(line2);
                     }
-                    lastIndex1 = e.getEndA() + 1;
+                    lastIndex1 = e.getEndA();
                     lastIndex2 = e.getEndB();
                     break;
                 case REPLACE:
@@ -168,8 +168,8 @@ public class TestHistogramDiffDemo {
                         final String line2 = lines2.get(i);
                         buf2.add("+" + line2 + "+");
                     }
-                    lastIndex1 = e.getEndA() + 1;
-                    lastIndex2 = e.getEndB() + 1;
+                    lastIndex1 = e.getEndA();
+                    lastIndex2 = e.getEndB();
                     break;
                 case DELETE:
                     for (int i = lastIndex1; i < e.getBeginA(); i++) {
@@ -186,7 +186,7 @@ public class TestHistogramDiffDemo {
                         buf2.add("-" + line1 + "-");
                     }
                     lastIndex1 = e.getEndA();
-                    lastIndex2 = e.getEndB() + 1;
+                    lastIndex2 = e.getEndB();
                     break;
                 default:
                     // illegal type : do nothing.
@@ -454,5 +454,233 @@ public class TestHistogramDiffDemo {
         f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
         assertThat(f.s1).isEqualTo("aaa\nbbb\n-ccc-\n-ddd-\n-eee-");
         assertThat(f.s2).isEqualTo("aaa\nbbb\n+CCC+\n+DDD+\n+EEE+");
+    }
+
+    @Test
+    public void testLineBasedDiffFormatter4() {
+        final HistogramDiff hd = new HistogramDiff();
+        String s1 = "bbb";
+        String s2 = "AAA\nbbb";
+        EditList el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        LineBasedDiffBiFormatted f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-AAA-\nbbb");
+        assertThat(f.s2).isEqualTo("AAA\nbbb");
+
+        s1 = "AAA\nbbb\n";
+        s2 = "bbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("AAA\nbbb");
+        assertThat(f.s2).isEqualTo("-AAA-\nbbb");
+
+        s1 = "AAA\nbbb\n";
+        s2 = "BBB\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-AAA-\nbbb");
+        assertThat(f.s2).isEqualTo("+BBB+\nbbb");
+
+        s1 = "aaa\nbbb";
+        s2 = "aaa\nAAA\nbbb";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\n-AAA-\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\nAAA\nbbb");
+
+        s1 = "aaa\nAAA\nbbb\n";
+        s2 = "aaa\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nAAA\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\n-AAA-\nbbb");
+
+        s1 = "aaa\nAAA\nbbb\n";
+        s2 = "aaa\nBBB\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\n-AAA-\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\n+BBB+\nbbb");
+
+        s1 = "aaa\nbbb\nccc\n";
+        s2 = "aaa\nbbb\nBBB\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\n-BBB-\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\nBBB\nccc");
+
+        s1 = "aaa\nbbb\nBBB\nccc\n";
+        s2 = "aaa\nbbb\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\nBBB\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\n-BBB-\nccc");
+
+        s1 = "aaa\nbbb\nAAA\nccc\n";
+        s2 = "aaa\nbbb\nBBB\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\n-AAA-\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\n+BBB+\nccc");
+    }
+
+    @Test
+    public void testLineBasedDiffFormatter5() {
+        final HistogramDiff hd = new HistogramDiff();
+        String s1 = "bbb";
+        String s2 = "AAA\nBBB\nbbb";
+        EditList el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        LineBasedDiffBiFormatted f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-AAA-\n-BBB-\nbbb");
+        assertThat(f.s2).isEqualTo("AAA\nBBB\nbbb");
+
+        s1 = "AAA\nBBB\nbbb\n";
+        s2 = "bbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("AAA\nBBB\nbbb");
+        assertThat(f.s2).isEqualTo("-AAA-\n-BBB-\nbbb");
+
+        s1 = "AAA\nBBB\nbbb\n";
+        s2 = "CCC\nDDD\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-AAA-\n-BBB-\nbbb");
+        assertThat(f.s2).isEqualTo("+CCC+\n+DDD+\nbbb");
+
+        s1 = "aaa\nbbb";
+        s2 = "aaa\nAAA\nBBB\nbbb";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\n-AAA-\n-BBB-\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\nAAA\nBBB\nbbb");
+
+        s1 = "aaa\nAAA\nBBB\nbbb\n";
+        s2 = "aaa\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nAAA\nBBB\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\n-AAA-\n-BBB-\nbbb");
+
+        s1 = "aaa\nAAA\nBBB\nbbb\n";
+        s2 = "aaa\nCCC\nDDD\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\n-AAA-\n-BBB-\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\n+CCC+\n+DDD+\nbbb");
+
+        s1 = "aaa\nbbb\nccc\n";
+        s2 = "aaa\nbbb\nBBB\nCCC\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\n-BBB-\n-CCC-\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\nBBB\nCCC\nccc");
+
+        s1 = "aaa\nbbb\nBBB\nCCC\nccc\n";
+        s2 = "aaa\nbbb\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\nBBB\nCCC\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\n-BBB-\n-CCC-\nccc");
+
+        s1 = "aaa\nbbb\nAAA\nBBB\nccc\n";
+        s2 = "aaa\nbbb\nCCC\nDDD\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\n-AAA-\n-BBB-\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\n+CCC+\n+DDD+\nccc");
+    }
+
+    @Test
+    public void testLineBasedDiffFormatter6() {
+        final HistogramDiff hd = new HistogramDiff();
+        String s1 = "bbb";
+        String s2 = "AAA\nBBB\nCCC\nbbb";
+        EditList el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        LineBasedDiffBiFormatted f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-AAA-\n-BBB-\n-CCC-\nbbb");
+        assertThat(f.s2).isEqualTo("AAA\nBBB\nCCC\nbbb");
+
+        s1 = "AAA\nBBB\nCCC\nbbb\n";
+        s2 = "bbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("AAA\nBBB\nCCC\nbbb");
+        assertThat(f.s2).isEqualTo("-AAA-\n-BBB-\n-CCC-\nbbb");
+
+        s1 = "AAA\nBBB\nCCC\nbbb\n";
+        s2 = "DDD\nEEE\nFFF\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-AAA-\n-BBB-\n-CCC-\nbbb");
+        assertThat(f.s2).isEqualTo("+DDD+\n+EEE+\n+FFF+\nbbb");
+
+        s1 = "aaa\nbbb";
+        s2 = "aaa\nAAA\nBBB\nCCC\nbbb";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\n-AAA-\n-BBB-\n-CCC-\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\nAAA\nBBB\nCCC\nbbb");
+
+        s1 = "aaa\nAAA\nBBB\nCCC\nbbb\n";
+        s2 = "aaa\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nAAA\nBBB\nCCC\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\n-AAA-\n-BBB-\n-CCC-\nbbb");
+
+        s1 = "aaa\nAAA\nBBB\nCCC\nbbb\n";
+        s2 = "aaa\nDDD\nEEE\nFFF\nbbb\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\n-AAA-\n-BBB-\n-CCC-\nbbb");
+        assertThat(f.s2).isEqualTo("aaa\n+DDD+\n+EEE+\n+FFF+\nbbb");
+
+        s1 = "aaa\nbbb\nccc\n";
+        s2 = "aaa\nbbb\nBBB\nCCC\nDDD\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\n-BBB-\n-CCC-\n-DDD-\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\nBBB\nCCC\nDDD\nccc");
+
+        s1 = "aaa\nbbb\nBBB\nCCC\nDDD\nccc\n";
+        s2 = "aaa\nbbb\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\nBBB\nCCC\nDDD\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\n-BBB-\n-CCC-\n-DDD-\nccc");
+
+        s1 = "aaa\nbbb\nAAA\nBBB\nCCC\nccc\n";
+        s2 = "aaa\nbbb\nDDD\nEEE\nFFF\nccc\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("aaa\nbbb\n-AAA-\n-BBB-\n-CCC-\nccc");
+        assertThat(f.s2).isEqualTo("aaa\nbbb\n+DDD+\n+EEE+\n+FFF+\nccc");
+    }
+
+    @Test
+    public void testLineBasedDiffFormatter7() {
+        final HistogramDiff hd = new HistogramDiff();
+        String s1 = "aaa\n";
+        String s2 = "XXX\naaa\nYYY\n";
+        EditList el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        LineBasedDiffBiFormatted f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-XXX-\naaa\n-YYY-");
+        assertThat(f.s2).isEqualTo("XXX\naaa\nYYY");
+
+        s1 = "XXX\naaa\nYYY\n";
+        s2 = "aaa\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("XXX\naaa\nYYY");
+        assertThat(f.s2).isEqualTo("-XXX-\naaa\n-YYY-");
+
+        s1 = "XXX\naaa\nYYY\n";
+        s2 = "xxx\naaa\nyyy\n";
+        el = hd.diff(RawTextComparator.DEFAULT, rawtext(s1), rawtext(s2));
+        f = LineBasedDiffBiFormatter.format(split(s1), split(s2), el);
+        assertThat(f.s1).isEqualTo("-XXX-\naaa\n-YYY-");
+        assertThat(f.s2).isEqualTo("+xxx+\naaa\n+yyy+");
+
+        // TODO
     }
 }
