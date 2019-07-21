@@ -43,6 +43,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(0, 0, 0, 1));
+        assertThat(el.get(0).getLengthA()).isEqualTo(0);
+        assertThat(el.get(0).getLengthB()).isEqualTo(1);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.INSERT);
 
         t1 = rawtext("");
@@ -50,6 +52,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(0, 0, 0, 2));
+        assertThat(el.get(0).getLengthA()).isEqualTo(0);
+        assertThat(el.get(0).getLengthB()).isEqualTo(2);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.INSERT);
 
         t1 = rawtext("aaa\nbbb\nccc");
@@ -57,6 +61,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(1, 3, 1, 1));
+        assertThat(el.get(0).getLengthA()).isEqualTo(2);
+        assertThat(el.get(0).getLengthB()).isEqualTo(0);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.DELETE);
 
         t1 = rawtext("aaa\nbbb\nccc\nddd");
@@ -64,6 +70,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(1, 3, 1, 1));
+        assertThat(el.get(0).getLengthA()).isEqualTo(2);
+        assertThat(el.get(0).getLengthB()).isEqualTo(0);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.DELETE);
 
         t1 = rawtext("aaa\nbbb\nccc");
@@ -71,6 +79,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(1, 2, 1, 2));
+        assertThat(el.get(0).getLengthA()).isEqualTo(1);
+        assertThat(el.get(0).getLengthB()).isEqualTo(1);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.REPLACE);
 
         t1 = rawtext("aaa\nbbb\nccc\nddd\neee\nfff");
@@ -78,10 +88,16 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(3);
         assertThat(el.get(0)).isEqualTo(new Edit(1, 2, 1, 2));
+        assertThat(el.get(0).getLengthA()).isEqualTo(1);
+        assertThat(el.get(0).getLengthB()).isEqualTo(1);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.REPLACE);
         assertThat(el.get(1)).isEqualTo(new Edit(3, 4, 3, 3));
+        assertThat(el.get(1).getLengthA()).isEqualTo(1);
+        assertThat(el.get(1).getLengthB()).isEqualTo(0);
         assertThat(el.get(1).getType()).isEqualTo(Edit.Type.DELETE);
         assertThat(el.get(2)).isEqualTo(new Edit(5, 6, 4, 7));
+        assertThat(el.get(2).getLengthA()).isEqualTo(1);
+        assertThat(el.get(2).getLengthB()).isEqualTo(3);
         assertThat(el.get(2).getType()).isEqualTo(Edit.Type.REPLACE);
 
         t1 = rawtext("aaa");
@@ -89,6 +105,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(0, 1, 0, 1));
+        assertThat(el.get(0).getLengthA()).isEqualTo(1);
+        assertThat(el.get(0).getLengthB()).isEqualTo(1);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.REPLACE);
 
         t1 = rawtext("aaa\n");
@@ -96,6 +114,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(0, 1, 0, 1));
+        assertThat(el.get(0).getLengthA()).isEqualTo(1);
+        assertThat(el.get(0).getLengthB()).isEqualTo(1);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.REPLACE);
 
         t1 = rawtext("aaa");
@@ -103,6 +123,8 @@ public class TestHistogramDiffDemo {
         el = hd.diff(RawTextComparator.DEFAULT, t1, t2);
         assertThat(el.size()).isEqualTo(1);
         assertThat(el.get(0)).isEqualTo(new Edit(0, 1, 0, 1));
+        assertThat(el.get(0).getLengthA()).isEqualTo(1);
+        assertThat(el.get(0).getLengthB()).isEqualTo(1);
         assertThat(el.get(0).getType()).isEqualTo(Edit.Type.REPLACE);
         //        el.forEach(e -> {
         //            System.out.println(e);
