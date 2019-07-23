@@ -50,6 +50,14 @@
     -> enforce specific version same to what eclipse checkstyle plugin is using at 2019-07.
     -->
     <maven-checkstyle-engine.version>8.18</maven-checkstyle-engine.version>
+
+    <!--
+    see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html
+    see: https://pmd.github.io/latest/pmd_userdocs_tools_maven.html#upgrading-the-pmd-version-at-runtime
+    -> Eclipse PMD Plugin 4.5.0.v20190630-0922 が使用しているバージョンに揃えた。
+    -->
+    <maven-pmd-engine.version>6.16.0</maven-pmd-engine.version>
+
   </properties>
 
   <repositories>
@@ -333,6 +341,59 @@
           </configuration>
         </plugin>
 
+        <!--
+        see: https://pmd.github.io/
+        see: https://maven.apache.org/plugins/maven-pmd-plugin/
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.12.0</version>
+          <configuration>
+            <rulesets>
+              <ruleset>${project.basedir}/javasnack-custom-pmd-rule.xml</ruleset>
+            </rulesets>
+            <failOnViolation>true</failOnViolation>
+            <printFailingErrors>true</printFailingErrors>
+            <targetJdk>${java.version.target}</targetJdk>
+          </configuration>
+          <executions>
+            <execution>
+              <!--
+              see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/violationChecking.html
+              see: https://pmd.github.io/latest/pmd_userdocs_tools_maven.html#integrated-into-the-build-process
+              -> run in verify phase
+              -->
+              <goals>
+                <goal>check</goal>
+                <goal>cpd-check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-java</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-javascript</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-jsp</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -494,6 +555,11 @@
         <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+
     </plugins>
 
   </build>
@@ -537,6 +603,11 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
       </plugin>
 
     </plugins>
