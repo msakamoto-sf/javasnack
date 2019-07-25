@@ -42,7 +42,7 @@ public class TestAssistedInject {
     }
 
     public interface SomeInterface {
-        public String getResult();
+        String getResult();
     }
 
     public static class SomeImpl implements SomeInterface {
@@ -62,7 +62,7 @@ public class TestAssistedInject {
     }
 
     public interface SomeInterfaceFactory {
-        public SomeInterface create(int number);
+        SomeInterface create(int number);
     }
 
     public static class SomeInterfaceUser {

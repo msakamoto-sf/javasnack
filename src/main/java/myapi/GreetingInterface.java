@@ -22,7 +22,7 @@ package myapi;
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public interface GreetingInterface {
-    public String morning(String to);
+    String morning(String to);
 
-    public String afternoon(String to);
+    String afternoon(String to);
 }

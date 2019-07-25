@@ -172,7 +172,7 @@ public class TestEnumBasics {
      */
 
     interface HelloInterface {
-        public String sayHello(String yourName);
+        String sayHello(String yourName);
     }
 
     enum EnumWithInterface implements HelloInterface {

@@ -48,7 +48,7 @@ public class TestProvidesInject {
     }
 
     public interface ProvidesInjecteeInterface {
-        public String greet();
+        String greet();
     }
 
     public static class ProvidesInjectee implements ProvidesInjecteeInterface {

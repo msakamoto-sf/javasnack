@@ -36,7 +36,7 @@ import com.google.inject.TypeLiteral;
  */
 public class TestTypeLiteralsInject {
     public interface AcceptGenericTypeInterface<T> {
-        public String getType(T t);
+        String getType(T t);
     }
 
     public static class AcceptGenericTypeImpl<T> implements

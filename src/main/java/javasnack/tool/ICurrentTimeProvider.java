@@ -17,5 +17,5 @@
 package javasnack.tool;
 
 public interface ICurrentTimeProvider {
-    public long millis();
+    long millis();
 }
