@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter
+  xmlns="https://github.com/spotbugs/filter/3.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+  <Match>
+    <!-- SpotBugs で意図的に検出するためのコードなので、通常は除外しておき、実験のときだけ外す。 -->
+    <Class name="make.findbugs.angry.Buggy1" />
+  </Match>
+
+  <Match>
+    <!-- SpotBugs で意図的に検出するためのコードなので、通常は除外しておき、実験のときだけ外す。 -->
+    <Class name="make.findbugs.angry.DummyBuggy1" />
+  </Match>
+
+  <!--
+  このプロジェクトでは実験/テスト用にDBを扱うため、パスワードを空に設定する。
+  そのため、DB接続パスワードが空である指摘については指摘されても実際にはセキュリティ上の問題にならないため、
+  指摘パターン自体をまるごと除外しておく。(実プロダクトでは除外すべきではない)
+   -->
+  <Match>
+    <Bug pattern="DMI_EMPTY_DB_PASSWORD" />
+  </Match>
+
+
+  <!-- コードの意図として指摘されても問題ないため、以下の指摘は除外する。 -->
+  <Match>
+    <Class name="javasnack.langspecs.TestClassIsAssignableFrom" />
+    <Method name="testInstanceOfOp" />
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF" />
+  </Match>
+
+  <Match>
+    <Class name="javasnack.reflection.TestClassMetaInfo" />
+    <Method name="testAssignableFrom" />
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF" />
+  </Match>
+
+</FindBugsFilter>

@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestSimpleInject {
     public static class HelloWorld {
@@ -46,7 +49,7 @@ public class TestSimpleInject {
     public void testSimpleInject() {
         Injector i = Guice.createInjector();
         HelloWorld hw = i.getInstance(HelloWorld.class);
-        assertEquals(hw.hello(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello());
     }
 
     public static class HelloWorld2 {
@@ -66,7 +69,7 @@ public class TestSimpleInject {
     public void testConstructorArgInject() {
         Injector i = Guice.createInjector();
         HelloWorld2 hw = i.getInstance(HelloWorld2.class);
-        assertEquals(hw.hello2(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello2());
     }
 
     public static class HelloWorld3 {
@@ -104,14 +107,14 @@ public class TestSimpleInject {
     public void testConstructorAndFieldAndMethodInject() {
         Injector i = Guice.createInjector();
         HelloWorld3 hw = i.getInstance(HelloWorld3.class);
-        assertEquals(hw.hello1(), "Hello Google Guice!!");
-        assertEquals(hw.hello2(), "Hello Google Guice!!");
-        assertEquals(hw.hello3(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello1());
+        assertEquals("Hello Google Guice!!", hw.hello2());
+        assertEquals("Hello Google Guice!!", hw.hello3());
     }
 
     public static class HelloWorld4 extends HelloWorld3 {
 
-        final private HelloWorld hw4;
+        private final HelloWorld hw4;
 
         @Inject
         public HelloWorld4(HelloWorld hw, HelloWorld hw4) {
@@ -135,10 +138,10 @@ public class TestSimpleInject {
     public void testInheritanceInject() {
         Injector i = Guice.createInjector();
         HelloWorld4 hw = i.getInstance(HelloWorld4.class);
-        assertEquals(hw.hello1(), "Hello Google Guice!!");
-        assertEquals(hw.hello2(), "Hello Google Guice!!");
-        assertEquals(hw.hello3(), "Hello Google Guice!!");
-        assertEquals(hw.hello4(), "Hello Google Guice!!");
-        assertEquals(hw.hello5(), "Hello Google Guice!!");
+        assertEquals("Hello Google Guice!!", hw.hello1());
+        assertEquals("Hello Google Guice!!", hw.hello2());
+        assertEquals("Hello Google Guice!!", hw.hello3());
+        assertEquals("Hello Google Guice!!", hw.hello4());
+        assertEquals("Hello Google Guice!!", hw.hello5());
     }
 }

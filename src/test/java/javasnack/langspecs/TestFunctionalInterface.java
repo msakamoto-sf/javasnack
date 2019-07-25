@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,67 +38,68 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/function/package-summary.html
+/* see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/function/package-summary.html
  */
 public class TestFunctionalInterface {
 
     @Test
     public void basicSupplier() {
         Supplier<String> sup0 = () -> "Hello, Supplier";
-        assertEquals(sup0.get(), "Hello, Supplier");
+        assertThat(sup0.get()).isEqualTo("Hello, Supplier");
 
         Supplier<String> sup1 = new Supplier<String>() {
             private String msg1 = "Hello";
             private String msg2 = "Bonjour";
-            int c = 0;
+            int cnt = 0;
 
             @Override
             public String get() {
-                c++;
-                return (c % 2 == 1) ? msg1 : msg2;
+                cnt++;
+                return ((cnt & 1) == 1) ? msg1 : msg2;
             }
         };
-        assertEquals(sup1.get(), "Hello");
-        assertEquals(sup1.get(), "Bonjour");
-        assertEquals(sup1.get(), "Hello");
-        assertEquals(sup1.get(), "Bonjour");
+        assertThat(sup1.get()).isEqualTo("Hello");
+        assertThat(sup1.get()).isEqualTo("Bonjour");
+        assertThat(sup1.get()).isEqualTo("Hello");
+        assertThat(sup1.get()).isEqualTo("Bonjour");
 
         IntSupplier cycle123 = new IntSupplier() {
-            int c = 2;
+            int cnt = 2;
 
             @Override
             public int getAsInt() {
-                c++;
-                return (c % 3) + 1;
+                cnt++;
+                return (cnt % 3) + 1;
             }
         };
-        assertEquals(cycle123.getAsInt(), 1);
-        assertEquals(cycle123.getAsInt(), 2);
-        assertEquals(cycle123.getAsInt(), 3);
-        assertEquals(cycle123.getAsInt(), 1);
-        assertEquals(cycle123.getAsInt(), 2);
-        assertEquals(cycle123.getAsInt(), 3);
+        assertThat(cycle123.getAsInt()).isEqualTo(1);
+        assertThat(cycle123.getAsInt()).isEqualTo(2);
+        assertThat(cycle123.getAsInt()).isEqualTo(3);
+        assertThat(cycle123.getAsInt()).isEqualTo(1);
+        assertThat(cycle123.getAsInt()).isEqualTo(2);
+        assertThat(cycle123.getAsInt()).isEqualTo(3);
     }
 
     @Test
     public void basicFunction() {
         Function<String, String> fi0 = Function.identity();
-        assertEquals(fi0.apply("Hello"), "Hello");
+        assertThat(fi0.apply("Hello")).isEqualTo("Hello");
 
         Function<String, String> f1 = who -> "Hello, " + who;
-        assertEquals(f1.apply("Jon"), "Hello, Jon");
+        assertThat(f1.apply("Jon")).isEqualTo("Hello, Jon");
 
         Function<String, Integer> strlen = s -> {
             return s.length();
         };
         Function<String, String> strlenis = strlen.andThen(len -> "Length is " + len);
-        assertEquals(strlenis.apply("abcdef"), "Length is 6");
+        assertThat(strlenis.apply("abcdef")).isEqualTo("Length is 6");
         Function<String, Integer> strlen2 = strlen.compose(f1);
-        assertEquals(strlen2.apply("Alice").intValue(), "Hello, Alice".length());
+        assertThat(strlen2.apply("Alice").intValue()).isEqualTo("Hello, Alice".length());
 
         IntFunction<String> repeater1 = cnt -> {
             StringBuilder sb = new StringBuilder();
@@ -108,7 +108,7 @@ public class TestFunctionalInterface {
             }
             return sb.toString();
         };
-        assertEquals(repeater1.apply(3), "HelloHelloHello");
+        assertThat(repeater1.apply(3)).isEqualTo("HelloHelloHello");
 
         BiFunction<String, Integer, String> repeater2 = (src, cnt) -> {
             StringBuilder sb = new StringBuilder();
@@ -117,56 +117,56 @@ public class TestFunctionalInterface {
             }
             return sb.toString();
         };
-        assertEquals(repeater2.apply("ABC", 3), "ABCABCABC");
+        assertThat(repeater2.apply("ABC", 3)).isEqualTo("ABCABCABC");
     }
 
     @Test
     public void basicOperators() {
         UnaryOperator<String> unop0 = s -> "Hello, " + s;
-        assertEquals(unop0.apply("Jon"), "Hello, Jon");
+        assertThat(unop0.apply("Jon")).isEqualTo("Hello, Jon");
 
         BinaryOperator<Integer> biop0 = (a, b) -> a + b;
-        assertEquals(biop0.apply(2, 3).intValue(), 5);
+        assertThat(biop0.apply(2, 3).intValue()).isEqualTo(5);
 
         IntUnaryOperator miby2 = d -> d * 2;
-        assertEquals(miby2.applyAsInt(5), 10);
+        assertThat(miby2.applyAsInt(5)).isEqualTo(10);
 
         IntBinaryOperator miby = (d1, d2) -> d1 * d2;
-        assertEquals(miby.applyAsInt(2, 3), 6);
+        assertThat(miby.applyAsInt(2, 3)).isEqualTo(6);
     }
 
     @Test
     public void basicPredicate() {
         Predicate<String> isHello = s -> "Hello".equals(s);
-        assertTrue(isHello.test("Hello"));
-        assertFalse(isHello.test("aaaa"));
-        assertFalse(isHello.test(null));
+        Assertions.assertTrue(isHello.test("Hello"));
+        Assertions.assertFalse(isHello.test("aaaa"));
+        Assertions.assertFalse(isHello.test(null));
         Predicate<String> notHello = isHello.negate();
-        assertFalse(notHello.test("Hello"));
-        assertTrue(notHello.test("aaaa"));
-        assertTrue(notHello.test(null));
+        Assertions.assertFalse(notHello.test("Hello"));
+        Assertions.assertTrue(notHello.test("aaaa"));
+        Assertions.assertTrue(notHello.test(null));
 
         IntPredicate biggerThan5 = d -> d > 5;
-        assertTrue(biggerThan5.test(6));
-        assertFalse(biggerThan5.test(5));
-        assertFalse(biggerThan5.test(4));
+        Assertions.assertTrue(biggerThan5.test(6));
+        Assertions.assertFalse(biggerThan5.test(5));
+        Assertions.assertFalse(biggerThan5.test(4));
 
         IntPredicate divBy3eq0 = d -> (d % 3 == 0);
-        assertTrue(divBy3eq0.test(6));
+        Assertions.assertTrue(divBy3eq0.test(6));
         IntPredicate divBy4eq0 = d -> (d % 4 == 0);
-        assertTrue(divBy4eq0.test(8));
+        Assertions.assertTrue(divBy4eq0.test(8));
         IntPredicate divBy3and4eq0 = divBy3eq0.and(divBy4eq0);
-        assertFalse(divBy3and4eq0.test(6));
-        assertFalse(divBy3and4eq0.test(8));
-        assertTrue(divBy3and4eq0.test(12));
-        assertTrue(divBy3and4eq0.test(24));
+        Assertions.assertFalse(divBy3and4eq0.test(6));
+        Assertions.assertFalse(divBy3and4eq0.test(8));
+        Assertions.assertTrue(divBy3and4eq0.test(12));
+        Assertions.assertTrue(divBy3and4eq0.test(24));
         IntPredicate divBy3or4eq0 = divBy3eq0.or(divBy4eq0);
-        assertTrue(divBy3or4eq0.test(6));
-        assertTrue(divBy3or4eq0.test(8));
+        Assertions.assertTrue(divBy3or4eq0.test(6));
+        Assertions.assertTrue(divBy3or4eq0.test(8));
 
         BiPredicate<String, Integer> lenmatcher = (s, len) -> s.length() == len;
-        assertTrue(lenmatcher.test("abc", 3));
-        assertFalse(lenmatcher.test("abcdefg", 1));
+        Assertions.assertTrue(lenmatcher.test("abc", 3));
+        Assertions.assertFalse(lenmatcher.test("abcdefg", 1));
     }
 
     @Test
@@ -176,20 +176,20 @@ public class TestFunctionalInterface {
         Consumer<String> helloAndBonjour = hello.andThen(s -> data.add("Bonjour, " + s));
         hello.accept("Bob");
         helloAndBonjour.accept("Jon");
-        assertEquals(data.size(), 3);
-        assertEquals(data.get(0), "Hello, Bob");
-        assertEquals(data.get(1), "Hello, Jon");
-        assertEquals(data.get(2), "Bonjour, Jon");
+        assertThat(data).hasSize(3);
+        assertThat(data.get(0)).isEqualTo("Hello, Bob");
+        assertThat(data.get(1)).isEqualTo("Hello, Jon");
+        assertThat(data.get(2)).isEqualTo("Bonjour, Jon");
 
         List<Integer> data2 = new ArrayList<>();
         IntConsumer iadd1 = d -> data2.add(d);
         IntConsumer iadd2 = iadd1.andThen(d -> data2.add(d * 2));
         iadd1.accept(10);
         iadd2.accept(20);
-        assertEquals(data2.size(), 3);
-        assertEquals(data2.get(0).intValue(), 10);
-        assertEquals(data2.get(1).intValue(), 20);
-        assertEquals(data2.get(2).intValue(), 40);
+        assertThat(data2).hasSize(3);
+        assertThat(data2.get(0).intValue()).isEqualTo(10);
+        assertThat(data2.get(1).intValue()).isEqualTo(20);
+        assertThat(data2.get(2).intValue()).isEqualTo(40);
 
         Map<String, Integer> data3 = new HashMap<>();
         BiConsumer<String, Integer> put1 = (k, v) -> data3.put(k, v);
@@ -197,9 +197,9 @@ public class TestFunctionalInterface {
         put1.accept("i01", 10);
         put1.accept("i01", 20);
         put2.accept("i02", 30);
-        assertEquals(data3.keySet().size(), 3);
-        assertEquals(data3.get("i01").intValue(), 20);
-        assertEquals(data3.get("i02").intValue(), 30);
-        assertEquals(data3.get("i02_mul3").intValue(), 90);
+        assertThat(data3.keySet()).hasSize(3);
+        assertThat(data3.get("i01").intValue()).isEqualTo(20);
+        assertThat(data3.get("i02").intValue()).isEqualTo(30);
+        assertThat(data3.get("i02_mul3").intValue()).isEqualTo(90);
     }
 }

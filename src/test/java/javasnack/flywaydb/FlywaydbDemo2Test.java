@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.flywaydb;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
 
-import org.testng.annotations.Test;
-
-import com.googlecode.flyway.core.Flyway;
-import com.googlecode.flyway.core.api.MigrationInfo;
-import com.googlecode.flyway.core.api.MigrationInfoService;
-import com.googlecode.flyway.core.api.MigrationState;
-import com.googlecode.flyway.core.api.MigrationVersion;
-import com.googlecode.flyway.core.command.FlywaySqlScriptException;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.MigrationInfoService;
+import org.flywaydb.core.api.MigrationState;
+import org.flywaydb.core.api.MigrationVersion;
+import org.junit.jupiter.api.Test;
 
 public class FlywaydbDemo2Test {
 
     @Test
     public void migrateFailThenRepairFlow() throws Exception {
+        // Property based setup
+        // see: https://flywaydb.org/documentation/configfiles
         Properties properties = new Properties();
         properties.setProperty("flyway.user", "sa");
         properties.setProperty("flyway.password", "");
@@ -39,22 +42,18 @@ public class FlywaydbDemo2Test {
                 "jdbc:h2:mem:flywaydb_demo2;DB_CLOSE_DELAY=-1");
         properties.setProperty("flyway.driver", "org.h2.Driver");
 
-        final Flyway flyway = new Flyway();
-        flyway.configure(properties);
-        assertNotNull(flyway.getDataSource());
-        flyway.setLocations("flywaydbdemos/demo2");
-        assertEquals(flyway.getSchemas().length, 0);
+        final Flyway flyway0 = Flyway.configure()
+                .configuration(properties)
+                .locations("flywaydbdemos/demo2")
+                // to avoid initial version conflict, specify 0 as initial version.
+                .baselineVersion(MigrationVersion.fromVersion("0"))
+                .baselineDescription("(init flyway)")
+                .load();
+        // setup baseline structure (create schema history table if not exists)
+        flyway0.baseline();
 
-        // to avoid initial version conflict, specify 0 as initial version.
-        flyway.setInitVersion(MigrationVersion.fromVersion("0"));
-        flyway.setInitDescription("(init flyway)");
-        flyway.init();
-        assertEquals(flyway.getSchemas().length, 1);
-        assertEquals(flyway.getSchemas()[0], "PUBLIC");
-        assertEquals(flyway.getTable(), "schema_version");
-
-        MigrationInfoService mis = flyway.info();
-        assertEquals(mis.all().length, 4);
+        MigrationInfoService mis = flyway0.info();
+        assertEquals(4, mis.all().length);
         for (MigrationInfo mi : mis.all()) {
             System.out.println(mi.getVersion());
             System.out.println(mi.getDescription());
@@ -62,53 +61,60 @@ public class FlywaydbDemo2Test {
             System.out.println(mi.getType());
 
         }
-        assertEquals(mis.pending().length, 3);
-        assertEquals(mis.applied().length, 1);
+        assertEquals(3, mis.pending().length);
+        assertEquals(1, mis.applied().length);
         MigrationInfo mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "0");
-        assertEquals(mi.getDescription(), "(init flyway)");
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertEquals("0", mi.getVersion().getVersion());
+        assertEquals("(init flyway)", mi.getDescription());
+        assertEquals(MigrationState.BASELINE, mi.getState());
 
         // migrate to V002
-        flyway.setTarget(MigrationVersion.fromVersion("2"));
-        flyway.migrate();
-        mis = flyway.info();
-        assertEquals(mis.all().length, 4);
-        assertEquals(mis.pending().length, 0);
-        assertEquals(mis.applied().length, 3);
+        final Flyway flyway1 = Flyway.configure()
+                .configuration(flyway0.getConfiguration())
+                .target(MigrationVersion.fromVersion("2"))
+                .load();
+        flyway1.migrate();
+        mis = flyway1.info();
+        assertEquals(4, mis.all().length);
+        assertEquals(0, mis.pending().length);
+        assertEquals(3, mis.applied().length);
         mi = mis.current();
-        assertEquals(mi.getVersion().getVersion(), "002");
-        assertEquals(mi.getDescription(), "add telephone ok");
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertEquals("002", mi.getVersion().getVersion());
+        assertEquals("add telephone ok", mi.getDescription());
+        assertEquals(MigrationState.SUCCESS, mi.getState());
 
-        flyway.setTarget(MigrationVersion.LATEST);
+        // migrate to V003
+        final Flyway flyway2 = Flyway.configure()
+                .configuration(flyway0.getConfiguration())
+                .target(MigrationVersion.LATEST)
+                .load();
         try {
-            flyway.migrate();
+            flyway2.migrate();
             fail("V3 must be error");
-        } catch (FlywaySqlScriptException expected) {
+        } catch (FlywayException expected) {
             // ignore detailed exception assertions.
         }
-        mis = flyway.info();
-        assertEquals(mis.all().length, 4);
-        assertEquals(mis.pending().length, 0);
-        assertEquals(mis.applied().length, 4);
+        mis = flyway2.info();
+        assertEquals(4, mis.all().length);
+        assertEquals(0, mis.pending().length);
+        assertEquals(4, mis.applied().length);
         mi = mis.current();
         // V003 status is FAILED
-        assertEquals(mi.getVersion().getVersion(), "003");
-        assertEquals(mi.getDescription(), "add telephone ng");
-        assertEquals(mi.getState(), MigrationState.FAILED);
+        assertEquals("003", mi.getVersion().getVersion());
+        assertEquals("add telephone ng", mi.getDescription());
+        assertEquals(MigrationState.FAILED, mi.getState());
 
-        flyway.repair();
-        mis = flyway.info();
+        flyway2.repair();
+        mis = flyway2.info();
         // after repair, V003 status is rollbacked, pending.
-        assertEquals(mis.all().length, 4);
-        assertEquals(mis.pending().length, 1);
-        assertEquals(mis.applied().length, 3);
+        assertEquals(4, mis.all().length);
+        assertEquals(1, mis.pending().length);
+        assertEquals(3, mis.applied().length);
         mi = mis.current();
         // now, current version is rollbacked to V002.
-        assertEquals(mi.getVersion().getVersion(), "002");
-        assertEquals(mi.getDescription(), "add telephone ok");
-        assertEquals(mi.getState(), MigrationState.SUCCESS);
+        assertEquals("002", mi.getVersion().getVersion());
+        assertEquals("add telephone ok", mi.getDescription());
+        assertEquals(MigrationState.SUCCESS, mi.getState());
     }
 
 }

@@ -13,62 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- * @see https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
- * @see http://docs.oracle.com/javase/8/docs/technotes/guides/language/binary-literals.html
- * @see http://docs.oracle.com/javase/8/docs/technotes/guides/language/underscores-literals.html
+/* see:
+ * https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+ * http://docs.oracle.com/javase/8/docs/technotes/guides/language/binary-literals.html
+ * http://docs.oracle.com/javase/8/docs/technotes/guides/language/underscores-literals.html
  */
 public class TestNumericLiterals {
 
     @Test
     public void binaryLiteral() {
-        assertEquals(0b0, (byte) 0);
-        assertEquals(0B1, (byte) 1);
-        assertEquals(0b10, (byte) 2);
-        assertEquals(0B11, (byte) 3);
-        assertEquals(0b100, (byte) 4);
-        assertEquals(0B0111_1111, 0x7F);
-        assertEquals(0b1000_0000, 0x80);
-        assertEquals(0B1111_1111, 0xFF);
-        assertEquals(0b10000000_00000000_00000000_00000000, Integer.MIN_VALUE);
-        assertEquals(0B11111111_11111111_11111111_11111111, -1);
-        assertEquals(0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000L, Long.MIN_VALUE);
-        assertEquals(0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L, -1L);
+        assertThat(0b0).isEqualTo((byte) 0);
+        assertThat(0B1).isEqualTo((byte) 1);
+        assertThat(0b10).isEqualTo((byte) 2);
+        assertThat(0B11).isEqualTo((byte) 3);
+        assertThat(0b100).isEqualTo((byte) 4);
+        assertThat(0B0111_1111).isEqualTo(0x7F);
+        assertThat(0b1000_0000).isEqualTo(0x80);
+        assertThat(0B1111_1111).isEqualTo(0xFF);
+        assertThat(0b10000000_00000000_00000000_00000000).isEqualTo(Integer.MIN_VALUE);
+        assertThat(0B11111111_11111111_11111111_11111111).isEqualTo(-1);
+        assertThat(0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000L)
+                .isEqualTo(Long.MIN_VALUE);
+        assertThat(0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111L).isEqualTo(-1L);
     }
 
     @Test
     public void hexLiteral() {
-        assertEquals(0x0, 0);
-        assertEquals(0x1, 1);
-        assertEquals(0xF, 15);
-        assertEquals(0x7F, 127);
-        assertEquals(0x80, 128);
-        assertEquals(0xff, 255);
-        assertEquals(0x7F_ff, Short.MAX_VALUE);
-        assertEquals(0xCAFE_babeL, 3_405_691_582L);
+        assertThat(0x0).isEqualTo(0);
+        assertThat(0x1).isEqualTo(1);
+        assertThat(0xF).isEqualTo(15);
+        assertThat(0x7F).isEqualTo(127);
+        assertThat(0x80).isEqualTo(128);
+        assertThat(0xff).isEqualTo(255);
+        assertThat(0x7F_ff).isEqualTo(Short.MAX_VALUE);
+        assertThat(0xCAFE_babeL).isEqualTo(3_405_691_582L);
     }
 
     @Test
     public void octalLiteral() {
-        assertEquals(00, 0);
-        assertEquals(01, 1);
-        assertEquals(07, 7);
-        assertEquals(010, 8);
-        assertEquals(020, 16);
+        assertThat(00).isEqualTo(0);
+        assertThat(01).isEqualTo(1);
+        assertThat(07).isEqualTo(7);
+        // octal リテラルの意図的なデモのため、PMD:AvoidUsingOctalValues の警告を行単位で無効化
+        // see: https://pmd.github.io/latest/pmd_userdocs_suppressing_warnings.html#nopmd-comment
+        assertThat(010).isEqualTo(8); // NOPMD
+        assertThat(020).isEqualTo(16); // NOPMD  
     }
 
     @Test
     public void underscoredLiteral() {
-        assertEquals(1_1, 11);
-        assertEquals(100_200_300, 100200300);
-        assertEquals(100_200_300L, 100200300l);
-        assertEquals(3.14_159, 3.14159);
-        assertEquals(3.14_159F, 3.14159f);
+        assertThat(1_1).isEqualTo(11);
+        assertThat(100_200_300).isEqualTo(100200300);
+        assertThat(100_200_300L).isEqualTo(100200300L);
+        assertThat(1.23_456).isEqualTo(1.23456);
+        assertThat(1.23_456F).isEqualTo(1.23456f);
+        //assertThat(3.14_159).isEqualTo(3.14159); // this cause SpotBugs' CNT_ROUGH_CONSTANT_VALUE
+        //assertThat(3.14_159F).isEqualTo(3.14159f); // this cause SpotBugs' CNT_ROUGH_CONSTANT_VALUE
     }
 }

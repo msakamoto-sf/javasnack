@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+  "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+  "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+  <suppress checks="LineLengthCheck" files="TestUnicodeNormalize1.java" lines="140-160" />
+
+  <!-- 意図的に日本語のメンバ/メソッドを使用 -->
+  <suppress checks="MemberNameCheck" files="EncodePojo.java" />
+  <suppress checks="MethodNameCheck" files="EncodePojo.java" />
+
+  <!-- 意図的にUnicodeエスケープを使用 -->
+  <suppress checks="AvoidEscapedUnicodeCharactersCheck" files="TestISO8859RegEx.java" />
+  <suppress checks="AvoidEscapedUnicodeCharactersCheck" files="TestUnicodeNormalize1.java" />
+  <suppress checks="IllegalTokenTextCheck" files="TestUnicodeNormalize1.java" />
+  <suppress checks="AvoidEscapedUnicodeCharactersCheck" files="TestUnicodeSurrogatePairs.java" />
+
+  <suppress checks="MemberNameCheck" files="TestUnicodeNormalize1.java" message="Member name 'NF.*" />
+
+  <!-- わざとbuggyでcheckstyle-violatedなソースコードのデモ。実際にviolateさせるときはここをコメントアウト -->
+  <suppress checks=".*" files="Buggy1.java" />
+</suppressions>

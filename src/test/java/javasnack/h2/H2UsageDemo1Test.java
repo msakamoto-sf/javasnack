@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.h2;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -23,18 +28,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javasnack.tool.UnsignedByte;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import javasnack.tool.UnsignedByte;
 
 public class H2UsageDemo1Test {
 
     Connection conn;
 
-    @BeforeTest
+    @BeforeEach
     public void prepareDb() throws Exception {
         Class.forName("org.h2.Driver");
         conn = DriverManager.getConnection("jdbc:h2:mem:test1", "sa", "");
@@ -50,7 +54,7 @@ public class H2UsageDemo1Test {
         ps.close();
     }
 
-    @AfterTest
+    @AfterEach
     public void closeDb() throws SQLException {
         conn.close();
     }
@@ -64,21 +68,24 @@ public class H2UsageDemo1Test {
         ps.setString(1, "tom");
         ps.setInt(2, 30);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // basic insertion(2)
         ps.setString(1, "nancy");
         ps.setInt(2, 40);
         r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         ps = conn.prepareStatement("select name, age from t1 where age > ?");
         // basic select query
         ps.setInt(1, 35);
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        Assert.assertEquals(rs.getString("name"), "nancy");
-        Assert.assertEquals(rs.getInt("age"), 40);
+        if (rs.first()) {
+            assertEquals("nancy", rs.getString("name"));
+            assertEquals(40, rs.getInt("age"));
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -94,14 +101,17 @@ public class H2UsageDemo1Test {
         ps.setString(1, s);
         ps.setInt(2, 10);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // select Latin-1 String
         ps = conn.prepareStatement("select name, age from t1 where age = ?");
         ps.setInt(1, 10);
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        Assert.assertEquals(rs.getString("name"), s);
+        if (rs.first()) {
+            assertEquals(s, rs.getString("name"));
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -117,22 +127,28 @@ public class H2UsageDemo1Test {
         ByteArrayInputStream bais = new ByteArrayInputStream(src);
         ps.setAsciiStream(2, bais, 0x100);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // select clob data
         ps = conn.prepareStatement("select data from t2 where name = ?");
         ps.setString(1, "clob1");
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        BufferedInputStream bis = new BufferedInputStream(
-                rs.getAsciiStream("data"));
-        byte[] recv = new byte[0x100];
-        bis.read(recv);
-        // for (byte d : recv) {
-        // System.out.println(d);
-        // }
-        // OOPS!! : recv[128]=-17, recv[129]=-65, recv[130]=-67,... what happen???
-        Assert.assertNotEquals(recv, src);
+        if (rs.first()) {
+            BufferedInputStream bis = new BufferedInputStream(
+                    rs.getAsciiStream("data"));
+            byte[] recv = new byte[0x100];
+            bis.read(recv);
+            // for (byte d : recv) {
+            // System.out.println(d);
+            // }
+            // OOPS!! : recv[128]=-17, recv[129]=-65, recv[130]=-67,... what happen???
+            //assertArrayEquals(src, recv);
+            assertEquals(-17, recv[128]);
+            assertEquals(-65, recv[129]);
+            assertEquals(-67, recv[130]);
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -148,18 +164,21 @@ public class H2UsageDemo1Test {
         ByteArrayInputStream bais = new ByteArrayInputStream(src);
         ps.setBinaryStream(2, bais, 0x100);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // select blob data
         ps = conn.prepareStatement("select data from t3 where name = ?");
         ps.setString(1, "blob1");
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        BufferedInputStream bis = new BufferedInputStream(
-                rs.getBinaryStream("data"));
-        byte[] recv = new byte[0x100];
-        bis.read(recv);
-        Assert.assertEquals(recv, src);
+        if (rs.first()) {
+            BufferedInputStream bis = new BufferedInputStream(
+                    rs.getBinaryStream("data"));
+            byte[] recv = new byte[0x100];
+            bis.read(recv);
+            assertArrayEquals(src, recv);
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }

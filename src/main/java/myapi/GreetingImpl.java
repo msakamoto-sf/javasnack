@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package myapi;
 
 /**
  * for JCL, myapi-impl1.jar, myapi-impl2.jar demo.
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class GreetingImpl {
     protected String myFirstname;
     protected String myLastname;
 
-    public GreetingImpl(String _myFirstname, String _myLastname) {
-        this.myFirstname = _myFirstname;
-        this.myLastname = _myLastname;
+    public GreetingImpl(String myFirstname, String myLastname) {
+        this.myFirstname = myFirstname;
+        this.myLastname = myLastname;
     }
 
     public String morning(String to) {

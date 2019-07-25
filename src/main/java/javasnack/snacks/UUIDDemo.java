@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks;
 
 import java.nio.ByteBuffer;
@@ -73,16 +74,16 @@ public class UUIDDemo implements Runnable {
         default:
             System.out.println("(unknown variant)");
         }
-        long MSB = u.getMostSignificantBits();
-        long LSB = u.getLeastSignificantBits();
-        byte[] MSB2 = long2bytea(MSB);
-        byte[] LSB2 = long2bytea(LSB);
-        System.out.println("MSB=[" + MSB + "/" + UnsignedByte.hex("", MSB2)
+        long msb = u.getMostSignificantBits();
+        long lsb = u.getLeastSignificantBits();
+        byte[] msb2 = long2bytea(msb);
+        byte[] lsb2 = long2bytea(lsb);
+        System.out.println("MSB=[" + msb + "/" + UnsignedByte.hex("", msb2)
                 + "]");
-        System.out.println("(" + UnsignedByte.bits(MSB2) + ")");
-        System.out.println("LSB=[" + LSB + "/" + UnsignedByte.hex("", LSB2)
+        System.out.println("(" + UnsignedByte.bits(msb2) + ")");
+        System.out.println("LSB=[" + lsb + "/" + UnsignedByte.hex("", lsb2)
                 + "]");
-        System.out.println("(" + UnsignedByte.bits(LSB2) + ")");
+        System.out.println("(" + UnsignedByte.bits(lsb2) + ")");
 
         if (1 == version) {
             System.out.println("UUID.timestamp=[" + u.timestamp() + "]");
@@ -98,8 +99,8 @@ public class UUIDDemo implements Runnable {
         UUID u1 = UUID.randomUUID();
         String u1str = u1.toString();
         System.out.println("UUID=[" + u1str + "]");
-        UUID u1_2 = UUID.fromString(u1str);
-        dumpuuid(u1_2);
+        UUID u1b = UUID.fromString(u1str);
+        dumpuuid(u1b);
 
         UUID u2 = UUID.nameUUIDFromBytes("abcdefg".getBytes());
         dumpuuid(u2);

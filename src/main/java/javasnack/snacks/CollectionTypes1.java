@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class CollectionTypes1 implements Runnable {
     static final int NUM = 10;
     static final String DUMMY_STR = "";
 
-    void HashMapDemos() {
+    void demoOfHashMap() {
         System.out.println("----------------------------------------------");
         System.out.println("HashMapDemos start.");
         HashMap<String, String> m = new HashMap<String, String>();
@@ -58,7 +59,7 @@ public class CollectionTypes1 implements Runnable {
         System.out.println("HashMapDemos end.");
     }
 
-    void HashMapDemos2() {
+    void demoOfHashMap2() {
         System.out.println("----------------------------------------------");
         System.out.println("HashMapDemos2 start.");
         HashMap<String, String> m = new HashMap<String, String>();
@@ -80,7 +81,7 @@ public class CollectionTypes1 implements Runnable {
         System.out.println("HashMapDemos2 end.");
     }
 
-    void LinkedHashMapDemos() {
+    void demoOfLinkedHashMap() {
         System.out.println("----------------------------------------------");
         System.out.println("LinkedHashMapDemos start.");
         LinkedHashMap<String, String> m = new LinkedHashMap<String, String>();
@@ -110,7 +111,7 @@ public class CollectionTypes1 implements Runnable {
         System.out.println("LinkedHashMapDemos end.");
     }
 
-    void LinkedHashMapDemos2() {
+    void demoOfLinkedHashMap2() {
         System.out.println("----------------------------------------------");
         System.out.println("LinkedHashMapDemos2 start.");
         LinkedHashMap<String, String> m = new LinkedHashMap<String, String>();
@@ -132,7 +133,7 @@ public class CollectionTypes1 implements Runnable {
         System.out.println("LinkedHashMapDemos2 end.");
     }
 
-    void LinkedHashMapDemos3() {
+    void demoOfLinkedHashMap3() {
         System.out.println("----------------------------------------------");
         System.out.println("LinkedHashMapDemos3 start.");
         // create access-order linked hash map.
@@ -158,7 +159,7 @@ public class CollectionTypes1 implements Runnable {
         System.out.println("LinkedHashMapDemos3 end.");
     }
 
-    void TreeMapDemos() {
+    void demoOfTreeMap() {
         System.out.println("----------------------------------------------");
         System.out.println("TreeMapDemos start.");
         TreeMap<String, String> m = new TreeMap<String, String>();
@@ -188,7 +189,7 @@ public class CollectionTypes1 implements Runnable {
         System.out.println("TreeMapDemos end.");
     }
 
-    void TreeMapDemos2() {
+    void demoOfTreeMap2() {
         System.out.println("----------------------------------------------");
         System.out.println("TreeMapDemos2 start.");
         TreeMap<String, String> m = new TreeMap<String, String>();
@@ -212,13 +213,13 @@ public class CollectionTypes1 implements Runnable {
 
     @Override
     public void run() {
-        HashMapDemos();
-        HashMapDemos2();
-        LinkedHashMapDemos();
-        LinkedHashMapDemos2();
-        LinkedHashMapDemos3();
-        TreeMapDemos();
-        TreeMapDemos2();
+        demoOfHashMap();
+        demoOfHashMap2();
+        demoOfLinkedHashMap();
+        demoOfLinkedHashMap2();
+        demoOfLinkedHashMap3();
+        demoOfTreeMap();
+        demoOfTreeMap2();
     }
 
 }

@@ -3,15 +3,107 @@ javasnack
 
 Tinny Java Excersise, Experimental, Practices Programms.
 
+## for Developers setup (Eclipse/Spring Tool Suite)
+
+- OpenJDK >= 11
+- Eclipse >= 201903 (v4.10), "Eclipse IDE for Java EE Developers" package
+  - or Spring Tools 4 (STS4 >= 4.2.1)
+- Maven >= 3.6.1 (download automatically by mvnw script. also works by 3.x)
+- use UTF-8 for source code and other text files.
+
+to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
+- Eclipse install how-to
+- Clean Up/Formatter configuration
+- Recommended plugin:
+  - [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
+  - [SpotBugs Eclipse plugin](https://spotbugs.readthedocs.io/en/latest/eclipse.html)
+  - [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin)
+
+### Eclipse/STS checkstyle plugin configuration
+
+import checkstyle configuration xml into eclipse:
+
+1. import xml into eclipse global configuration.
+   1. Window -> Preferences -> Checkstyle -> Global Check Configurations : click "New"
+   2. Select: "Project Relative Configuration"
+   3. Location: click "Browse" -> then select project -> select `javasnack/checkstyle-settings/google_checks-8.18_custom.xml`
+   4. Name: set proper name
+   5. Apply and Close
+2. setup project specific setting
+   1. right-click project -> Properties (ALT + Enter)
+   2. Checkstyle -> check "Checkstyle active for this project"
+   3. select imported xml configration
+   4. Apply and Close
+3. run first checkstyle
+   1. right-click project -> Checkstyle -> "Check Code with Checkstyle"
+
+reload updated xml to Eclipse/STS: (unstable way)
+1. some operations in Window -> Preferences -> Checkstyle config then "Apply and Click". (e.g. checkbox on <> off)
+2. project setting -> switch checkstyle activate / deactivate some times.
+3. rebuild project.
+
+### Eclipse/STS SpotBugs plugin configuration
+
+1. import project specific include/exclude filter.
+   1. right-click project -> Properties -> SpotBugs -> check "Enable project specific settings"
+   2. at filter file tab, add "spotbugs-exclude-filter.xml" to exclude filter file, add "spotbugs-include-filter.xml" to include filter file.
+2. SpotBugs plugin setting (see pom.xml configuration)
+   1. set effort (分析力) to "Default"
+   2. set max rank (報告する最小ランク) to 15
+   3. set threshold (レポートする最低の信頼度) to "Medium"
+   4. check below categories (see spotbugs-include-filter.xml)
+      1. "Bad practice"
+      2. "Malicious code vulnerability"
+      3. "Correctness"
+      4. "Performance"
+      5. "Security"
+      6. "Dodgy code"
+      7. "Multithreaded correctness"
+      8. "Internationalization"
+   5. do NOT check "Experimental" category.
+3. run SpotBugs check manually:
+   1. right-click project -> SpotBugs -> click "Find Bugs"
+
+If you edited exclude/include xml filter, then right-click project -> SpotBugs -> clear markers and Find Bugs again.
+
+SpotBugs reference:
+
+- https://spotbugs.github.io/
+- https://spotbugs.github.io/spotbugs-maven-plugin/
+- https://spotbugs.readthedocs.io/en/latest/
+- https://spotbugs.readthedocs.io/ja/latest/
+
+### Eclipse/STS PMD plugin configuration
+
+1. import project specific ruleset xml.
+   1. right-click project -> Properties -> PMD -> check "Enable PMD"
+   2. "Rule source" -> check "Use the ruleset configured in a project file" -> Browse -> select `javasnack-custom-pmd-rule.xml`
+   3. if you asked "The project doesn't contain a ruleset file. Do you want to create a ruleset from the configured properties ?", click "No".
+
+If you edited rule xml, no need to reconfigure. just do PMD -> "Check Code" again.
+
+PMD reference:
+
+- https://pmd.github.io/
+- https://pmd.github.io/latest/
+- https://pmd.github.io/latest/pmd_userdocs_tools_maven.html
+- https://maven.apache.org/plugins/maven-pmd-plugin/index.html
+- https://github.com/pmd/pmd-eclipse-plugin
+
 ## how to build and execute main()
 
-requires:
-- Java8 SDK
+javasnack demonstrates classloading from jar in resources and referencing project related local repository.
 
-### 1. build myapi-impl(1|2).jar, "GreetingInterface" implementation
+1. build jar library and install to src/main/resources/.
+2. build jar library and deploy to project related path. (NOT to `~/.m2/repository/`)
+3. setup `~/.m2/settings.xml` to refer project related path.
+4. build main project.
+
+### 1. build jar library and install to src/main/resources/.
 
 **(You can skip this step : already pre-built jar has been commited to src/main/resources/JCLDemo/)**
 
+build myapi-impl(1|2).jar, "GreetingInterface" implementation:
 ```
 $ cd javasnack/
 
@@ -30,11 +122,11 @@ $ popd
 
 These jar files are used for demonstration of https://github.com/kamranzafar/JCL at [JCLDemo](src/main/java/javasnack/snacks/JCLDemo.java), [TestJCLDemoApis](src/test/java/javasnack/langspecs/TestJCLDemoApis.java).
 
-### 2. build testjar1-1.0.jar
+### 2. build jar library and deploy to project related path. (NOT to `~/.m2/repository/`)
 
 **(You can skip this step : already pre-built jar has been commited to repo/subprojects/)**
 
-build jar file:
+build testjar1-1.0.jar:
 ```
 $ cd javasnack/subprojects/jar1
 $ javac src/testjar1/*.java
@@ -47,7 +139,7 @@ Good Afternoon, DEF.
 install jar to project local repository:
 ```
 $ cd javasnack/
-$ mvn install:install-file \
+$ ./mvnw install:install-file \
       -DlocalRepositoryPath=subprojects/repo \
       -DcreateChecksum=true \
       -Dpackaging=jar \
@@ -65,7 +157,7 @@ see:
 - Mavenプロジェクトで3rdパーティJARを扱う方法｜Ouobpo
   - http://ameblo.jp/ouobpo/entry-10051976866.html
 
-### 3. `$HOME/.m2/setting.xml` mirror setting for local repository setup
+### 3. setup `~/.m2/settings.xml` to refer project related path.
 
 This maven project includes demonstrating maven local file repository.
 Check your `$HOME/.m2/setting.xml` and if `<mirror>` - `<mirrorOf>` setting is `*`, then fix it to `external:*`.
@@ -92,28 +184,83 @@ About `<mirrorOf>` setting, see :
 - http://maven.apache.org/guides/mini/guide-mirror-settings.html
 - http://stackoverflow.com/questions/17019308/maven-setup-another-repository-for-certain-dependency
 
-### 4. build main project
+### 4. build main project.
 
 ```
 $ cd javasnack/
 
 $ ./mvnw package
 
-$ java -jar target/javasnack-1.0-SNAPSHOT.jar
+$ java -jar target/javasnack-(version).jar
 or
-$ mvnw exec:java
+$ ./mvnw exec:java
 ```
 
-## for Developers setup (Eclipse)
+### 5. test and reports.
 
-- JDK >= 1.8.0_xx
-- Eclipse >= 4.5.2 (Mars.2 Release), "Eclipse IDE for Java EE Developers" package
-- Maven >= 3.5.2 (download automatically by mvnw script. also works by 3.x)
-- use UTF-8 for source code and other text files.
+surefire test only (excluding `@Tag("junit5-tag-filter-2")` and `@MyJUnit5MetaAnnotation2` annotated test cases):
 
-See https://github.com/msakamoto-sf/howto-eclipse-setup : README.md.
-Refer following `setup-type1` setting:
-- Eclipse install how-to
-- Clean Up/Formatter configuration
-- Required plugin : TestNG
+```
+$ ./mvnw test
+```
+
+NOTE: some thread feature test cases may be fail cause of timing sensitivity.
+
+all test cases (surefire + failsafe : including `@Tag("junit5-tag-filter-2")` and `@MyJUnit5MetaAnnotation2` annotated test cases):
+
+```
+$ ./mvnw integration-test
+```
+
+run checkstyle from command line:
+
+```
+$ ./mvnw checkstyle:check
+```
+
+run SpotBugs from command line:
+
+```
+$ ./mvnw spotbugs:check
+```
+
+run PMD from command line:
+
+```
+$ ./mvnw pmd:pmd
+```
+
+generate report:
+
+```
+$ ./mvnw site
+```
+
+all:
+
+```
+$ ./mvnw clean integration-test site
+```
+
+## references
+
+jdk11:
+
+- `JDK 11 Documentation - Home`
+  - https://docs.oracle.com/en/java/javase/11/
+- `JDK 11ドキュメント - ホーム`
+  - https://docs.oracle.com/javase/jp/11/
+- API JavaDoc(en)
+  - https://docs.oracle.com/en/java/javase/11/docs/api/index.html
+- API JavaDoc(ja)
+  - https://docs.oracle.com/javase/jp/11/docs/api/index.html
+
+javadoc:
+
+- `Javadoc ドキュメンテーションコメントの書き方 - Qiita`
+  - https://qiita.com/maku77/items/6410c67ce95e08d8d1bd
+- `Javadocメモ(Hishidama's Javadoc Memo)`
+  - http://www.ne.jp/asahi/hishidama/home/tech/java/javadoc.html
+- `Javadocの記述`
+  - https://www.javadrive.jp/javadoc/
 

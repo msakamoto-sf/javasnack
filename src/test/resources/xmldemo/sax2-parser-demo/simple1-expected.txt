@@ -1,0 +1,71 @@
+> Start document
+>> start[local: / qname:BigElement](uri=[])
+>>    attrs[0].getLocalName() =attr
+>>    attrs[0].getQName()     =attr
+>>    attrs[0].getValue()     =value
+>> characters([
+  ])
+>>> start[local: / qname:MediumElement](uri=[])
+>>>    attrs[0].getLocalName() =order
+>>>    attrs[0].getQName()     =order
+>>>    attrs[0].getValue()     =1
+>>> characters([
+    ])
+>>> characters(["])
+>>> characters([Double Quoted Text])
+>>> characters(["])
+>>> characters([
+  ])
+<<< end[local: / qname:MediumElement](uri=[])
+>> characters([
+  ])
+>> comment([ comment1日本語 ])
+>> characters([
+  ])
+>>> start[local: / qname:MediumElement](uri=[])
+>>>    attrs[0].getLocalName() =order
+>>>    attrs[0].getQName()     =order
+>>>    attrs[0].getValue()     =2
+>>> characters([
+    ])
+>>> comment([ comment2日本語 ])
+>>> characters([
+    ])
+>>>> startCDATA
+>>>> characters([
+<hello>"you", '&', me 日本語</hello>
+    ])
+<<<< endCDATA
+>>> characters([
+  ])
+<<< end[local: / qname:MediumElement](uri=[])
+>> characters([
+  ])
+>>> start[local: / qname:日本語要素](uri=[])
+>>>    attrs[0].getLocalName() =日本語属性1
+>>>    attrs[0].getQName()     =日本語属性1
+>>>    attrs[0].getValue()     =日本語属性値1
+>>>    attrs[1].getLocalName() =日本語属性2
+>>>    attrs[1].getQName()     =日本語属性2
+>>>    attrs[1].getValue()     =日本語属性値2
+>>> characters([
+    日本語文字列
+  ])
+<<< end[local: / qname:日本語要素](uri=[])
+>> characters([
+  ])
+>> characters([
+  ])
+>>> start[local: / qname:MediumElement2](uri=[])
+>>> characters([
+    abc ])
+>>>> start[local: / qname:inline](uri=[])
+>>>> characters([def])
+<<<< end[local: / qname:inline](uri=[])
+>>> characters([ ghi.
+  ])
+<<< end[local: / qname:MediumElement2](uri=[])
+>> characters([
+])
+<< end[local: / qname:BigElement](uri=[])
+< End document

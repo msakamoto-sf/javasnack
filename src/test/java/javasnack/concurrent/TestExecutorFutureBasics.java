@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.concurrent;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestExecutorFutureBasics {
 
@@ -69,7 +76,7 @@ public class TestExecutorFutureBasics {
         assertFalse(f.isCancelled());
         assertFalse(f.isDone());
         long rl = f.get();
-        assertEquals(rl, 100L);
+        assertEquals(100L, rl);
         assertFalse(f.isCancelled());
         assertTrue(f.isDone());
         es.shutdown();
@@ -97,6 +104,7 @@ public class TestExecutorFutureBasics {
                 return this.futureR;
             }
         }
+
         Future<Long> f1 = es.submit(new CallableDemo(100L));
         assertFalse(f1.isCancelled());
         assertFalse(f1.isDone());
@@ -109,7 +117,7 @@ public class TestExecutorFutureBasics {
 
         long rl = f1.get();
         assertFalse(f1.cancel(true));
-        assertEquals(rl, 100L);
+        assertEquals(100L, rl);
         assertFalse(f1.isCancelled());
         assertTrue(f1.isDone());
 
@@ -135,30 +143,24 @@ public class TestExecutorFutureBasics {
         es.shutdown();
     }
 
-    @Test(expectedExceptions = ExecutionException.class)
+    @Test
     public void testUncheckedExceptionCaughtThroughExecutionException()
             throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
         Future<?> f = es.submit(new Runnable() {
-            @SuppressWarnings("null")
             @Override
             public void run() {
-                String s = "hello";
-                s = null;
-                s.length();
+                throw new NullPointerException("xxx");
             }
         });
-        try {
+        final ExecutionException expectedException = assertThrows(ExecutionException.class, () -> {
             f.get();
-        } catch (ExecutionException expected) {
-            Throwable cause = expected.getCause();
-            assertEquals(cause.getClass(), NullPointerException.class);
-            throw expected;
-        }
+        });
         es.shutdown();
+        assertEquals(NullPointerException.class, expectedException.getCause().getClass());
     }
 
-    @Test(expectedExceptions = ExecutionException.class)
+    @Test
     public void testAssertionErrorCaughtThroughExecutionException() throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
         Future<?> f = es.submit(new Runnable() {
@@ -169,13 +171,112 @@ public class TestExecutorFutureBasics {
                 assert a == b;
             }
         });
-        try {
+        final ExecutionException expectedException = assertThrows(ExecutionException.class, () -> {
             f.get();
-        } catch (ExecutionException expected) {
-            Throwable cause = expected.getCause();
-            assertEquals(cause.getClass(), AssertionError.class);
-            throw expected;
-        }
+        });
         es.shutdown();
+        assertEquals(AssertionError.class, expectedException.getCause().getClass());
+    }
+
+    @Test
+    public void testSomeCombination() throws InterruptedException, ExecutionException, TimeoutException {
+        class MyCallable implements Callable<String> {
+            final CountDownLatch blocker;
+            final CountDownLatch doneNotifier;
+
+            MyCallable(final CountDownLatch blocker, final CountDownLatch doneNotifier) {
+                this.blocker = blocker;
+                this.doneNotifier = doneNotifier;
+            }
+
+            @Override
+            public String call() throws Exception {
+                try {
+                    blocker.await(); // long task;
+                } catch (InterruptedException ignore) {
+                    return "interrupted";
+                }
+                doneNotifier.countDown();
+                return "hello";
+            }
+        }
+
+        final ExecutorService es = Executors.newSingleThreadExecutor();
+        final int NUM = 6;
+        final List<CountDownLatch> blockers = new ArrayList<>();
+        final List<CountDownLatch> doneNotifiers = new ArrayList<>();
+        final List<Future<String>> futures = new ArrayList<>();
+        for (int i = 0; i < NUM; i++) {
+            final CountDownLatch blocker = new CountDownLatch(1);
+            blockers.add(blocker);
+            final CountDownLatch doneNotifier = new CountDownLatch(1);
+            doneNotifiers.add(doneNotifier);
+            futures.add(es.submit(new MyCallable(blocker, doneNotifier)));
+        }
+
+        blockers.get(0).countDown();
+        doneNotifiers.get(0).await();
+        // -> done future[0] task
+
+        blockers.get(1).countDown();
+        doneNotifiers.get(1).await();
+        // -> done future[1] task
+
+        futures.get(4).cancel(true);
+        // -> manually cancels future[4] task.
+
+        es.shutdownNow();
+
+        futures.get(5).cancel(true); // manually cancels future[5] task after shutdownNow().
+
+        assertEquals("hello", futures.get(0).get(1, TimeUnit.SECONDS));
+        assertEquals("hello", futures.get(1).get(1, TimeUnit.SECONDS));
+        boolean isFutureNo2Interrupted = false;
+        try {
+            final String f2result = futures.get(2).get(1, TimeUnit.SECONDS);
+            // if no TimeoutException
+            assertEquals("interrupted", f2result);
+            isFutureNo2Interrupted = true;
+        } catch (TimeoutException maybeHappens) {
+            // in some situation (timing or execution environment), timeout happens.
+            // THIS IS EXPECTED BEHAVIOUR.
+        }
+        assertThrows(TimeoutException.class, () -> {
+            futures.get(3).get(1, TimeUnit.SECONDS);
+        });
+        assertThrows(CancellationException.class, () -> {
+            futures.get(4).get(1, TimeUnit.SECONDS);
+        });
+        assertThrows(CancellationException.class, () -> {
+            futures.get(5).get(1, TimeUnit.SECONDS);
+        });
+
+        assertFalse(futures.get(0).isCancelled());
+        assertTrue(futures.get(0).isDone());
+
+        assertFalse(futures.get(1).isCancelled());
+        assertTrue(futures.get(1).isDone());
+
+        assertFalse(futures.get(2).isCancelled());
+        if (isFutureNo2Interrupted) {
+            /* future[2] については不安定で、例えばEclipseのJUnit pluginから起動したときは100% interruptedとなるのに
+             * mvn test で起動すると TimeoutException が時々発生したりする。
+             * そのため、isDone() についても interrupted 発生時は true だが、TimeoutException 発生時は false 
+             * となるため、わざわざフラグで assert を切り替えている。
+             * NOTE: 自分の理解不足もあるかもなので、もしかしたら将来修正するかも。
+             */
+            assertTrue(futures.get(2).isDone());
+        } else {
+            assertFalse(futures.get(2).isDone());
+        }
+
+        assertFalse(futures.get(3).isCancelled());
+        assertFalse(futures.get(3).isDone());
+
+        assertTrue(futures.get(4).isCancelled());
+        assertTrue(futures.get(4).isDone());
+
+        assertTrue(futures.get(5).isCancelled());
+        assertTrue(futures.get(5).isDone());
     }
 }

@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
+import org.junit.jupiter.api.Test;
+
 import javasnack.tool.CharsetTool;
 import javasnack.tool.UnsignedByte;
-
-import org.testng.annotations.Test;
 
 public class TestISO8859 {
 
@@ -41,7 +42,7 @@ public class TestISO8859 {
         try {
             String s = new String(src, CharsetTool.BINARY);
             byte[] dst = s.getBytes(CharsetTool.BINARY);
-            assertThat(dst, is(src));
+            assertArrayEquals(src, dst);
         } catch (UnsupportedEncodingException ignore) {
             ignore.printStackTrace();
         }
@@ -59,7 +60,7 @@ public class TestISO8859 {
         try {
             String s = new String(src, CharsetTool.BINARY);
             byte[] dst = s.getBytes(CharsetTool.BINARY);
-            assertThat(dst, is(src));
+            assertArrayEquals(src, dst);
         } catch (UnsupportedEncodingException ignore) {
             ignore.printStackTrace();
         }
@@ -77,7 +78,7 @@ public class TestISO8859 {
         try {
             String s = new String(src, CharsetTool.BINARY);
             byte[] dst = s.getBytes(CharsetTool.BINARY);
-            assertThat(dst, is(src));
+            assertArrayEquals(src, dst);
         } catch (UnsupportedEncodingException ignore) {
             ignore.printStackTrace();
         }
@@ -95,7 +96,7 @@ public class TestISO8859 {
         try {
             String s = new String(src, CharsetTool.BINARY);
             byte[] dst = s.getBytes(CharsetTool.BINARY);
-            assertThat(dst, is(src));
+            assertArrayEquals(src, dst);
         } catch (UnsupportedEncodingException ignore) {
             ignore.printStackTrace();
         }
@@ -113,7 +114,7 @@ public class TestISO8859 {
         try {
             String s = new String(src, CharsetTool.BINARY);
             byte[] dst = s.getBytes(CharsetTool.BINARY);
-            assertThat(dst, is(src));
+            assertArrayEquals(src, dst);
         } catch (UnsupportedEncodingException ignore) {
             ignore.printStackTrace();
         }
@@ -124,7 +125,7 @@ public class TestISO8859 {
         String errs = "こんにちは, これはJapanese Characterです。";
         byte[] dst1 = errs.getBytes(CharsetTool.LATIN1);
         String r = new String(dst1, CharsetTool.LATIN1);
-        assertNotEquals(r, errs);
+        assertNotEquals(errs, r);
     }
 
     @Test
@@ -132,8 +133,8 @@ public class TestISO8859 {
         char[] data = new char[] { 'a', 'b', '\0', 'c', 'd', '\0', 'e', 'f' };
         String data2 = new String(data);
         String expected1 = "ab" + "\0" + "cd" + "\0" + "ef";
-        assertEquals(data2, expected1);
+        assertEquals(expected1, data2);
         String data3 = data2.replaceAll("\0", "");
-        assertEquals(data3, "abcdef");
+        assertEquals("abcdef", data3);
     }
 }

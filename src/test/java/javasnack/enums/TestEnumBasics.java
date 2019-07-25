@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.enums;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * enum demos by test cases.
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* enum demos by test cases.
  * 
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
- * @see http://www.atmarkit.co.jp/ait/articles/1103/03/news107.html
- * @see http://d.hatena.ne.jp/amachang/20100225/1267114471
- * @see http://d.hatena.ne.jp/ashigeru/20090116/1232128313
- * @see http://d.hatena.ne.jp/ashigeru/20090119/1232365391
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
+ * http://www.atmarkit.co.jp/ait/articles/1103/03/news107.html
+ * http://d.hatena.ne.jp/amachang/20100225/1267114471
+ * http://d.hatena.ne.jp/ashigeru/20090116/1232128313
+ * http://d.hatena.ne.jp/ashigeru/20090119/1232365391
  */
 public class TestEnumBasics {
 
@@ -63,18 +67,20 @@ public class TestEnumBasics {
         for (NumericEnums e : NumericEnums.values()) {
             System.out.println(e.toString());
         }
-        assertEquals(NumericEnums.valueOf("ONE"), NumericEnums.ONE);
+        assertEquals(NumericEnums.ONE, NumericEnums.valueOf("ONE"));
 
-        assertEquals(numericEnumsToInt(NumericEnums.ONE), 1);
-        assertEquals(numericEnumsToInt(NumericEnums.TWO), 2);
-        assertEquals(numericEnumsToInt(NumericEnums.THREE), 3);
-        assertEquals(numericEnumsToInt(NumericEnums.FOUR), 4);
-        assertEquals(numericEnumsToInt(NumericEnums.FIVE), 5);
+        assertEquals(1, numericEnumsToInt(NumericEnums.ONE));
+        assertEquals(2, numericEnumsToInt(NumericEnums.TWO));
+        assertEquals(3, numericEnumsToInt(NumericEnums.THREE));
+        assertEquals(4, numericEnumsToInt(NumericEnums.FOUR));
+        assertEquals(5, numericEnumsToInt(NumericEnums.FIVE));
     }
 
-    @Test(expectedExceptions = { java.lang.IllegalArgumentException.class })
+    @Test
     public void errorneousValueOf() {
-        assertEquals(NumericEnums.valueOf("one"), NumericEnums.ONE);
+        assertThrows(IllegalArgumentException.class, () -> {
+            NumericEnums.valueOf("one");
+        });
     }
 
     // --------------------------------------------------------
@@ -87,9 +93,9 @@ public class TestEnumBasics {
         final int num;
         final String name;
 
-        ConstructableEnums(int _num, String _name) {
-            this.num = _num;
-            this.name = _name;
+        ConstructableEnums(int num, String name) {
+            this.num = num;
+            this.name = name;
         }
 
         String getContent() {
@@ -103,10 +109,9 @@ public class TestEnumBasics {
         for (ConstructableEnums e : ConstructableEnums.values()) {
             System.out.println(e.toString());
         }
-        assertEquals(ConstructableEnums.valueOf("DEF"), ConstructableEnums.DEF);
+        assertEquals(ConstructableEnums.DEF, ConstructableEnums.valueOf("DEF"));
 
-        assertEquals(ConstructableEnums.DEF.getContent(),
-                "num=[20], name=[def]");
+        assertEquals("num=[20], name=[def]", ConstructableEnums.DEF.getContent());
     }
 
     // --------------------------------------------------------
@@ -140,8 +145,8 @@ public class TestEnumBasics {
         };
         final String greeting;
 
-        EnumsWithMethod(String _greeting) {
-            this.greeting = _greeting;
+        EnumsWithMethod(String greeting) {
+            this.greeting = greeting;
         }
 
         abstract String hello(String yourName);
@@ -153,16 +158,12 @@ public class TestEnumBasics {
 
     @Test
     public void enumsWithMethod() {
-        assertEquals(EnumsWithMethod.MORNING.hello("foo"),
-                "Good Morning, foo. zzz...");
-        assertEquals(EnumsWithMethod.AFTERNOON.hello("bar"),
-                "Good Afternoon, bar. tea or coffee ?");
-        assertEquals(EnumsWithMethod.EVENING.hello("baz"),
-                "Good Evening, baz. sleep, sleep.");
-        assertEquals(EnumsWithMethod.MORNING.getGreeting(), "Good Morning");
-        assertEquals(EnumsWithMethod.AFTERNOON.getGreeting(),
-                "Good Afternoon, but sleepy...");
-        assertEquals(EnumsWithMethod.EVENING.getGreeting(), "Good Evening");
+        assertEquals("Good Morning, foo. zzz...", EnumsWithMethod.MORNING.hello("foo"));
+        assertEquals("Good Afternoon, bar. tea or coffee ?", EnumsWithMethod.AFTERNOON.hello("bar"));
+        assertEquals("Good Evening, baz. sleep, sleep.", EnumsWithMethod.EVENING.hello("baz"));
+        assertEquals("Good Morning", EnumsWithMethod.MORNING.getGreeting());
+        assertEquals("Good Afternoon, but sleepy...", EnumsWithMethod.AFTERNOON.getGreeting());
+        assertEquals("Good Evening", EnumsWithMethod.EVENING.getGreeting());
     }
 
     // --------------------------------------------------------
@@ -171,7 +172,7 @@ public class TestEnumBasics {
      */
 
     interface HelloInterface {
-        public String sayHello(String yourName);
+        String sayHello(String yourName);
     }
 
     enum EnumWithInterface implements HelloInterface {
@@ -187,16 +188,14 @@ public class TestEnumBasics {
         };
         final String myName;
 
-        EnumWithInterface(String _myName) {
-            myName = _myName;
+        EnumWithInterface(String myName) {
+            this.myName = myName;
         }
     }
 
     @Test
     public void enumWithInterface() {
-        assertEquals(EnumWithInterface.ME_THEN_YOU.sayHello("abc"),
-                "I'm foo, you're abc.");
-        assertEquals(EnumWithInterface.YOU_THEN_ME.sayHello("def"),
-                "You're def, I'm bar.");
+        assertEquals("I'm foo, you're abc.", EnumWithInterface.ME_THEN_YOU.sayHello("abc"));
+        assertEquals("You're def, I'm bar.", EnumWithInterface.YOU_THEN_ME.sayHello("def"));
     }
 }

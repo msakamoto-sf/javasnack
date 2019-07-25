@@ -17,11 +17,15 @@ public class ConsoleUtil {
         }
         String r = "";
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             if (Objects.nonNull(prompt)) {
                 System.out.print(prompt);
             }
-            r = br.readLine().trim();
+            final String readLine = br.readLine();
+            if (Objects.isNull(readLine)) {
+                return "";
+            }
+            r = readLine.trim();
         } catch (Exception ignore) {
         }
         return r;

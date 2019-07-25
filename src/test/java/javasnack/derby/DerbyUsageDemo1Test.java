@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.derby;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -23,34 +28,38 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
 import javasnack.tool.UnsignedByte;
 
-import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
+@TestInstance(Lifecycle.PER_CLASS)
 public class DerbyUsageDemo1Test {
 
     Connection conn;
 
-    @BeforeTest
+    @BeforeAll
     public void prepareDb() throws Exception {
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
         conn = DriverManager.getConnection("jdbc:derby:memory:db1;create=true");
         PreparedStatement ps = conn
-                .prepareStatement("create table t1(id integer primary key generated always as identity (start with 1, increment by 1), name varchar(1024), age int)");
+                .prepareStatement(
+                        "create table t1(id integer primary key generated always as identity (start with 1, increment by 1), name varchar(1024), age int)");
         ps.execute();
         ps = conn
-                .prepareStatement("create table t2(id integer primary key generated always as identity (start with 1, increment by 1), name varchar(1024), data clob)");
+                .prepareStatement(
+                        "create table t2(id integer primary key generated always as identity (start with 1, increment by 1), name varchar(1024), data clob)");
         ps.execute();
         ps = conn
-                .prepareStatement("create table t3(id integer primary key generated always as identity (start with 1, increment by 1), name varchar(1024), data blob)");
+                .prepareStatement(
+                        "create table t3(id integer primary key generated always as identity (start with 1, increment by 1), name varchar(1024), data blob)");
         ps.execute();
         ps.close();
     }
 
-    @AfterTest
+    @AfterAll
     public void closeAndShutdownDb() throws SQLException {
         conn.close();
         try {
@@ -74,21 +83,24 @@ public class DerbyUsageDemo1Test {
         ps.setString(1, "tom");
         ps.setInt(2, 30);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // basic insertion(2)
         ps.setString(1, "nancy");
         ps.setInt(2, 40);
         r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         ps = conn.prepareStatement("select name, age from t1 where age > ?");
         // basic select query
         ps.setInt(1, 35);
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        Assert.assertEquals(rs.getString("name"), "nancy");
-        Assert.assertEquals(rs.getInt("age"), 40);
+        if (rs.next()) {
+            assertEquals("nancy", rs.getString("name"));
+            assertEquals(40, rs.getInt("age"));
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -103,14 +115,17 @@ public class DerbyUsageDemo1Test {
         ps.setString(1, s);
         ps.setInt(2, 10);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // select Latin-1 String
         ps = conn.prepareStatement("select name, age from t1 where age = ?");
         ps.setInt(1, 10);
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        Assert.assertEquals(rs.getString("name"), s);
+        if (rs.next()) {
+            assertEquals(s, rs.getString("name"));
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -125,17 +140,20 @@ public class DerbyUsageDemo1Test {
         ByteArrayInputStream bais = new ByteArrayInputStream(src);
         ps.setAsciiStream(2, bais, 0x100);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // select clob data
         ps = conn.prepareStatement("select data from t2 where name = ?");
         ps.setString(1, "clob1");
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        BufferedInputStream bis = new BufferedInputStream(rs.getAsciiStream("data"));
-        byte[] recv = new byte[0x100];
-        bis.read(recv);
-        Assert.assertEquals(recv, src);
+        if (rs.next()) {
+            BufferedInputStream bis = new BufferedInputStream(rs.getAsciiStream("data"));
+            byte[] recv = new byte[0x100];
+            bis.read(recv);
+            assertArrayEquals(src, recv);
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -150,17 +168,20 @@ public class DerbyUsageDemo1Test {
         ByteArrayInputStream bais = new ByteArrayInputStream(src);
         ps.setBinaryStream(2, bais, 0x100);
         int r = ps.executeUpdate();
-        Assert.assertEquals(r, 1);
+        assertEquals(1, r);
 
         // select blob data
         ps = conn.prepareStatement("select data from t3 where name = ?");
         ps.setString(1, "blob1");
         ResultSet rs = ps.executeQuery();
-        rs.next();
-        BufferedInputStream bis = new BufferedInputStream(rs.getBinaryStream("data"));
-        byte[] recv = new byte[0x100];
-        bis.read(recv);
-        Assert.assertEquals(recv, src);
+        if (rs.next()) {
+            BufferedInputStream bis = new BufferedInputStream(rs.getBinaryStream("data"));
+            byte[] recv = new byte[0x100];
+            bis.read(recv);
+            assertArrayEquals(src, recv);
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }

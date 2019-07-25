@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Pattern.html
- * @see https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Matcher.html
- * @see http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html
+/* see:
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Pattern.html
+ * https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Matcher.html
+ * http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html
  */
 public class TestRegexp1 {
     @Test
@@ -33,11 +36,11 @@ public class TestRegexp1 {
         Pattern p = Pattern.compile("hello");
         Matcher m = p.matcher("abc hello def");
         assertTrue(m.find());
-        assertEquals("hello", m.group());
-        assertEquals(4, m.start());
-        assertEquals(9, m.end());
+        assertThat("hello").isEqualTo(m.group());
+        assertThat(4).isEqualTo(m.start());
+        assertThat(9).isEqualTo(m.end());
         m = p.matcher("abc hell def");
-        assertFalse(m.find());
+        Assertions.assertFalse(m.find());
     }
 
     @Test
@@ -45,11 +48,11 @@ public class TestRegexp1 {
         Pattern p = Pattern.compile("\\d{3}");
         Matcher m = p.matcher("abc 123 def");
         assertTrue(m.find());
-        assertEquals("123", m.group());
-        assertEquals(4, m.start());
-        assertEquals(7, m.end());
+        assertThat("123").isEqualTo(m.group());
+        assertThat(4).isEqualTo(m.start());
+        assertThat(7).isEqualTo(m.end());
         m = p.matcher("abc 12 def");
-        assertFalse(m.find());
+        Assertions.assertFalse(m.find());
     }
 
     @Test
@@ -57,9 +60,9 @@ public class TestRegexp1 {
         Pattern p = Pattern.compile("\\Q\\d{3}\\E");
         Matcher m = p.matcher("abc \\d{3} def");
         assertTrue(m.find());
-        assertEquals("\\d{3}", m.group());
-        assertEquals(4, m.start());
-        assertEquals(9, m.end());
+        assertThat("\\d{3}").isEqualTo(m.group());
+        assertThat(4).isEqualTo(m.start());
+        assertThat(9).isEqualTo(m.end());
     }
 
     @Test
@@ -67,22 +70,22 @@ public class TestRegexp1 {
         Pattern p = Pattern.compile("(?im)(^abc.*def$)");
         Matcher m = p.matcher("ABCxxxDEF\nabc123def\nab99ef\naBcDeF");
         assertTrue(m.find());
-        assertEquals("ABCxxxDEF", m.group());
-        assertEquals(0, m.start());
-        assertEquals(9, m.end());
+        assertThat("ABCxxxDEF").isEqualTo(m.group());
+        assertThat(0).isEqualTo(m.start());
+        assertThat(9).isEqualTo(m.end());
         assertTrue(m.find());
-        assertEquals("abc123def", m.group());
-        assertEquals(10, m.start());
-        assertEquals(19, m.end());
+        assertThat("abc123def").isEqualTo(m.group());
+        assertThat(10).isEqualTo(m.start());
+        assertThat(19).isEqualTo(m.end());
         assertTrue(m.find());
-        assertEquals("aBcDeF", m.group());
-        assertEquals(27, m.start());
-        assertEquals(33, m.end());
+        assertThat("aBcDeF").isEqualTo(m.group());
+        assertThat(27).isEqualTo(m.start());
+        assertThat(33).isEqualTo(m.end());
     }
 
     @Test
     public void quoteDemo() {
-        assertEquals("\\Q\\d{3}\\E", Pattern.quote("\\d{3}"));
-        assertEquals("\\Q(?im)(^abc.*def$)\\E", Pattern.quote("(?im)(^abc.*def$)"));
+        assertThat("\\Q\\d{3}\\E").isEqualTo(Pattern.quote("\\d{3}"));
+        assertThat("\\Q(?im)(^abc.*def$)\\E").isEqualTo(Pattern.quote("(?im)(^abc.*def$)"));
     }
 }

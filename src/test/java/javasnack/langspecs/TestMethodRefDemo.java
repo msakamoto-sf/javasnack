@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- * @see http://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
+/* see:
+ * http://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html
  */
 public class TestMethodRefDemo {
 
@@ -57,17 +58,17 @@ public class TestMethodRefDemo {
     public void basicMethodRef() throws Exception {
         BiFunction<String, Integer, RefDemo> bif1 = RefDemo::new;
         RefDemo rd1 = bif1.apply("Jon", 10);
-        assertEquals(rd1.name, "Jon");
-        assertEquals(rd1.age, 10);
+        assertThat(rd1.name).isEqualTo("Jon");
+        assertThat(rd1.age).isEqualTo(10);
 
         RefDemo.STATIC_INT = 100;
         rd1.instanceInt = 200;
         IntSupplier sup1 = RefDemo::getStaticInt;
         IntSupplier sup2 = rd1::getInstanceInt;
-        assertEquals(sup1.getAsInt(), 100);
-        assertEquals(sup2.getAsInt(), 200);
+        assertThat(sup1.getAsInt()).isEqualTo(100);
+        assertThat(sup2.getAsInt()).isEqualTo(200);
 
         Function<RefDemo, String> greeting = RefDemo::whoAreYou;
-        assertEquals(greeting.apply(rd1), "My name is Jon, 10 years old.");
+        assertThat(greeting.apply(rd1)).isEqualTo("My name is Jon, 10 years old.");
     }
 }

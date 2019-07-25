@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks.perfs.map;
 
 import java.math.BigInteger;
@@ -40,40 +41,40 @@ public class PerfHashMapTotalAvg implements Runnable {
         return System.nanoTime() - startTime;
     }
 
+    static final int MASS = 500000;
+    static final int ITER = 50;
+
     @Override
     public void run() {
 
-        int MASS = 500000;
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
         }
 
-        int ITER = 50;
-
         @SuppressWarnings("unchecked")
         HashMap<String, String>[] maps = new HashMap[ITER];
 
-        BigInteger putting_sum = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             HashMap<String, String> m = new HashMap<String, String>(16, 0.75f);
             long elapsed = putting(m, keys, MASS);
             maps[i] = m;
             System.out.println(String.format("puttings[%d] = %d nano sec.", i,
                     elapsed));
-            putting_sum = putting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = putting_sum.divide(BigInteger.valueOf(ITER)).longValue();
+        long avg1 = sumOfPutting.divide(BigInteger.valueOf(ITER)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             HashMap<String, String> m = maps[i];
             long elapsed = getting(m, keys, MASS);
             System.out.println(String.format("gettings[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(ITER)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(ITER)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format(

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.ser;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,68 +29,69 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.annotations.Test;
-
-class Bar implements Serializable {
-    protected int num;
-    protected String name;
-    protected Date createdAt;
-    transient protected String hiddenName;
-    Map<String, String> options = null;
-
-    public void setNum(int v) {
-        this.num = v;
-    }
-
-    public int getNum() {
-        return this.num;
-    }
-
-    public void setName(String v) {
-        this.name = v;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setCreatedAt(Date v) {
-        this.createdAt = v;
-    }
-
-    public Date getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public void setHiddenName(String v) {
-        this.hiddenName = v;
-    }
-
-    public String getHiddenName() {
-        return this.hiddenName;
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        // serialize optional map field manually.
-        options = new HashMap<String, String>();
-        options.put("name", name);
-        options.put("num", Integer.toString(num));
-        options.put("hidden", hiddenName);
-        out.writeObject(options);
-        // serialize transient field manually.
-        out.writeObject(hiddenName + " with spice!!");
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
-        in.defaultReadObject();
-        options = (Map<String, String>) in.readObject();
-        hiddenName = (String) in.readObject();
-    }
-}
+import org.junit.jupiter.api.Test;
 
 public class TestCustomizedReadWrite {
+    static class Bar implements Serializable {
+        private static final long serialVersionUID = -1117467365797726761L;
+        protected int num;
+        protected String name;
+        protected Date createdAt;
+        protected transient String hiddenName;
+        Map<String, String> options = null;
+
+        public void setNum(int v) {
+            this.num = v;
+        }
+
+        public int getNum() {
+            return this.num;
+        }
+
+        public void setName(String v) {
+            this.name = v;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setCreatedAt(Date v) {
+            this.createdAt = v;
+        }
+
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
+
+        public void setHiddenName(String v) {
+            this.hiddenName = v;
+        }
+
+        public String getHiddenName() {
+            return this.hiddenName;
+        }
+
+        private void writeObject(ObjectOutputStream out) throws IOException {
+            out.defaultWriteObject();
+            // serialize optional map field manually.
+            options = new HashMap<String, String>();
+            options.put("name", name);
+            options.put("num", Integer.toString(num));
+            options.put("hidden", hiddenName);
+            out.writeObject(options);
+            // serialize transient field manually.
+            out.writeObject(hiddenName + " with spice!!");
+        }
+
+        @SuppressWarnings("unchecked")
+        private void readObject(ObjectInputStream in) throws IOException,
+                ClassNotFoundException {
+            in.defaultReadObject();
+            options = (Map<String, String>) in.readObject();
+            hiddenName = (String) in.readObject();
+        }
+    }
 
     @Test
     public void serializeCustomizedReadWriteObject() throws IOException,
@@ -121,12 +123,12 @@ public class TestCustomizedReadWrite {
 
         Bar o2 = (Bar) oin.readObject();
 
-        assertEquals(o2.getNum(), o.getNum());
-        assertEquals(o2.getName(), o.getName());
-        assertEquals(o2.getHiddenName(), o.getHiddenName() + " with spice!!");
-        assertEquals(o2.getCreatedAt(), o.getCreatedAt());
-        assertEquals(o2.options.get("name"), o.getName());
-        assertEquals(o2.options.get("num"), Integer.toString(o.getNum()));
-        assertEquals(o2.options.get("hidden"), o.getHiddenName());
+        assertEquals(o.getNum(), o2.getNum());
+        assertEquals(o.getName(), o2.getName());
+        assertEquals(o.getHiddenName() + " with spice!!", o2.getHiddenName());
+        assertEquals(o.getCreatedAt(), o2.getCreatedAt());
+        assertEquals(o.getName(), o2.options.get("name"));
+        assertEquals(Integer.toString(o.getNum()), o2.options.get("num"));
+        assertEquals(o.getHiddenName(), o2.options.get("hidden"));
     }
 }

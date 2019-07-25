@@ -37,14 +37,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package javasnack.myutils;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestHexDumper {
     static final byte[] BYTES_00_FF;
+
     static {
         BYTES_00_FF = new byte[256];
         for (int i = 0; i <= 0xFF; i++) {
@@ -53,7 +55,7 @@ public class TestHexDumper {
     }
 
     String createDummy(String prefix, boolean toUpperCase, String separator) {
-        char seeds[] = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+        char[] seeds = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
         StringBuilder r = new StringBuilder();
         int k = 0;
         for (int i = 0; i < seeds.length; i++) {
@@ -79,15 +81,15 @@ public class TestHexDumper {
     public void testSimple() {
         HexDumper dumper = new HexDumper();
         String r = dumper.dump(null);
-        assertEquals(r, "");
+        assertEquals("", r);
         r = dumper.dump(new byte[] {});
-        assertEquals(r, "");
+        assertEquals("", r);
         r = dumper.dump(new byte[] { 0 });
-        assertEquals(r, "00");
+        assertEquals("00", r);
         r = dumper.dump(new byte[] { 0, 1 });
-        assertEquals(r, "0001");
+        assertEquals("0001", r);
         r = dumper.dump(BYTES_00_FF);
-        assertEquals(r, createDummy("", false, ""));
+        assertEquals(createDummy("", false, ""), r);
     }
 
     @Test
@@ -95,7 +97,7 @@ public class TestHexDumper {
         HexDumper dumper = new HexDumper();
         dumper.setPrefix("0x");
         String r = dumper.dump(BYTES_00_FF);
-        assertEquals(r, createDummy("0x", false, ""));
+        assertEquals(createDummy("0x", false, ""), r);
     }
 
     @Test
@@ -103,7 +105,7 @@ public class TestHexDumper {
         HexDumper dumper = new HexDumper();
         dumper.setToUpperCase(true);
         String r = dumper.dump(BYTES_00_FF);
-        assertEquals(r, createDummy("", true, ""));
+        assertEquals(createDummy("", true, ""), r);
     }
 
     @Test
@@ -111,7 +113,7 @@ public class TestHexDumper {
         HexDumper dumper = new HexDumper();
         dumper.setSeparator(",");
         String r = dumper.dump(BYTES_00_FF);
-        assertEquals(r, createDummy("", false, ","));
+        assertEquals(createDummy("", false, ","), r);
     }
 
     @Test
@@ -121,6 +123,6 @@ public class TestHexDumper {
         dumper.setToUpperCase(true);
         dumper.setSeparator(", ");
         String r = dumper.dump(BYTES_00_FF);
-        assertEquals(r, createDummy("0x", true, ", "));
+        assertEquals(createDummy("0x", true, ", "), r);
     }
 }

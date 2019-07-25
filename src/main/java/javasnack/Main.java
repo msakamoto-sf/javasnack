@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
-import javasnack.snacks.ByteRange1;
-import javasnack.snacks.ByteRange2;
-import javasnack.snacks.ByteRange3;
-import javasnack.snacks.ByteRange4;
 import javasnack.snacks.CollectionTypes1;
 import javasnack.snacks.HelloWorld;
 import javasnack.snacks.InfiniteLoop;
@@ -36,17 +34,9 @@ import javasnack.snacks.ReadConsoleInput;
 import javasnack.snacks.RunningJREVersionIs;
 import javasnack.snacks.SystemPropertiesAndEnvs;
 import javasnack.snacks.UUIDDemo;
-import javasnack.snacks.UnicodeC0C1;
-import javasnack.snacks.concurrent.FutureDemos;
-import javasnack.snacks.concurrent.ThreadExecutorDemos;
+import javasnack.snacks.Write0x00To0xFF;
 import javasnack.snacks.jsch.JSchRemoeExecPasswdAuthDemo;
 import javasnack.snacks.jsch.JSchRemoeExecPubKeyAuthDemo;
-import javasnack.snacks.json.PojoEncodeGroovyJsonBuilder;
-import javasnack.snacks.json.PojoEncodeGson;
-import javasnack.snacks.json.PojoEncodeJackson;
-import javasnack.snacks.json.PojoEncodeJackson2;
-import javasnack.snacks.json.PojoEncodeJsonic;
-import javasnack.snacks.mustache.MustacheExercise;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
 import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
 import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
@@ -56,8 +46,6 @@ import javasnack.snacks.perfs.map.PerfLinkedHashMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfLinkedHashMapTotalAvg;
 import javasnack.snacks.perfs.map.PerfTreeMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
-import javasnack.snacks.proxyobject.JdkProxyDemo;
-import javasnack.snacks.xml.sax2.XercesSax2WithJaxpDemo;
 
 /**
  * Console Play Board:
@@ -65,51 +53,38 @@ import javasnack.snacks.xml.sax2.XercesSax2WithJaxpDemo;
  * mvn exec:java -Dexec.mainClass=javasnack.Main
  * </code>
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class Main {
     static Runnable[] snacks = new Runnable[] {
-        new HelloWorld(),
-        new RunningJREVersionIs(),
-        new LivingUserThreads(),
-        new InfiniteLoop(),
-        new ByteRange1(),
-        new ByteRange2(),
-        new ByteRange3(),
-        new ByteRange4(),
-        new ReadConsoleInput(),
-        new ListAvailableCharsets(),
-        new UUIDDemo(),
-        new SystemPropertiesAndEnvs(),
-        new PerfJavaArrayFinePutGet(),
-        new PerfArrayListFinePutGet(),
-        new PerfLinkedListFinePutGet(),
-        new PerfHashMapFinePutGet(),
-        new PerfHashMapTotalAvg(),
-        new PerfLinkedHashMapFinePutGet(),
-        new PerfLinkedHashMapTotalAvg(),
-        new PerfTreeMapFinePutGet(),
-        new PerfTreeMapTotalAvg(),
-        new CollectionTypes1(),
-        new LocalJarDemo(),
-        new JCLDemo(),
-        new XercesSax2WithJaxpDemo(),
-        new JdkProxyDemo(),
-        new RandomDistrubution(),
-        new RandomDistrubutionInt(),
-        new PojoEncodeJsonic(),
-        new PojoEncodeJackson(),
-        new PojoEncodeJackson2(),
-        new PojoEncodeGson(),
-        new PojoEncodeGroovyJsonBuilder(),
-        new MustacheExercise(),
-        new UnicodeC0C1(),
-        new NetworkInterface1(),
-        new ThreadExecutorDemos(),
-        new FutureDemos(),
-        new JSchRemoeExecPasswdAuthDemo(),
-        new JSchRemoeExecPubKeyAuthDemo(),
-        };
+            new HelloWorld(),
+            new RunningJREVersionIs(),
+            new LivingUserThreads(),
+            new InfiniteLoop(),
+            new Write0x00To0xFF(),
+            new ReadConsoleInput(),
+            new ListAvailableCharsets(),
+            new UUIDDemo(),
+            new SystemPropertiesAndEnvs(),
+            new PerfJavaArrayFinePutGet(),
+            new PerfArrayListFinePutGet(),
+            new PerfLinkedListFinePutGet(),
+            new PerfHashMapFinePutGet(),
+            new PerfHashMapTotalAvg(),
+            new PerfLinkedHashMapFinePutGet(),
+            new PerfLinkedHashMapTotalAvg(),
+            new PerfTreeMapFinePutGet(),
+            new PerfTreeMapTotalAvg(),
+            new CollectionTypes1(),
+            new LocalJarDemo(),
+            new JCLDemo(),
+            new RandomDistrubution(),
+            new RandomDistrubutionInt(),
+            new NetworkInterface1(),
+            new JSchRemoeExecPasswdAuthDemo(),
+            new JSchRemoeExecPubKeyAuthDemo(),
+    };
+
     public static void main(String[] args) throws Exception {
         System.out.println("Welcome to Java Snack!!");
         for (int i = 0; i < snacks.length; i++) {
@@ -118,8 +93,12 @@ public class Main {
         }
         System.out.print("Enter snack number (exit for -1):");
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            int i = Integer.parseInt(br.readLine().trim());
+            final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            final String readLine = br.readLine();
+            if (Objects.isNull(readLine)) {
+                return;
+            }
+            int i = Integer.parseInt(readLine.trim());
             if (i >= snacks.length) {
                 System.out.println("Enter 0 - " + (snacks.length - 1) + " number.");
                 return;
@@ -129,7 +108,7 @@ public class Main {
             }
             new Thread(snacks[i]).start();
         } catch (NumberFormatException e) {
-            System.out.println("Enter 0 - " + (snacks.length -1) + " number.");
+            System.out.println("Enter 0 - " + (snacks.length - 1) + " number.");
         } finally {
             System.out.println("Exiting main thread...");
         }

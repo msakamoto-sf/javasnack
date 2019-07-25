@@ -15,13 +15,15 @@
  */
 /**
  * Google Guice examples.
- * 
- * @see https://code.google.com/p/google-guice/
- * @see https://jcp.org/en/jsr/detail?id=330
- * @see http://blog.ayakix.com/2009/11/google-guice.html
- * @see http://www.infoq.com/jp/news/2011/04/guice_30
- * @see http://www.infoq.com/jp/news/2009/08/dependency-injection-javaee6
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @see http://qiita.com/opengl-8080/items/6fb69cd2493e149cac3a
  */
+/* see:
+ * https://code.google.com/p/google-guice/
+ * https://jcp.org/en/jsr/detail?id=330
+ * http://blog.ayakix.com/2009/11/google-guice.html
+ * http://www.infoq.com/jp/news/2011/04/guice_30
+ * http://www.infoq.com/jp/news/2009/08/dependency-injection-javaee6
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
+ * http://qiita.com/opengl-8080/items/6fb69cd2493e149cac3a
+ */
+
 package javasnack.guice3;

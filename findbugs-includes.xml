@@ -1,6 +1,0 @@
-<!-- FindBugs Inclusion Filter XML -->
-<FindBugsFilter>
-    <Match>
-        <Package name="make.findbugs.angry" />
-    </Match>
-</FindBugsFilter>

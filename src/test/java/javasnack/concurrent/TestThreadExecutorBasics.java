@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.concurrent;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -40,25 +42,28 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import javasnack.tool.BlackholeTcpServer;
 
+@TestInstance(Lifecycle.PER_CLASS)
 public class TestThreadExecutorBasics {
 
     BlackholeTcpServer blackholeTcpServer = null;
     int blackholeTcpServerPort = 0;
 
-    @BeforeClass
-    public void beforeClass() throws IOException {
-        BlackholeTcpServer server = new BlackholeTcpServer();
-        this.blackholeTcpServerPort = server.start();
+    @BeforeAll
+    public void beforeAll() throws IOException {
+        blackholeTcpServer = new BlackholeTcpServer();
+        this.blackholeTcpServerPort = blackholeTcpServer.start();
     }
 
-    @AfterClass
-    public void afterClass() {
+    @AfterAll
+    public void afterAll() {
         if (Objects.nonNull(this.blackholeTcpServer)) {
             this.blackholeTcpServer.stop();
         }
@@ -104,6 +109,7 @@ public class TestThreadExecutorBasics {
                 return t;
             }
         }
+
         MyThreadFactory tf = new MyThreadFactory();
         ExecutorService es = Executors.newFixedThreadPool(3, tf);
         final int NUM = 7;
@@ -115,34 +121,45 @@ public class TestThreadExecutorBasics {
                 return Thread.currentThread().getName();
             }
         }
+
         List<Future<String>> futures = new ArrayList<>();
         for (int i = 0; i < NUM; i++) {
             futures.add(es.submit(new MyTask()));
         }
         latch.await();
         es.shutdown(); // REQUIRED.
-        assertEquals(tf.count, 3);
-        assertEquals(futures.size(), 7);
+        assertEquals(3, tf.count, "number of created threads should be 3.");
         for (int i = 0; i < NUM; i++) {
-            assertTrue(futures.get(0).get().startsWith("MyThreadNo."));
+            assertTrue(futures.get(i).get().startsWith("MyThreadNo."));
+        }
+    }
+
+    static class WaitableRunner implements Runnable {
+        final CountDownLatch wait;
+        final CountDownLatch done;
+
+        WaitableRunner(final CountDownLatch wait, final CountDownLatch done) {
+            this.wait = wait;
+            this.done = done;
+        }
+
+        @Override
+        public void run() {
+            try {
+                wait.await();
+            } catch (InterruptedException ignore) {
+            }
+            done.countDown();
         }
     }
 
     @Test
     void testShudown() throws InterruptedException {
-        ExecutorService es = Executors.newSingleThreadExecutor();
+        final ExecutorService es = Executors.newSingleThreadExecutor();
         final int NUM = 5;
-        CountDownLatch latch = new CountDownLatch(NUM);
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ignore) {
-                }
-                latch.countDown();
-            }
-        };
+        final CountDownLatch done = new CountDownLatch(NUM);
+        final CountDownLatch wait = new CountDownLatch(1);
+        final Runnable task = new WaitableRunner(wait, done);
         for (int i = 0; i < NUM; i++) {
             es.submit(task);
         }
@@ -150,14 +167,17 @@ public class TestThreadExecutorBasics {
         es.shutdown();
         assertTrue(es.isShutdown());
         assertFalse(es.isTerminated());
-        try {
+
+        assertThrows(RejectedExecutionException.class, () -> {
             es.submit(task);
-            fail("should not reach here.");
-        } catch (RejectedExecutionException expected) {
-            // already called shutdown(), new submit() was rejected, expected behaviour.
-        }
-        // all task is done, so latch.await() returns :)
-        latch.await();
+        });
+        // -> already called shutdown(), new submit() was rejected, expected behaviour.
+
+        wait.countDown();
+        // -> awake all task
+        done.await();
+        // -> all task is done
+
         assertTrue(es.awaitTermination(60, TimeUnit.MILLISECONDS));
         assertTrue(es.isTerminated());
     }
@@ -196,9 +216,9 @@ public class TestThreadExecutorBasics {
         // shutdownNow() cancels waiting tasks AND current running task.
 
         // "current" count-up task would be canceled, so we'll got "2".
-        assertEquals(counts.get(), 2);
+        assertEquals(2, counts.get());
         // we'll got 2 tasks canceled. (2 tasks done, 1 task has begun)
-        assertEquals(remains.size(), 2);
+        assertEquals(2, remains.size());
         assertTrue(es.isShutdown());
         assertFalse(es.isTerminated());
     }
@@ -264,18 +284,18 @@ public class TestThreadExecutorBasics {
     void testGracefulShutdownExample() throws InterruptedException {
         ExecutorService es = Executors.newSingleThreadExecutor();
         final int NUM = 4;
-        BreakableTask tasks[] = new BreakableTask[NUM];
+        final BreakableTask[] tasks = new BreakableTask[NUM];
         for (int i = 0; i < NUM; i++) {
-            tasks[i] = new BreakableTask(50, 2);
+            tasks[i] = new BreakableTask(100, 2);
             es.submit(tasks[i]);
         }
         es.shutdown();
-        assertFalse(es.awaitTermination(105, TimeUnit.MILLISECONDS));
+        assertFalse(es.awaitTermination(250, TimeUnit.MILLISECONDS));
         // [0] done, [1] in sleeping, [2], [3] not started.
         List<Runnable> l = es.shutdownNow();
-        assertEquals(l.size(), 2);
+        assertEquals(2, l.size());
         // [1] ignores interruption, [2], [3] are removed from task queue.
-        assertTrue(es.awaitTermination(105, TimeUnit.MILLISECONDS));
+        assertTrue(es.awaitTermination(250, TimeUnit.MILLISECONDS));
         // [1] done, completely terminated :)
 
         assertTrue(tasks[0].done);
@@ -296,7 +316,7 @@ public class TestThreadExecutorBasics {
         es.shutdown();
         assertFalse(es.awaitTermination(40, TimeUnit.MILLISECONDS));
         // [0] in sleep + looping, [1], [2], [3] not started.
-        assertEquals(es.shutdownNow().size(), 3);
+        assertEquals(3, es.shutdownNow().size());
 
         // send break signal :P
         for (BreakableTask t : tasks) {
@@ -346,7 +366,7 @@ public class TestThreadExecutorBasics {
         @Override
         public void run() {
             currentThread = Thread.currentThread();
-            InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", this.remotePort);
+            InetSocketAddress connectTo = new InetSocketAddress(InetAddress.getLoopbackAddress(), this.remotePort);
             clientSocket = new Socket();
             try {
                 clientSocket.connect(connectTo);
@@ -361,7 +381,7 @@ public class TestThreadExecutorBasics {
                 System.out.println("read end[" + no + "]");
             } catch (IOException e) {
                 assertTrue(e instanceof SocketException);
-                assertEquals(e.getMessage(), "Socket closed");
+                assertEquals("Socket closed", e.getMessage());
             } finally {
                 if (clientSocket.isConnected()) {
                     try {
@@ -378,8 +398,8 @@ public class TestThreadExecutorBasics {
     @Test
     void testGracefulShutdownBlockingIOTaskDemo() throws InterruptedException {
         final int NUM = 4;
-        ExecutorService es = Executors.newFixedThreadPool(NUM);
-        BlockingIOTask tasks[] = new BlockingIOTask[NUM];
+        final ExecutorService es = Executors.newFixedThreadPool(NUM);
+        final BlockingIOTask[] tasks = new BlockingIOTask[NUM];
         for (int i = 0; i < NUM; i++) {
             tasks[i] = new BlockingIOTask(i, this.blackholeTcpServerPort);
             es.submit(tasks[i]);
@@ -387,7 +407,7 @@ public class TestThreadExecutorBasics {
         es.shutdown();
         assertFalse(es.awaitTermination(50, TimeUnit.MILLISECONDS));
         List<Runnable> l = es.shutdownNow();
-        assertEquals(l.size(), 0);
+        assertEquals(0, l.size());
 
         // oops ... blocking i/o read-wait does not interrupted by shutdownNow(), so not terminated yet :( 
         assertFalse(es.awaitTermination(50, TimeUnit.MILLISECONDS));

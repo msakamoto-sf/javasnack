@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package myapi;
 
 /**
  * for JCL, myapi-impl1.jar, myapi-impl2.jar demo.
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public interface GreetingInterface {
-    public String morning(String to);
+    String morning(String to);
 
-    public String afternoon(String to);
+    String afternoon(String to);
 }

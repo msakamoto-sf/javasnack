@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.tool;
 
 import java.io.ByteArrayOutputStream;
@@ -53,7 +54,7 @@ public class BlackholeTcpServer {
         if (Objects.nonNull(serverChannel) || Objects.nonNull(es)) {
             throw new IllegalStateException();
         }
-        Selector selector = Selector.open();
+        final Selector selector = Selector.open();
         serverChannel = ServerSocketChannel.open();
         serverChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
         serverChannel.bind(new InetSocketAddress(port), 10);
@@ -110,19 +111,19 @@ public class BlackholeTcpServer {
     }
 
     private void doAccept(Selector selector, SelectionKey key) throws IOException {
-        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
-        SocketChannel socketChannel = serverChannel.accept();
-        InetSocketAddress sa = (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
+        final ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+        final SocketChannel socketChannel = serverChannel.accept();
+        final InetSocketAddress sa = (InetSocketAddress) socketChannel.socket().getRemoteSocketAddress();
         this.receivedBytesMap.put(sa, new ByteArrayOutputStream());
         socketChannel.configureBlocking(false);
         socketChannel.register(selector, SelectionKey.OP_READ);
     }
 
     private void doRead(SelectionKey key) throws IOException {
-        SocketChannel channel = (SocketChannel) key.channel();
-        InetSocketAddress sa = (InetSocketAddress) channel.socket().getRemoteSocketAddress();
-        ByteArrayOutputStream out = this.receivedBytesMap.get(sa);
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        final SocketChannel channel = (SocketChannel) key.channel();
+        final InetSocketAddress sa = (InetSocketAddress) channel.socket().getRemoteSocketAddress();
+        final ByteArrayOutputStream out = this.receivedBytesMap.get(sa);
+        final ByteBuffer buffer = ByteBuffer.allocate(1024);
         int readlen = 0;
         do {
             buffer.clear();
@@ -132,7 +133,7 @@ public class BlackholeTcpServer {
                 return;
             }
             buffer.flip();
-            byte[] data = new byte[buffer.remaining()];
+            final byte[] data = new byte[buffer.remaining()];
             buffer.get(data);
             out.write(data);
         } while (readlen > 0);

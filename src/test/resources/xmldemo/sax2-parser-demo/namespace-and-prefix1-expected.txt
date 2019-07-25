@@ -1,0 +1,135 @@
+> Start document
+>> start[local: / qname:root](uri=[])
+>>    attrs[0].getLocalName() =xmlns
+>>    attrs[0].getQName()     =xmlns
+>>    attrs[0].getValue()     =http://a.b.c/default
+>>    attrs[1].getLocalName() =xmlns:p
+>>    attrs[1].getQName()     =xmlns:p
+>>    attrs[1].getValue()     =http://a.b.c/prefix1
+>>    attrs[2].getLocalName() =xmlns:q
+>>    attrs[2].getQName()     =xmlns:q
+>>    attrs[2].getValue()     =http://a.b.c/prefix2
+>> characters([
+  ])
+>>> start[local: / qname:elements](uri=[])
+>>>    attrs[0].getLocalName() =offset
+>>>    attrs[0].getQName()     =offset
+>>>    attrs[0].getValue()     =10
+>>>    attrs[1].getLocalName() =limit
+>>>    attrs[1].getQName()     =limit
+>>>    attrs[1].getValue()     =5
+>>> characters([
+    ])
+>>>> start[local: / qname:p:element](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:name](uri=[])
+>>>>> characters([abc])
+<<<<< end[local: / qname:name](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:q:age](uri=[])
+>>>>> characters([20])
+<<<<< end[local: / qname:q:age](uri=[])
+>>>> characters([
+    ])
+<<<< end[local: / qname:p:element](uri=[])
+>>> characters([
+    ])
+>>>> start[local: / qname:p:element](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:name](uri=[])
+>>>>> characters([def])
+<<<<< end[local: / qname:name](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:q:age](uri=[])
+>>>>> characters([30])
+<<<<< end[local: / qname:q:age](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:p:extras](uri=[])
+>>>>>    attrs[0].getLocalName() =xmlns:r
+>>>>>    attrs[0].getQName()     =xmlns:r
+>>>>>    attrs[0].getValue()     =http://a.b.c/prefix3
+>>>>> characters([
+        ])
+>>>>>> start[local: / qname:zipcode](uri=[])
+>>>>>> characters([123456])
+<<<<<< end[local: / qname:zipcode](uri=[])
+>>>>> characters([
+        ])
+>>>>>> start[local: / qname:r:hobbies](uri=[])
+>>>>>> characters([
+          ])
+>>>>>>> start[local: / qname:hobby](uri=[])
+>>>>>>> characters([cooking])
+<<<<<<< end[local: / qname:hobby](uri=[])
+>>>>>> characters([
+          ])
+>>>>>>> start[local: / qname:hobby](uri=[])
+>>>>>>> characters([afternoon-tea])
+<<<<<<< end[local: / qname:hobby](uri=[])
+>>>>>> characters([
+        ])
+<<<<<< end[local: / qname:r:hobbies](uri=[])
+>>>>> characters([
+      ])
+<<<<< end[local: / qname:p:extras](uri=[])
+>>>> characters([
+    ])
+<<<< end[local: / qname:p:element](uri=[])
+>>> characters([
+    ])
+>>>> start[local: / qname:p:element](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:name](uri=[])
+>>>>> characters([def])
+<<<<< end[local: / qname:name](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:q:age](uri=[])
+>>>>> characters([30])
+<<<<< end[local: / qname:q:age](uri=[])
+>>>> characters([
+      ])
+>>>>> start[local: / qname:p:extras](uri=[])
+>>>>>    attrs[0].getLocalName() =xmlns
+>>>>>    attrs[0].getQName()     =xmlns
+>>>>>    attrs[0].getValue()     =http://a.b.c/prefix4
+>>>>> characters([
+        ])
+>>>>>> start[local: / qname:zipcode](uri=[])
+>>>>>> characters([7890123])
+<<<<<< end[local: / qname:zipcode](uri=[])
+>>>>> characters([
+        ])
+>>>>>> start[local: / qname:q:hobbies](uri=[])
+>>>>>> characters([
+          ])
+>>>>>>> start[local: / qname:hobby](uri=[])
+>>>>>>> characters([programming])
+<<<<<<< end[local: / qname:hobby](uri=[])
+>>>>>> characters([
+          ])
+>>>>>>> start[local: / qname:hobby](uri=[])
+>>>>>>> characters([coffee-break])
+<<<<<<< end[local: / qname:hobby](uri=[])
+>>>>>> characters([
+        ])
+<<<<<< end[local: / qname:q:hobbies](uri=[])
+>>>>> characters([
+      ])
+<<<<< end[local: / qname:p:extras](uri=[])
+>>>> characters([
+    ])
+<<<< end[local: / qname:p:element](uri=[])
+>>> characters([
+  ])
+<<< end[local: / qname:elements](uri=[])
+>> characters([
+])
+<< end[local: / qname:root](uri=[])
+< End document
