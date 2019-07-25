@@ -18,6 +18,7 @@ package javasnack.h2;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -79,9 +80,12 @@ public class H2UsageDemo1Test {
         // basic select query
         ps.setInt(1, 35);
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        assertEquals("nancy", rs.getString("name"));
-        assertEquals(40, rs.getInt("age"));
+        if (rs.first()) {
+            assertEquals("nancy", rs.getString("name"));
+            assertEquals(40, rs.getInt("age"));
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -103,8 +107,11 @@ public class H2UsageDemo1Test {
         ps = conn.prepareStatement("select name, age from t1 where age = ?");
         ps.setInt(1, 10);
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        assertEquals(s, rs.getString("name"));
+        if (rs.first()) {
+            assertEquals(s, rs.getString("name"));
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -126,19 +133,22 @@ public class H2UsageDemo1Test {
         ps = conn.prepareStatement("select data from t2 where name = ?");
         ps.setString(1, "clob1");
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        BufferedInputStream bis = new BufferedInputStream(
-                rs.getAsciiStream("data"));
-        byte[] recv = new byte[0x100];
-        bis.read(recv);
-        // for (byte d : recv) {
-        // System.out.println(d);
-        // }
-        // OOPS!! : recv[128]=-17, recv[129]=-65, recv[130]=-67,... what happen???
-        //assertArrayEquals(src, recv);
-        assertEquals(-17, recv[128]);
-        assertEquals(-65, recv[129]);
-        assertEquals(-67, recv[130]);
+        if (rs.first()) {
+            BufferedInputStream bis = new BufferedInputStream(
+                    rs.getAsciiStream("data"));
+            byte[] recv = new byte[0x100];
+            bis.read(recv);
+            // for (byte d : recv) {
+            // System.out.println(d);
+            // }
+            // OOPS!! : recv[128]=-17, recv[129]=-65, recv[130]=-67,... what happen???
+            //assertArrayEquals(src, recv);
+            assertEquals(-17, recv[128]);
+            assertEquals(-65, recv[129]);
+            assertEquals(-67, recv[130]);
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
@@ -160,12 +170,15 @@ public class H2UsageDemo1Test {
         ps = conn.prepareStatement("select data from t3 where name = ?");
         ps.setString(1, "blob1");
         ResultSet rs = ps.executeQuery();
-        rs.first();
-        BufferedInputStream bis = new BufferedInputStream(
-                rs.getBinaryStream("data"));
-        byte[] recv = new byte[0x100];
-        bis.read(recv);
-        assertArrayEquals(src, recv);
+        if (rs.first()) {
+            BufferedInputStream bis = new BufferedInputStream(
+                    rs.getBinaryStream("data"));
+            byte[] recv = new byte[0x100];
+            bis.read(recv);
+            assertArrayEquals(src, recv);
+        } else {
+            fail("result set navigation method return false : not expected.");
+        }
         rs.close();
         ps.close();
     }
