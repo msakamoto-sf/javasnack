@@ -96,7 +96,7 @@ public class TestClassMetaInfo {
     public abstract static class PublicStaticAbstractClass {
     }
 
-    public static interface PublicStaticInterface {
+    public interface PublicStaticInterface {
     }
 
     private static final class PrivateStaticFinalClass {
@@ -333,13 +333,13 @@ public class TestClassMetaInfo {
         assertEquals("java.io.Serializable", gifs[1].getTypeName());
     }
 
-    public static interface BaseInterface0 {
+    public interface BaseInterface0 {
     }
 
-    public static interface ExtendInterface1 extends BaseInterface0 {
+    public interface ExtendInterface1 extends BaseInterface0 {
     }
 
-    public static interface ExtendInterface2 extends ExtendInterface1 {
+    public interface ExtendInterface2 extends ExtendInterface1 {
     }
 
     public static class Base0 implements BaseInterface0 {
