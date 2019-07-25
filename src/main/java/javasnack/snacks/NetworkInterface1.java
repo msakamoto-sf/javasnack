@@ -1,8 +1,10 @@
 package javasnack.snacks;
 
+import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -18,13 +20,37 @@ public class NetworkInterface1 implements Runnable {
     @Override
     public void run() {
         try {
+            final InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
+            System.out.println("=============== InetAddress.getLoopbackAddress()");
+            dumpInetAddress(loopbackAddress);
+
+            final InetAddress localhostAddress = InetAddress.getLocalHost();
+            System.out.println("=============== InetAddress.getLocalHost()");
+            dumpInetAddress(localhostAddress);
+
             Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
             while (nics.hasMoreElements()) {
                 dumpNetworkInterfaceInformation(nics.nextElement());
             }
-        } catch (SocketException e) {
+        } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    static void dumpInetAddress(final InetAddress ia) {
+        System.out.println("getHostAddress()=" + ia.getHostAddress());
+        System.out.println("getHostName()=" + ia.getHostName());
+        System.out.println("getCanonicalHostName()=" + ia.getCanonicalHostName());
+        System.out.println("isAnyLocalAddress()=" + ia.isAnyLocalAddress());
+        System.out.println("isLinkLocalAddress()=" + ia.isLinkLocalAddress());
+        System.out.println("isLoopbackAddress()=" + ia.isLoopbackAddress());
+        System.out.println("isMCGlobal()=" + ia.isMCGlobal());
+        System.out.println("isMCLinkLocal()=" + ia.isMCLinkLocal());
+        System.out.println("isMCNodeLocal()=" + ia.isMCNodeLocal());
+        System.out.println("isMCOrgLocal()=" + ia.isMCOrgLocal());
+        System.out.println("isMCSiteLocal()=" + ia.isMCSiteLocal());
+        System.out.println("isMulticastAddress()=" + ia.isMulticastAddress());
+        System.out.println("isSiteLocalAddress()=" + ia.isSiteLocalAddress());
     }
 
     /**
