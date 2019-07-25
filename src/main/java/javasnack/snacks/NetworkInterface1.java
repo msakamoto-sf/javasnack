@@ -19,7 +19,7 @@ public class NetworkInterface1 implements Runnable {
     public void run() {
         try {
             Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces();
-            for (; nics.hasMoreElements();) {
+            while (nics.hasMoreElements()) {
                 dumpNetworkInterfaceInformation(nics.nextElement());
             }
         } catch (SocketException e) {
