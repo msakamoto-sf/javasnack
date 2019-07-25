@@ -160,15 +160,15 @@ public class TestHistogramDiffDemo {
                 //System.out.println("e=" + e.toString() + " / lastIndex1=" + lastIndex1 + ", lastIndex2=" + lastIndex2);
                 switch (e.getType()) {
                 case INSERT:
-                    for (int i = lastIndex1; i < e.getBeginA(); i++) {
+                    for (int i = lastIndex1; (i < lines1.size()) && (i < e.getBeginA()); i++) {
                         final String line1 = lines1.get(i);
                         buf1.add(line1);
                     }
-                    for (int i = lastIndex2; i < e.getBeginB(); i++) {
+                    for (int i = lastIndex2; (i < lines2.size()) && (i < e.getBeginB()); i++) {
                         final String line2 = lines2.get(i);
                         buf2.add(line2);
                     }
-                    for (int i = e.getBeginB(); i < e.getEndB(); i++) {
+                    for (int i = e.getBeginB(); (i < lines2.size()) && (i < e.getEndB()); i++) {
                         final String line2 = lines2.get(i);
                         buf1.add("-" + line2 + "-");
                         buf2.add(line2);
@@ -177,19 +177,19 @@ public class TestHistogramDiffDemo {
                     lastIndex2 = e.getEndB();
                     break;
                 case REPLACE:
-                    for (int i = lastIndex1; i < e.getBeginA(); i++) {
+                    for (int i = lastIndex1; (i < lines1.size()) && (i < e.getBeginA()); i++) {
                         final String line1 = lines1.get(i);
                         buf1.add(line1);
                     }
-                    for (int i = lastIndex2; i < e.getBeginB(); i++) {
+                    for (int i = lastIndex2; (i < lines2.size()) && (i < e.getBeginB()); i++) {
                         final String line2 = lines2.get(i);
                         buf2.add(line2);
                     }
-                    for (int i = e.getBeginA(); i < e.getEndA(); i++) {
+                    for (int i = e.getBeginA(); (i < lines1.size()) && (i < e.getEndA()); i++) {
                         final String line1 = lines1.get(i);
                         buf1.add("-" + line1 + "-");
                     }
-                    for (int i = e.getBeginB(); i < e.getEndB(); i++) {
+                    for (int i = e.getBeginB(); (i < lines2.size()) && (i < e.getEndB()); i++) {
                         final String line2 = lines2.get(i);
                         buf2.add("+" + line2 + "+");
                     }
@@ -197,15 +197,15 @@ public class TestHistogramDiffDemo {
                     lastIndex2 = e.getEndB();
                     break;
                 case DELETE:
-                    for (int i = lastIndex1; i < e.getBeginA(); i++) {
+                    for (int i = lastIndex1; (i < lines1.size()) && (i < e.getBeginA()); i++) {
                         final String line1 = lines1.get(i);
                         buf1.add(line1);
                     }
-                    for (int i = lastIndex2; i < e.getBeginB(); i++) {
+                    for (int i = lastIndex2; (i < lines2.size()) && (i < e.getBeginB()); i++) {
                         final String line2 = lines2.get(i);
                         buf2.add(line2);
                     }
-                    for (int i = e.getBeginA(); i < e.getEndA(); i++) {
+                    for (int i = e.getBeginA(); (i < lines1.size()) && (i < e.getEndA()); i++) {
                         final String line1 = lines1.get(i);
                         buf1.add(line1);
                         buf2.add("-" + line1 + "-");
@@ -363,6 +363,77 @@ public class TestHistogramDiffDemo {
                         "aaa\nbbb\r\nccc",
                         "-aaa-\n-bbb-\n-ccc-",
                         "+aaa+\n+bbb+\n+ccc+"),
+                arguments(
+                        "aaa\n"
+                        + "bbb\n"
+                        + "ccc\n" 
+                        + "ddd\n"
+                        + "\n"
+                        + "eee\n"
+                        + "fff\n"
+                        + "ggg\n"
+                        + "hhh\n"
+                        + "iii\n"
+                        + "jjj\n"
+                        + "kkk\n"
+                        + "lll\n"
+                        + "mmm\n"
+                        + "nnn\n"
+                        + "ooo\n"
+                        + "ppp\n"
+                        + "qqq\n"
+                        + "rrr\n"
+                        + "sss\n"
+                        + "ttt\n"
+                        + "uuu", 
+                        "AAA\n"
+                        + "BBB\n"
+                        + "CCC\n"
+                        + "DDD\n"
+                        + "\n", 
+                        "-aaa-\n"
+                        + "-bbb-\n"
+                        + "-ccc-\n"
+                        + "-ddd-\n"
+                        + "\n"
+                        + "eee\n"
+                        + "fff\n"
+                        + "ggg\n"
+                        + "hhh\n"
+                        + "iii\n"
+                        + "jjj\n"
+                        + "kkk\n"
+                        + "lll\n"
+                        + "mmm\n"
+                        + "nnn\n"
+                        + "ooo\n"
+                        + "ppp\n"
+                        + "qqq\n"
+                        + "rrr\n"
+                        + "sss\n"
+                        + "ttt\n"
+                        + "uuu",
+                        "+AAA+\n"
+                        + "+BBB+\n"
+                        + "+CCC+\n"
+                        + "+DDD+\n"
+                        + "-eee-\n"
+                        + "-fff-\n"
+                        + "-ggg-\n"
+                        + "-hhh-\n"
+                        + "-iii-\n"
+                        + "-jjj-\n"
+                        + "-kkk-\n"
+                        + "-lll-\n"
+                        + "-mmm-\n"
+                        + "-nnn-\n"
+                        + "-ooo-\n"
+                        + "-ppp-\n"
+                        + "-qqq-\n"
+                        + "-rrr-\n"
+                        + "-sss-\n"
+                        + "-ttt-\n"
+                        + "-uuu-"),
                 arguments("", "", "", ""));
         // @formatter:on
     }
