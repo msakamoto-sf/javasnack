@@ -26,17 +26,17 @@ import org.junit.jupiter.api.Test;
 
 public class TestJdkProxyDemo {
 
-    static interface DrinkDripperInterface {
+    interface DrinkDripperInterface {
 
-        public void setTeaType(String teaType);
+        void setTeaType(String teaType);
 
-        public void setTeaType(String teaType, int temp);
+        void setTeaType(String teaType, int temp);
 
-        public int getTemperature();
+        int getTemperature();
 
-        public int addWater(int cc);
+        int addWater(int cc);
 
-        public String drip();
+        String drip();
     }
 
     @Test
