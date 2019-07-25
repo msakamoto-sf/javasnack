@@ -15,6 +15,9 @@ subprojects/myapi-impl2/myapi-impl2.jar
 .settings
 .springBeans
 
+### PMD Eclipse Plugin generated file ###
+.pmd
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
