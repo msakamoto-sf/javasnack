@@ -353,6 +353,11 @@
             <rulesets>
               <ruleset>${project.basedir}/javasnack-custom-pmd-rule.xml</ruleset>
             </rulesets>
+            <!--
+            maven plugin ではテストコードがデフォルトでは対象外なので、明示的に対象に含める。
+            (eclipse plugin ではデフォルトで対象に含めてくれる。)
+            -->
+            <includeTests>true</includeTests>
             <failOnViolation>true</failOnViolation>
             <printFailingErrors>true</printFailingErrors>
             <targetJdk>${java.version.target}</targetJdk>
