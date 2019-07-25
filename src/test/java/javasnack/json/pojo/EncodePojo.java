@@ -44,8 +44,9 @@ public class EncodePojo {
     public final Pattern patternObject = Pattern.compile(".*");
     public final URL urlObject;
     public final URI uriObject = new URI("dummy://dummy.dummy/dummy");
-    public final InetAddress inetAddressObject = InetAddress
-            .getByName("192.168.1.1");
+    // 意図的にIPアドレスをハードコードしているため、PMD:AvoidUsingHardCodeIP を行単位で無効化
+    // see: https://pmd.github.io/latest/pmd_userdocs_suppressing_warnings.html#nopmd-comment
+    public final InetAddress inetAddressObject = InetAddress.getByName("192.168.1.1"); // NOPMD
     public final TimeZone tzObject = TimeZone.getTimeZone("GMT");
     public final Calendar calendarObject;
     public final Date dateObject;
