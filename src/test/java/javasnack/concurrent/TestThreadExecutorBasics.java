@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -365,7 +366,7 @@ public class TestThreadExecutorBasics {
         @Override
         public void run() {
             currentThread = Thread.currentThread();
-            InetSocketAddress connectTo = new InetSocketAddress("127.0.0.1", this.remotePort);
+            InetSocketAddress connectTo = new InetSocketAddress(InetAddress.getLoopbackAddress(), this.remotePort);
             clientSocket = new Socket();
             try {
                 clientSocket.connect(connectTo);
