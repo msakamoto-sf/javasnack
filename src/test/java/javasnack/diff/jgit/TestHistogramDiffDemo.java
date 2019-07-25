@@ -19,6 +19,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+/**
+ * JGit の HistogramDiff の使い方のデモと、formatterのサンプル
+ */
+/* see:
+ * - https://www.eclipse.org/jgit/
+ * - https://github.com/eclipse/jgit
+ * 
+ * HistogramDiff:
+ * - https://www.codeaffine.com/2016/06/16/jgit-diff/
+ * - https://stackoverflow.com/questions/32365271/whats-the-difference-between-git-diff-patience-and-git-diff-histogram
+ * 
+ * diff アルゴリズムの性能比較:
+ * - https://github.com/msakamoto-sf/java-diff-libs-benchmark
+ */
 public class TestHistogramDiffDemo {
 
     public static RawText rawtext(String text) {
