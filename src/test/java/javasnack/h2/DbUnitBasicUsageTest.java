@@ -99,9 +99,9 @@ public class DbUnitBasicUsageTest {
         int intField;
         BigDecimal decimalField;
         double doubleField;
-        java.sql.Time timeField;
-        java.sql.Date dateField;
-        java.sql.Timestamp timestampField;
+        Time timeField;
+        Date dateField;
+        Timestamp timestampField;
         String stringField;
 
         void setup(Connection targetDbConn) throws SQLException {
