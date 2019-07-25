@@ -43,7 +43,7 @@ public class PerfJavaArrayFinePutGet implements Runnable {
 
         String[] arr = new String[MASS];
 
-        BigInteger sumOfSetting = new BigInteger("0");
+        BigInteger sumOfSetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = setting(arr, i, RandomString.get(10, 30));
             System.out.println(String.format("arr[%d] = %d nano sec.", i,
@@ -52,7 +52,7 @@ public class PerfJavaArrayFinePutGet implements Runnable {
         }
         long avg1 = sumOfSetting.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger sumOfGetting = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = getting(arr, i);
             System.out.println(String.format("get()[%d] = %d nano sec.", i,

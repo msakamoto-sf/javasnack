@@ -47,7 +47,7 @@ public class PerfLinkedListFinePutGet implements Runnable {
 
         LinkedList<String> list = new LinkedList<String>();
 
-        BigInteger sumOfAdding = new BigInteger("0");
+        BigInteger sumOfAdding = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = adding(list, keys[i]);
             System.out.println(String.format("add()[%d] = %d nano sec.", i,
@@ -56,7 +56,7 @@ public class PerfLinkedListFinePutGet implements Runnable {
         }
         long avg1 = sumOfAdding.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger sumOfGetting = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = getting(list, i);
             System.out.println(String.format("get()[%d] = %d nano sec.", i,

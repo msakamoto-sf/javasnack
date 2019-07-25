@@ -55,7 +55,7 @@ public class PerfTreeMapTotalAvg implements Runnable {
         @SuppressWarnings("unchecked")
         TreeMap<String, String>[] maps = new TreeMap[ITER];
 
-        BigInteger sumOfPutting = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             TreeMap<String, String> m = new TreeMap<String, String>();
             long elapsed = putting(m, keys, MASS);
@@ -66,7 +66,7 @@ public class PerfTreeMapTotalAvg implements Runnable {
         }
         long avg1 = sumOfPutting.divide(BigInteger.valueOf(ITER)).longValue();
 
-        BigInteger sumOfGetting = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             TreeMap<String, String> m = maps[i];
             long elapsed = getting(m, keys, MASS);

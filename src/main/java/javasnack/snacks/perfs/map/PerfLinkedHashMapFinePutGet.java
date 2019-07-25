@@ -50,7 +50,7 @@ public class PerfLinkedHashMapFinePutGet implements Runnable {
         LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(16,
                 0.75f);
 
-        BigInteger sumOfPutting = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = putting(m, keys[i]);
             System.out.println(String.format("put()[%d] = %d nano sec.", i,
@@ -59,7 +59,7 @@ public class PerfLinkedHashMapFinePutGet implements Runnable {
         }
         long avg1 = sumOfPutting.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger sumOfGetting = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = getting(m, keys[i]);
             System.out.println(String.format("get()[%d] = %d nano sec.", i,

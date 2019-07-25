@@ -55,7 +55,7 @@ public class PerfLinkedHashMapTotalAvg implements Runnable {
         @SuppressWarnings("unchecked")
         LinkedHashMap<String, String>[] maps = new LinkedHashMap[ITER];
 
-        BigInteger sumOfPutting = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(
                     16, 0.75f);
@@ -67,7 +67,7 @@ public class PerfLinkedHashMapTotalAvg implements Runnable {
         }
         long avg1 = sumOfPutting.divide(BigInteger.valueOf(ITER)).longValue();
 
-        BigInteger sumOfGetting = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             LinkedHashMap<String, String> m = maps[i];
             long elapsed = getting(m, keys, MASS);

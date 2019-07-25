@@ -55,7 +55,7 @@ public class PerfHashMapTotalAvg implements Runnable {
         @SuppressWarnings("unchecked")
         HashMap<String, String>[] maps = new HashMap[ITER];
 
-        BigInteger sumOfPutting = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             HashMap<String, String> m = new HashMap<String, String>(16, 0.75f);
             long elapsed = putting(m, keys, MASS);
@@ -66,7 +66,7 @@ public class PerfHashMapTotalAvg implements Runnable {
         }
         long avg1 = sumOfPutting.divide(BigInteger.valueOf(ITER)).longValue();
 
-        BigInteger sumOfGetting = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             HashMap<String, String> m = maps[i];
             long elapsed = getting(m, keys, MASS);
