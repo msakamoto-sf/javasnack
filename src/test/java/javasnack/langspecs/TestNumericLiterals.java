@@ -61,8 +61,10 @@ public class TestNumericLiterals {
         assertThat(00).isEqualTo(0);
         assertThat(01).isEqualTo(1);
         assertThat(07).isEqualTo(7);
-        assertThat(010).isEqualTo(8);
-        assertThat(020).isEqualTo(16);
+        // octal リテラルの意図的なデモのため、PMD:AvoidUsingOctalValues の警告を行単位で無効化
+        // see: https://pmd.github.io/latest/pmd_userdocs_suppressing_warnings.html#nopmd-comment
+        assertThat(010).isEqualTo(8); // NOPMD
+        assertThat(020).isEqualTo(16); // NOPMD  
     }
 
     @Test
