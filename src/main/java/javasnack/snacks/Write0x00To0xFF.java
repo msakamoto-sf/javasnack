@@ -40,7 +40,7 @@ public class Write0x00To0xFF implements Runnable {
                 return;
             }
             String filename = readLine.trim();
-            try (final var fos = new FileOutputStream(filename)) {
+            try (var fos = new FileOutputStream(filename)) {
                 fos.write(bdata);
             }
         } catch (IOException e) {
