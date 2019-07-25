@@ -17,6 +17,7 @@ to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howt
 - Recommended plugin:
   - [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
   - [SpotBugs Eclipse plugin](https://spotbugs.readthedocs.io/en/latest/eclipse.html)
+  - [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin)
 
 ### Eclipse/STS checkstyle plugin configuration
 
@@ -71,6 +72,23 @@ SpotBugs reference:
 - https://spotbugs.github.io/spotbugs-maven-plugin/
 - https://spotbugs.readthedocs.io/en/latest/
 - https://spotbugs.readthedocs.io/ja/latest/
+
+### Eclipse/STS PMD plugin configuration
+
+1. import project specific ruleset xml.
+   1. right-click project -> Properties -> PMD -> check "Enable PMD"
+   2. "Rule source" -> check "Use the ruleset configured in a project file" -> Browse -> select `javasnack-custom-pmd-rule.xml`
+   3. if you asked "The project doesn't contain a ruleset file. Do you want to create a ruleset from the configured properties ?", click "No".
+
+If you edited rule xml, no need to reconfigure. just do PMD -> "Check Code" again.
+
+PMD reference:
+
+- https://pmd.github.io/
+- https://pmd.github.io/latest/
+- https://pmd.github.io/latest/pmd_userdocs_tools_maven.html
+- https://maven.apache.org/plugins/maven-pmd-plugin/index.html
+- https://github.com/pmd/pmd-eclipse-plugin
 
 ## how to build and execute main()
 
@@ -204,6 +222,12 @@ run SpotBugs from command line:
 
 ```
 $ ./mvnw spotbugs:check
+```
+
+run PMD from command line:
+
+```
+$ ./mvnw pmd:pmd
 ```
 
 generate report:
