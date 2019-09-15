@@ -110,11 +110,33 @@ public class TestHttpCookie1 {
         assertThat(cookies.get(0).getValue()).isEqualTo("v");
         assertThat(cookies.get(0).isHttpOnly()).isTrue();
 
-        cookies = HttpCookie.parse("Set-Cookie: n=v; max-age=100");
+        cookies = HttpCookie.parse("Set-Cookie: n=v; max-age=1");
         assertThat(cookies).hasSize(1);
         assertThat(cookies.get(0).getName()).isEqualTo("n");
         assertThat(cookies.get(0).getValue()).isEqualTo("v");
-        assertThat(cookies.get(0).getMaxAge()).isEqualTo(100);
+        assertThat(cookies.get(0).getMaxAge()).isEqualTo(1);
+        assertThat(cookies.get(0).hasExpired()).isFalse();
+
+        cookies = HttpCookie.parse("Set-Cookie: n=v; max-age=0");
+        assertThat(cookies).hasSize(1);
+        assertThat(cookies.get(0).getName()).isEqualTo("n");
+        assertThat(cookies.get(0).getValue()).isEqualTo("v");
+        assertThat(cookies.get(0).getMaxAge()).isEqualTo(0);
+        assertThat(cookies.get(0).hasExpired()).isTrue();
+
+        cookies = HttpCookie.parse("Set-Cookie: n=v; max-age=-1");
+        assertThat(cookies).hasSize(1);
+        assertThat(cookies.get(0).getName()).isEqualTo("n");
+        assertThat(cookies.get(0).getValue()).isEqualTo("v");
+        assertThat(cookies.get(0).getMaxAge()).isEqualTo(-1);
+        /* in MDN, zero "or" negative number will expire the cookie IMMEDIATELY.
+         * see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+         * 
+         * but in jdk, negative number treated as 
+         * "this cookie should be discarded when user agent is to be closed, 
+         *  but it is not expired."
+         */
+        assertThat(cookies.get(0).hasExpired()).isFalse();
 
         cookies = HttpCookie.parse("Set-Cookie: n=v; expires=Thu, 01 Jan 1970 01:02:03 GMT");
         assertThat(cookies).hasSize(1);

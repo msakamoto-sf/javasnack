@@ -233,6 +233,30 @@ public class TestCookieManager1 {
     }
 
     @Test
+    public void testMaxAgeDirective() throws URISyntaxException, IOException {
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1; max-age=-1",
+                        "Set-Cookie: c2=v2; max-age=0",
+                        "Set-Cookie: c3=v3; max-age=1",
+                        "Set-Cookie: c4=v4"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(4);
+        assertThat(retCookieStrings.get(0)).isEqualTo("$Version=\"1\"");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c3=\"v3\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(3)).isEqualTo("c4=v4");
+    }
+
+    @Test
     public void testDuplicatedSetCookie() throws URISyntaxException, IOException {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
