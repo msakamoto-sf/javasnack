@@ -9,6 +9,7 @@ import java.net.HttpCookie;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -135,6 +136,13 @@ public class TestHttpCookie1 {
         assertThat(cookies.get(0).getName()).isEqualTo("n");
         assertThat(cookies.get(0).getValue()).isEqualTo("v");
         assertThat(cookies.get(0).hasExpired()).isFalse();
+
+        final OffsetDateTime future1 = future0.withOffsetSameInstant(ZoneOffset.ofHours(1));
+        cookies = HttpCookie.parse("Set-Cookie: n=v; expires=" + future1.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+        assertThat(cookies).hasSize(1);
+        assertThat(cookies.get(0).getName()).isEqualTo("n");
+        assertThat(cookies.get(0).getValue()).isEqualTo("v");
+        assertThat(cookies.get(0).hasExpired()).isTrue(); // can't parse expires except "GMT" offset.
 
         cookies = HttpCookie.parse(
                 "Set-Cookie: n=v; DOMAIN=xxx; PATH=yyy; SECURE; HTTPONLY; MAX-AGE=123; EXPIRES=Thu, 01 Jan 1970 01:02:03 GMT");

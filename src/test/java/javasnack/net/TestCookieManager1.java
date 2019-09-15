@@ -23,6 +23,10 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -175,6 +179,57 @@ public class TestCookieManager1 {
         retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(1);
         assertThat(retCookieStrings.get(0)).isEqualTo("c1=v3");
+    }
+
+    @Test
+    public void testExpiresDirective() throws URISyntaxException, IOException {
+        final OffsetDateTime now0 = OffsetDateTime.now(ZoneId.of("GMT"));
+        final OffsetDateTime past0 = now0.minusSeconds(10);
+        final OffsetDateTime future0 = now0.plusSeconds(10);
+
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c3=v3"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c2=v2");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c3=v3");
+    }
+
+    @Test
+    public void testExpiresDirectiveNotGmtOffset() throws URISyntaxException, IOException {
+        final OffsetDateTime now0 = OffsetDateTime.now(ZoneOffset.ofHours(1));
+        final OffsetDateTime past0 = now0.minusSeconds(10);
+        final OffsetDateTime future0 = now0.plusSeconds(10);
+
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c3=v3"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(1);
+        // HttpCookie.parse() can only handle "GMT" offset expires.
+        // Other offsets are handled as HttpCookie.hasExpires() = true :(
+        assertThat(retCookieStrings.get(0)).isEqualTo("c3=v3");
     }
 
     @Test
