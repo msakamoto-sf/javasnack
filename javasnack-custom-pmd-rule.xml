@@ -42,7 +42,12 @@
         </properties>
     </rule>
 
+    <!--
+    TODO : PMD 6.18.0 になり、どうも UnnecessaryFullyQualifiedName が過剰検出になってしまってる。
+    https://github.com/pmd/pmd/issues/1951 : これの修正の影響と思われる。
+    一旦PMDからは外しておく。
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
+    -->
     <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
     <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
 
