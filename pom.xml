@@ -39,7 +39,7 @@
     <java.compiler.debug>true</java.compiler.debug>
     <exec.mainClass>javasnack.Main</exec.mainClass>
 
-    <junit5.version>5.4.2</junit5.version>
+    <junit5.version>5.5.2</junit5.version>
     <surefire.version>3.0.0-M3</surefire.version>
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
