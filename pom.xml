@@ -210,20 +210,20 @@
 
     <!-- test -->
     <dependency>
+      <!--
+      個別にJUnit5のパッケージを指定していたが、2019-09 の Eclipse/STSアップデート後
+      "no tests found with test runner junit 5" となりEclipseから動かなくなった。
+      またコンソールには "java.lang.NoClassDefFoundError: org/junit/platform/commons/PreconditionViolationException"
+      の例外が出力されていた。
+      ググったところ同様の症状が2019-09更新後に多発している。
+      - https://bugs.eclipse.org/bugs/show_bug.cgi?id=551298
+      - https://github.com/spring-projects/sts4/issues/371
+      以下を参考に aggregate パッケージにリプレースしたところ、解決した。
+      - https://stackoverflow.com/questions/57040675/java-lang-noclassdeffounderror-org-junit-platform-commons-preconditionviolation
+      - https://github.com/junit-team/junit5/issues/1773
+      -->
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit5.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <version>${junit5.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <version>${junit5.version}</version>
       <scope>test</scope>
     </dependency>
