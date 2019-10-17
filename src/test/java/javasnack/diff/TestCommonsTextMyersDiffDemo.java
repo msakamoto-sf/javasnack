@@ -89,7 +89,7 @@ public class TestCommonsTextMyersDiffDemo {
         visitor.assertStrings(expectedInserted, expectedKept, expectedDeleted);
     }
 
-    static enum EditStatus {
+    enum EditStatus {
         INSERTING, KEEPING, DELETING;
     }
 
