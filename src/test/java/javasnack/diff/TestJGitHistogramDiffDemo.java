@@ -1,4 +1,4 @@
-package javasnack.diff.jgit;
+package javasnack.diff;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -33,7 +33,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * diff アルゴリズムの性能比較:
  * - https://github.com/msakamoto-sf/java-diff-libs-benchmark
  */
-public class TestHistogramDiffDemo {
+public class TestJGitHistogramDiffDemo {
 
     public static RawText rawtext(String text) {
         return new RawText(text.getBytes(StandardCharsets.UTF_8));
