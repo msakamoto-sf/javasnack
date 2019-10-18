@@ -17,6 +17,13 @@ import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Chunk;
 import com.github.difflib.patch.Patch;
 
+/**
+ * java-diff-utils の Myer's diff アルゴリズムの使い方のデモ
+ */
+/* see:
+ * - https://github.com/java-diff-utils/java-diff-utils
+ * - https://java-diff-utils.github.io/java-diff-utils/
+ */
 public class TestJavaDiffUtilsMyersDiffDemo {
 
     static Stream<Arguments> provideBasicDemoUsageArguments() {
