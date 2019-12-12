@@ -1,0 +1,83 @@
+package javasnack.langspecs;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+import java.util.Locale;
+import java.util.MissingFormatArgumentException;
+
+import org.junit.jupiter.api.Test;
+
+public class TestStringFormat {
+
+    @Test
+    public void expandStrings() {
+        assertThat(String.format("%s", "xxx", "yyy")).isEqualTo("xxx");
+
+        final Throwable thrown0 = catchThrowable(() -> String.format("%s %s", "xxx"));
+        assertThat(thrown0).isInstanceOf(MissingFormatArgumentException.class)
+                .hasMessageContaining("Format specifier '%s'");
+
+        assertThat(String.format("aaa %s bbb %s ccc", "xxx", "yyy")).isEqualTo("aaa xxx bbb yyy ccc");
+        assertThat(String.format("%.5s", "123456789")).isEqualTo("12345");
+        assertThat(String.format("%.5s", "123")).isEqualTo("123");
+        assertThat(String.format("%10s", "123")).isEqualTo("       123");
+        assertThat(String.format("%10.5s", "123")).isEqualTo("       123");
+        assertThat(String.format("%10.5s", "123456789")).isEqualTo("     12345");
+        assertThat(String.format("%-10s", "123")).isEqualTo("123       ");
+        assertThat(String.format("%-10.5s", "123")).isEqualTo("123       ");
+        assertThat(String.format("%-10.5s", "123456789")).isEqualTo("12345     ");
+    }
+
+    @Test
+    public void argumentsByArray() {
+        assertThat(String.format("%2$s, %1$s, %3$s", new Object[] { "aaa", "bbb", "ccc", "ddd" }))
+                .isEqualTo("bbb, aaa, ccc");
+    }
+
+    @Test
+    public void argumentPosition() {
+        assertThat(String.format("[%2$-10.5s],[%1$s],[%2$.5s],", "xxx", "123456789"))
+                .isEqualTo("[12345     ],[xxx],[12345],");
+    }
+
+    @Test
+    public void percentAndNewline() {
+        assertThat(String.format("aaa %% %n bbb")).isEqualTo("aaa % " + System.getProperty("line.separator") + " bbb");
+    }
+
+    @Test
+    public void expandBoolean() {
+        assertThat(String.format("%b, %B", true, true)).isEqualTo("true, TRUE");
+        assertThat(String.format("%b, %B", false, false)).isEqualTo("false, FALSE");
+    }
+
+    @Test
+    public void expandIntegers() {
+        assertThat(String.format("%d, %d", 1, -2)).isEqualTo("1, -2");
+        assertThat(String.format("%o, %o", 9, -10)).isEqualTo("11, 37777777766");
+        assertThat(String.format("%x, %X", 10, 11)).isEqualTo("a, B");
+        assertThat(String.format("%+d, %+d", 1, -2)).isEqualTo("+1, -2");
+        assertThat(String.format("%+(d, %+(d", 1, -2)).isEqualTo("+1, (2)");
+        assertThat(String.format("%3d, %3d", 1, -2)).isEqualTo("  1,  -2");
+        assertThat(String.format("%03d, %03d", 1, -2)).isEqualTo("001, -02");
+        assertThat(String.format("%-4d, %-4d", 1, -2)).isEqualTo("1   , -2  ");
+        assertThat(String.format("%02x, %02X", 10, 11)).isEqualTo("0a, 0B");
+        assertThat(String.format("%#05o, %#05o", 9, 10)).isEqualTo("00011, 00012");
+        assertThat(String.format("%#05x, %#05X", 10, 11)).isEqualTo("0x00a, 0X00B");
+        assertThat(String.format("%#04x, %#04X", 10, 11)).isEqualTo("0x0a, 0X0B");
+
+        assertThat(String.format(Locale.US, "%,d %,d", 1_234, 1_234_567)).isEqualTo("1,234 1,234,567");
+        assertThat(String.format(Locale.US, "%,20d %,20d", 1_234, 1_234_567))
+                .isEqualTo("               1,234            1,234,567");
+        assertThat(String.format(Locale.US, "%,-20d %,-20d", 1_234, 1_234_567))
+                .isEqualTo("1,234                1,234,567           ");
+    }
+
+    @Test
+    public void expandFloats() {
+        assertThat(String.format("%f", Math.E)).isEqualTo("2.718282");
+        assertThat(String.format("[%+10.3f]", Math.E)).isEqualTo("[    +2.718]");
+        assertThat(String.format("%f", Math.E)).isEqualTo("2.718282");
+    }
+}
