@@ -2,7 +2,10 @@ package javasnack.langspecs;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.IllegalFormatConversionException;
 import java.util.Locale;
 import java.util.MissingFormatArgumentException;
 
@@ -50,6 +53,9 @@ public class TestStringFormat {
     public void expandBoolean() {
         assertThat(String.format("%b, %B", true, true)).isEqualTo("true, TRUE");
         assertThat(String.format("%b, %B", false, false)).isEqualTo("false, FALSE");
+        assertThat(String.format("%b, %B", "true", "true")).isEqualTo("true, TRUE");
+        // oops !! string variables are converted boolean true X(
+        assertThat(String.format("%b, %B", "false", "false")).isEqualTo("true, TRUE");
     }
 
     @Test
@@ -80,4 +86,12 @@ public class TestStringFormat {
         assertThat(String.format("[%+10.3f]", Math.E)).isEqualTo("[    +2.718]");
         assertThat(String.format("%f", Math.E)).isEqualTo("2.718282");
     }
+
+    @Test
+    public void expandNumbersButStringGiven() {
+        final Exception e = assertThrows(IllegalFormatConversionException.class, () -> String.format("%d", "123"));
+        assertEquals("d != java.lang.String", e.getMessage());
+    }
+
+    // TODO date/time
 }
