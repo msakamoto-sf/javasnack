@@ -37,6 +37,9 @@ public class TestStringFormat {
         assertThat(String.format("%-10s", "123")).isEqualTo("123       ");
         assertThat(String.format("%-10.5s", "123")).isEqualTo("123       ");
         assertThat(String.format("%-10.5s", "123456789")).isEqualTo("12345     ");
+
+        assertThat(String.format("%%s")).isEqualTo("%s");
+        assertThat(String.format("abc%ndef")).isEqualTo("abc" + System.lineSeparator() + "def");
     }
 
     @Test
