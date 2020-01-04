@@ -5,12 +5,19 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.IllegalFormatConversionException;
 import java.util.Locale;
 import java.util.MissingFormatArgumentException;
 
 import org.junit.jupiter.api.Test;
 
+/* see javadoc:
+ * - java.lang.String#format
+ * - java.util.Formatter
+ */
 public class TestStringFormat {
 
     @Test
@@ -93,5 +100,22 @@ public class TestStringFormat {
         assertEquals("d != java.lang.String", e.getMessage());
     }
 
-    // TODO date/time
+    @Test
+    public void expandDateTime() {
+        final LocalDateTime ldt1 = LocalDateTime.of(2010, 1, 2, 3, 4, 5);
+        assertThat(String.format("%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", ldt1)).isEqualTo("2010-01-02 03:04:05");
+        assertThat(String.format("%1$tF %1$tT", ldt1)).isEqualTo("2010-01-02 03:04:05");
+        final Exception e = assertThrows(IllegalFormatConversionException.class, () -> String.format("%1$tc", ldt1));
+        assertEquals("Z != java.time.LocalDateTime", e.getMessage());
+
+        final ZoneOffset zo1 = ZoneOffset.of("+09:00");
+        final OffsetDateTime odt1 = OffsetDateTime.of(ldt1, zo1);
+        assertThat(String.format(Locale.US, "%1$tc", odt1)).isEqualTo("Sat Jan 02 03:04:05 +09:00 2010");
+        assertThat(String.format(Locale.UK, "%1$tc", odt1)).isEqualTo("Sat Jan 02 03:04:05 +09:00 2010");
+        assertThat(String.format(Locale.JAPAN, "%1$tc", odt1)).isEqualTo("土 1月 02 03:04:05 +09:00 2010");
+
+        assertThat(String.format(Locale.US, "%1$tr", ldt1)).isEqualTo("03:04:05 AM");
+        assertThat(String.format(Locale.GERMANY, "%1$tr", ldt1)).isEqualTo("03:04:05 VORM.");
+        assertThat(String.format(Locale.JAPAN, "%1$tr", ldt1)).isEqualTo("03:04:05 午前");
+    }
 }
