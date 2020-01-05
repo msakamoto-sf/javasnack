@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -83,5 +86,65 @@ public class TestChapter3SamplesDemo {
                 .sorted(Comparator.comparing(byAge).thenComparing(byName)).map(Person::getName)
                 .collect(Collectors.toList());
         assertThat(sortedNamesByAgeThenName).isEqualTo(List.of("John", "Jane", "Sara", "Greg"));
+    }
+
+    @Test
+    public void testCollectorsDemo() {
+        final List<Person> people = List.of(
+                Person.of("Sara", 21),
+                Person.of("Greg", 35),
+                Person.of("John", 20),
+                Person.of("Jane", 21));
+
+        final List<Person> olderThan20 = people.stream()
+                .filter(p -> p.getAge() > 20)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        assertThat(olderThan20.size()).isEqualTo(3);
+        assertThat(olderThan20.contains(Person.of("Sara", 21))).isTrue();
+        assertThat(olderThan20.contains(Person.of("Greg", 35))).isTrue();
+        assertThat(olderThan20.contains(Person.of("Jane", 21))).isTrue();
+
+        final List<Person> olderThan20b = people.stream()
+                .filter(p -> p.getAge() > 20)
+                .collect(Collectors.toList());
+        assertThat(olderThan20b.size()).isEqualTo(3);
+        assertThat(olderThan20b.contains(Person.of("Sara", 21))).isTrue();
+        assertThat(olderThan20b.contains(Person.of("Greg", 35))).isTrue();
+        assertThat(olderThan20b.contains(Person.of("Jane", 21))).isTrue();
+
+        final Map<Integer, List<Person>> peopleByAge = people.stream()
+                .collect(Collectors.groupingBy(Person::getAge));
+        assertThat(peopleByAge.size()).isEqualTo(3);
+        assertThat(peopleByAge.get(35).size()).isEqualTo(1);
+        assertThat(peopleByAge.get(35).contains(Person.of("Greg", 35))).isTrue();
+        assertThat(peopleByAge.get(21).size()).isEqualTo(2);
+        assertThat(peopleByAge.get(21).contains(Person.of("Sara", 21))).isTrue();
+        assertThat(peopleByAge.get(21).contains(Person.of("Jane", 21))).isTrue();
+        assertThat(peopleByAge.get(20).size()).isEqualTo(1);
+        assertThat(peopleByAge.get(20).contains(Person.of("John", 20))).isTrue();
+
+        final Map<Integer, List<String>> nameOfPeopleByAge = people.stream()
+                .collect(
+                        Collectors.groupingBy(Person::getAge,
+                                Collectors.mapping(Person::getName, Collectors.toList())));
+        assertThat(nameOfPeopleByAge.size()).isEqualTo(3);
+        assertThat(nameOfPeopleByAge.get(35).size()).isEqualTo(1);
+        assertThat(nameOfPeopleByAge.get(35).contains("Greg")).isTrue();
+        assertThat(nameOfPeopleByAge.get(21).size()).isEqualTo(2);
+        assertThat(nameOfPeopleByAge.get(21).contains("Sara")).isTrue();
+        assertThat(nameOfPeopleByAge.get(21).contains("Jane")).isTrue();
+        assertThat(nameOfPeopleByAge.get(20).size()).isEqualTo(1);
+        assertThat(nameOfPeopleByAge.get(20).contains("John")).isTrue();
+
+        final Comparator<Person> byAge = Comparator.comparing(Person::getAge);
+        final Map<Character, Optional<Person>> oldestPersonOfEachLetter = people.stream()
+                .collect(
+                        Collectors.groupingBy(p -> p.getName().charAt(0),
+                                Collectors.reducing(BinaryOperator.maxBy(byAge))));
+
+        assertThat(oldestPersonOfEachLetter.size()).isEqualTo(3);
+        assertThat(oldestPersonOfEachLetter.get('S').get()).isEqualTo(Person.of("Sara", 21));
+        assertThat(oldestPersonOfEachLetter.get('G').get()).isEqualTo(Person.of("Greg", 35));
+        assertThat(oldestPersonOfEachLetter.get('J').get()).isEqualTo(Person.of("Jane", 21));
     }
 }
