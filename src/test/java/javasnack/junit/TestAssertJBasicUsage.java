@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
 
 import lombok.Data;
@@ -184,6 +186,22 @@ public class TestAssertJBasicUsage {
         //assertThat(" a b c ").isEqualToNormalizingWhitespace("abc"); // -> fail
         //assertThat(" abc ").isEqualToNormalizingWhitespace("a b c"); // -> fail
         assertThat("a\r\nb\t  c").isEqualToNormalizingWhitespace(" a\r\nb c");
+    }
+
+    @Test
+    public void testIntRangeDoubleFloatBigDecimalAssertions() {
+        assertThat(10).isBetween(9, 11);
+        assertThat((double) 1 / 3).isBetween(0.2, 0.4);
+        assertThat((double) 1 / 3).isBetween(0.32, 0.34);
+        assertThat((double) 1 / 3).isCloseTo(0.333, Offset.offset(0.01));
+        assertThat((double) 1 / 3).isNotCloseTo(0.3, Offset.offset(0.01));
+        assertThat((float) 1 / 3).isBetween(0.2f, 0.4f);
+        assertThat((float) 1 / 3).isBetween(0.32f, 0.34f);
+        assertThat((float) 1 / 3).isCloseTo(0.333f, Offset.offset(0.01f));
+        assertThat((float) 1 / 3).isNotCloseTo(0.3f, Offset.offset(0.01f));
+        final BigDecimal v = new BigDecimal("1.01").multiply(new BigDecimal("1.11"));
+        assertThat(v).isBetween(new BigDecimal("1.11"), new BigDecimal("1.13"));
+        assertThat(v).isCloseTo(new BigDecimal("1.121"), Offset.offset(new BigDecimal("0.01")));
     }
 
     @Test
