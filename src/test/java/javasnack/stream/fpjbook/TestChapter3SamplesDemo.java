@@ -2,16 +2,31 @@ package javasnack.stream.fpjbook;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import lombok.Value;
 
@@ -146,5 +161,142 @@ public class TestChapter3SamplesDemo {
         assertThat(oldestPersonOfEachLetter.get('S').get()).isEqualTo(Person.of("Sara", 21));
         assertThat(oldestPersonOfEachLetter.get('G').get()).isEqualTo(Person.of("Greg", 35));
         assertThat(oldestPersonOfEachLetter.get('J').get()).isEqualTo(Person.of("Jane", 21));
+    }
+
+    void createDemoFileTree(final Path tempDir) throws IOException {
+        System.out.println("createDemoFileTree(tempDir=[" + tempDir + "])");
+        final String parentDir = tempDir.toString();
+        new File(parentDir + "/a.txt").createNewFile();
+        new File(parentDir + "/b.txt").createNewFile();
+        new File(parentDir + "/c.txt").createNewFile();
+        new File(parentDir + "/dir1").mkdir();
+        new File(parentDir + "/dir1/a_1.txt").createNewFile();
+        new File(parentDir + "/dir1/b_1.txt").createNewFile();
+        new File(parentDir + "/dir1/c_1.txt").createNewFile();
+        new File(parentDir + "/dir2").mkdir();
+        new File(parentDir + "/dir2/a_2.txt").createNewFile();
+        new File(parentDir + "/dir2/b_2.txt").createNewFile();
+        new File(parentDir + "/dir2/c_2.txt").createNewFile();
+        new File(parentDir + "/dir2/dir2_1").mkdir();
+        new File(parentDir + "/dir2/dir2_1/a_2_1.txt").createNewFile();
+        new File(parentDir + "/dir2/dir2_1/b_2_1.txt").createNewFile();
+        new File(parentDir + "/dir2/dir2_1/c_2_1.txt").createNewFile();
+        new File(parentDir + "/dir2/dir2_2").mkdir();
+        new File(parentDir + "/dir2/dir2_2/a_2_2.txt").createNewFile();
+        new File(parentDir + "/dir2/dir2_2/b_2_2.txt").createNewFile();
+        new File(parentDir + "/dir2/dir2_2/c_2_2.txt").createNewFile();
+        new File(parentDir + "/dir3").mkdir();
+        new File(parentDir + "/dir3/dir3_1").mkdir();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_1").mkdir();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_1/a_3_1_1.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_1/b_3_1_1.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_1/c_3_1_1.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_2").mkdir();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_2/a_3_1_2.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_2/b_3_1_2.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_1/dir3_1_2/c_3_1_2.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_2").mkdir();
+        new File(parentDir + "/dir3/dir3_2/dir3_2_1").mkdir();
+        new File(parentDir + "/dir3/dir3_2/dir3_2_1/a_3_2_1.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_2/dir3_2_1/b_3_2_1.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_2/dir3_2_1/c_3_2_1.txt").createNewFile();
+        new File(parentDir + "/dir3/dir3_2/dir3_2_2").mkdir();
+        new File(parentDir + "/dir4").mkdir();
+    }
+
+    @Test
+    public void filesListDemo(@TempDir Path tempDir) throws IOException {
+        createDemoFileTree(tempDir);
+        final String parentDir = tempDir.toString();
+        final String sep = File.separator;
+        final List<String> path1 = Files.list(tempDir)
+                .map(p -> p.toString())
+                .collect(Collectors.toList());
+        assertThat(path1.size()).isEqualTo(7);
+        assertThat(path1.contains(parentDir + sep + "a.txt")).isTrue();
+        assertThat(path1.contains(parentDir + sep + "b.txt")).isTrue();
+        assertThat(path1.contains(parentDir + sep + "c.txt")).isTrue();
+        assertThat(path1.contains(parentDir + sep + "dir1")).isTrue();
+        assertThat(path1.contains(parentDir + sep + "dir2")).isTrue();
+        assertThat(path1.contains(parentDir + sep + "dir3")).isTrue();
+        assertThat(path1.contains(parentDir + sep + "dir4")).isTrue();
+
+        final List<String> path2 = Files.list(tempDir)
+                .filter(Files::isDirectory)
+                .map(p -> p.toString())
+                .collect(Collectors.toList());
+        assertThat(path2.size()).isEqualTo(4);
+        assertThat(path2.contains(parentDir + sep + "dir1")).isTrue();
+        assertThat(path2.contains(parentDir + sep + "dir2")).isTrue();
+        assertThat(path2.contains(parentDir + sep + "dir3")).isTrue();
+        assertThat(path2.contains(parentDir + sep + "dir4")).isTrue();
+
+        final List<String> path3 = StreamSupport
+                .stream(
+                        Files.newDirectoryStream(
+                                tempDir,
+                                path -> path.toString().endsWith(".txt"))
+                                .spliterator(),
+                        false)
+                .map(p -> p.toString())
+                .collect(Collectors.toList());
+        assertThat(path3.size()).isEqualTo(3);
+        assertThat(path3.contains(parentDir + sep + "a.txt")).isTrue();
+        assertThat(path3.contains(parentDir + sep + "b.txt")).isTrue();
+        assertThat(path3.contains(parentDir + sep + "c.txt")).isTrue();
+
+        final List<String> path4 = Stream.of(tempDir.toFile().listFiles(f -> f.isDirectory()))
+                .map(f -> f.toString())
+                .collect(Collectors.toList());
+        assertThat(path4.size()).isEqualTo(4);
+        assertThat(path4.contains(parentDir + sep + "dir1")).isTrue();
+        assertThat(path4.contains(parentDir + sep + "dir2")).isTrue();
+        assertThat(path4.contains(parentDir + sep + "dir3")).isTrue();
+        assertThat(path4.contains(parentDir + sep + "dir4")).isTrue();
+
+        final List<String> path5 = Stream.of(tempDir.toFile().listFiles())
+                .flatMap(file -> file.listFiles() == null ? Stream.of(file) : Stream.of(file.listFiles()))
+                .map(f -> f.toString())
+                .collect(Collectors.toList());
+        assertThat(path5.size()).isEqualTo(13);
+        assertThat(path5.contains(parentDir + sep + "a.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "b.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "c.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir1" + sep + "a_1.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir1" + sep + "b_1.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir1" + sep + "c_1.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir2" + sep + "a_2.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir2" + sep + "b_2.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir2" + sep + "c_2.txt")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir2" + sep + "dir2_1")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir2" + sep + "dir2_2")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir3" + sep + "dir3_1")).isTrue();
+        assertThat(path5.contains(parentDir + sep + "dir3" + sep + "dir3_2")).isTrue();
+    }
+
+    @Test
+    public void watchServiceDemo(@TempDir Path tempDir) throws IOException, InterruptedException {
+        final String parentDir = tempDir.toString();
+        final WatchService ws = tempDir.getFileSystem().newWatchService();
+        tempDir.register(ws, StandardWatchEventKinds.ENTRY_CREATE);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    new File(parentDir + "/aaaa.txt").createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 500);
+        final WatchKey wk = ws.poll(1, TimeUnit.MINUTES);
+        assertThat(wk).isNotNull();
+        final List<WatchEvent<?>> events = wk.pollEvents().stream().collect(Collectors.toList());
+        assertThat(events.size()).isEqualTo(1);
+        assertThat(events.get(0).count()).isEqualTo(1);
+        assertThat(events.get(0).kind().name()).isEqualTo(StandardWatchEventKinds.ENTRY_CREATE.name());
+        assertThat(events.get(0).kind().type()).isEqualTo(Path.class);
+        assertThat(events.get(0).context()).isEqualTo(Paths.get("aaaa.txt"));
     }
 }
