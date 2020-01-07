@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
  * https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Matcher.html
  * http://www.ne.jp/asahi/hishidama/home/tech/java/regexp.html
  */
-public class TestRegexp1 {
+public class TestBasicEscapeQuoteDemo {
     @Test
     public void typicalPatternMatch() {
         Pattern p = Pattern.compile("hello");
