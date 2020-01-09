@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -181,5 +184,79 @@ public class TestChapter6SamplesDemo {
         // e1がfalseを返すので、e2 の Supplier.get() は呼ばれず、"eval: 4" は現れない。
         assertThat(lazyEval(() -> evaluate(3, stepLogger), () -> evaluate(4, stepLogger))).isFalse();
         assertThat(stepLogger.getLogs()).hasSize(3).isEqualTo(List.of("eval: 1", "eval: 2", "eval: 3"));
+    }
+
+    // chapter 6.3 : intermediate / terminal operation
+
+    static int lengthOfName(final String name, final StepLogger slog) {
+        slog.log("get length of [" + name + "]");
+        return name.length();
+    }
+
+    static String toUpper(final String name, final StepLogger slog) {
+        slog.log("convert to uppercase : [" + name + "]");
+        return name.toUpperCase();
+    }
+
+    final List<String> names = List.of("Brad", "Kate", "Kim", "Jack", "Joe", "Mike", "Susan", "George", "Robert",
+            "Julia", "Parker", "Benson");
+
+    @Test
+    public void testIntermediateOperationDemo() {
+        final String r = names.stream()
+                .filter(name -> lengthOfName(name, stepLogger) == 3)
+                .map(name -> toUpper(name, stepLogger))
+                .findFirst()
+                .get();
+        assertThat(r).isEqualTo("KIM");
+        assertThat(stepLogger.getLogs()).hasSize(4).isEqualTo(List.of(
+                "get length of [Brad]",
+                "get length of [Kate]",
+                "get length of [Kim]",
+                "convert to uppercase : [Kim]"));
+    }
+
+    @Test
+    public void testIntermediateOperationDemo2() {
+        final Stream<String> stream0 = names.stream()
+                .filter(name -> lengthOfName(name, stepLogger) == 3)
+                .map(name -> toUpper(name, stepLogger));
+        assertThat(stepLogger.getLogs()).isEmpty();
+
+        final String r = stream0.findFirst().get();
+        assertThat(r).isEqualTo("KIM");
+        assertThat(stepLogger.getLogs()).hasSize(4).isEqualTo(List.of(
+                "get length of [Brad]",
+                "get length of [Kate]",
+                "get length of [Kim]",
+                "convert to uppercase : [Kim]"));
+    }
+
+    // chapter 6.4 : infinite stream
+
+    static boolean isPrime(final int number) {
+        return number > 1
+                && IntStream.rangeClosed(2, (int) Math.sqrt(number))
+                        .noneMatch(divisor -> number % divisor == 0);
+    }
+
+    int primeAfter(final int number) {
+        final int nextNumber = number + 1;
+        if (isPrime(nextNumber)) {
+            stepLogger.log("[" + nextNumber + "] is prime");
+            return nextNumber;
+        }
+        return primeAfter(nextNumber);
+    }
+
+    List<Integer> primes(final int fromNumber, final int count) {
+        return Stream.iterate(primeAfter(fromNumber - 1), this::primeAfter)
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    @Test
+    public void testInfiniteStreamLimitDemo() {
+        assertThat(primes(3, 10)).isEqualTo(List.of(3, 5, 7, 11, 13, 17, 19, 23, 29, 31));
     }
 }
