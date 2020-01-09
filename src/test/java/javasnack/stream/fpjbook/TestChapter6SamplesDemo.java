@@ -3,6 +3,7 @@ package javasnack.stream.fpjbook;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -10,50 +11,52 @@ import org.junit.jupiter.api.Test;
 
 public class TestChapter6SamplesDemo {
 
-    static interface Scream {
-        void scream(final String msg);
-    }
-
     /* JUnit5の デフォルトライフサイクルでは
      * テストメソッドごとにインスタンスを作るため、
      * @BeforeEach/@AfterEachで0クリアは不要。
      */
-    final List<String> screams = new ArrayList<>();
-    final Scream screamer = new Scream() {
-        @Override
-        public void scream(final String msg) {
-            screams.add(msg);
+    static class StepLogger {
+        private final List<String> logs = new ArrayList<>();
+
+        public synchronized void log(final String msg) {
+            logs.add(msg);
         }
-    };
+
+        public List<String> getLogs() {
+            return Collections.unmodifiableList(this.logs);
+        }
+    }
+
+    final StepLogger stepLogger = new StepLogger();
 
     // chapter 6.1 : initialize delay
 
     static class Heavy {
-        final Scream screamer;
+        final StepLogger slog;
 
-        public Heavy(final Scream screamer) {
-            this.screamer = screamer;
-            this.screamer.scream("Heavy created");
+        public Heavy(final StepLogger slog) {
+            this.slog = slog;
+            this.slog.log("Heavy created");
         }
 
         @Override
         public String toString() {
-            this.screamer.scream("quite heavy");
+            this.slog.log("quite heavy");
             return "heavy";
         }
     }
 
     static class HolderNaive {
         private Heavy heavy;
-        private final Scream screamer;
+        private final StepLogger slog;
 
-        public HolderNaive(final Scream screamer) {
-            this.screamer = screamer;
+        public HolderNaive(final StepLogger slog) {
+            this.slog = slog;
         }
 
         public synchronized Heavy getHeavy() {
             if (heavy == null) {
-                heavy = new Heavy(this.screamer);
+                heavy = new Heavy(this.slog);
             }
             return heavy;
         }
@@ -61,28 +64,28 @@ public class TestChapter6SamplesDemo {
 
     @Test
     public void testHolderNaive() {
-        final HolderNaive holder = new HolderNaive(screamer);
-        assertThat(screams).isEmpty();
+        final HolderNaive holder = new HolderNaive(stepLogger);
+        assertThat(stepLogger.getLogs()).isEmpty();
         System.out.println(holder.getHeavy());
-        assertThat(screams).hasSize(2).isEqualTo(List.of("Heavy created", "quite heavy"));
+        assertThat(stepLogger.getLogs()).hasSize(2).isEqualTo(List.of("Heavy created", "quite heavy"));
         System.out.println(holder.getHeavy());
-        assertThat(screams).hasSize(3).isEqualTo(List.of("Heavy created", "quite heavy", "quite heavy"));
+        assertThat(stepLogger.getLogs()).hasSize(3).isEqualTo(List.of("Heavy created", "quite heavy", "quite heavy"));
     }
 
     static class Holder {
         private Supplier<Heavy> heavy;
 
-        public Holder(final Scream screamer) {
-            this.heavy = () -> createAndCacheHeavy(screamer);
+        public Holder(final StepLogger slog) {
+            this.heavy = () -> createAndCacheHeavy(slog);
         }
 
         public Heavy getHeavy() {
             return heavy.get();
         }
 
-        public synchronized Heavy createAndCacheHeavy(final Scream screamer) {
+        public synchronized Heavy createAndCacheHeavy(final StepLogger slog) {
             class HeavyFactory implements Supplier<Heavy> {
-                private final Heavy heavyInstance = new Heavy(screamer);
+                private final Heavy heavyInstance = new Heavy(slog);
 
                 @Override
                 public Heavy get() {
@@ -90,22 +93,22 @@ public class TestChapter6SamplesDemo {
                 }
             }
             if (!HeavyFactory.class.isInstance(this.heavy)) {
-                screamer.scream("Heavy factory created");
+                slog.log("Heavy factory created");
                 /* ここ、すごい分かりづらいけど Holder クラスの
                  * Supplier<Heavy> heavy フィールドに、生成済みの = 排他制御不要な
                  * singletonを返すだけの Supplier<Heavy> を直接設定している。
                  */
                 this.heavy = new HeavyFactory();
             }
-            screamer.scream("return from createAndCacheHeavy()");
+            slog.log("return from createAndCacheHeavy()");
             return heavy.get();
         }
     }
 
     @Test
     public void testHolderSmartDelayed() {
-        final Holder holder = new Holder(screamer);
-        assertThat(screams).isEmpty();
+        final Holder holder = new Holder(stepLogger);
+        assertThat(stepLogger.getLogs()).isEmpty();
         /* 以下、書籍の説明だけだとかなり分かりづらいので補足説明。
          * 
          * (1) まず Holder のコンストラクタ時点では
@@ -140,13 +143,13 @@ public class TestChapter6SamplesDemo {
          * 仕組みとポイントとしては上記のような動きになっている。
          */
         System.out.println(holder.getHeavy());
-        assertThat(screams).hasSize(4).isEqualTo(List.of(
+        assertThat(stepLogger.getLogs()).hasSize(4).isEqualTo(List.of(
                 "Heavy factory created",
                 "Heavy created",
                 "return from createAndCacheHeavy()",
                 "quite heavy"));
         System.out.println(holder.getHeavy());
-        assertThat(screams).hasSize(5).isEqualTo(List.of(
+        assertThat(stepLogger.getLogs()).hasSize(5).isEqualTo(List.of(
                 "Heavy factory created",
                 "Heavy created",
                 "return from createAndCacheHeavy()",
@@ -156,8 +159,8 @@ public class TestChapter6SamplesDemo {
 
     // chapter 6.2 : eager / lazy evaluate
 
-    static boolean evaluate(final int v, final Scream screamer) {
-        screamer.scream("eval: " + v);
+    static boolean evaluate(final int v, final StepLogger slog) {
+        slog.log("eval: " + v);
         return v > 100;
     }
 
@@ -172,11 +175,11 @@ public class TestChapter6SamplesDemo {
 
     @Test
     public void testEagerLazyEvaluate() {
-        assertThat(eagerEval(evaluate(1, screamer), evaluate(2, screamer))).isFalse();
-        assertThat(screams).hasSize(2).isEqualTo(List.of("eval: 1", "eval: 2"));
+        assertThat(eagerEval(evaluate(1, stepLogger), evaluate(2, stepLogger))).isFalse();
+        assertThat(stepLogger.getLogs()).hasSize(2).isEqualTo(List.of("eval: 1", "eval: 2"));
 
         // e1がfalseを返すので、e2 の Supplier.get() は呼ばれず、"eval: 4" は現れない。
-        assertThat(lazyEval(() -> evaluate(3, screamer), () -> evaluate(4, screamer))).isFalse();
-        assertThat(screams).hasSize(3).isEqualTo(List.of("eval: 1", "eval: 2", "eval: 3"));
+        assertThat(lazyEval(() -> evaluate(3, stepLogger), () -> evaluate(4, stepLogger))).isFalse();
+        assertThat(stepLogger.getLogs()).hasSize(3).isEqualTo(List.of("eval: 1", "eval: 2", "eval: 3"));
     }
 }
