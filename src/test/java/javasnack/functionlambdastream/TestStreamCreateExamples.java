@@ -9,7 +9,7 @@ import java.util.stream.Stream.Builder;
 
 import org.junit.jupiter.api.Test;
 
-public class TestStreamBuilderDemo {
+public class TestStreamCreateExamples {
 
     @Test
     public void testStreamBuilder() {
