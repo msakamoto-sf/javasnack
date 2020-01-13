@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package javasnack.functionlambda;
+package javasnack.functionlambdastream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

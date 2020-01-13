@@ -1,4 +1,4 @@
-package javasnack.stream.fpjbook;
+package javasnack.functionlambdastream.fpjbook;
 
 /**
  * "Functional Programming in Java: Harnessing the Power Of Java 8 Lambda Expressions"

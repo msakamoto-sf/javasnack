@@ -1,4 +1,4 @@
-package javasnack.stream.fpjbook;
+package javasnack.functionlambdastream.fpjbook;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
