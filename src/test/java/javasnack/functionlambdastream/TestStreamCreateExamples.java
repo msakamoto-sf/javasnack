@@ -2,6 +2,13 @@ package javasnack.functionlambdastream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Comparator;
@@ -10,11 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /* reference:
  * https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/stream/package-summary.html
@@ -52,12 +64,28 @@ public class TestStreamCreateExamples {
                 .collect(Collectors.toList())).isEqualTo(List.of("aaa", "bbb", "ccc", "ddd"));
     }
 
+    @Test
     public void testBufferedReaderToStream() {
-        // TODO
+        final StringBuilder sb = new StringBuilder();
+        sb.append("aaa\n");
+        sb.append("bbb\n");
+        sb.append("ccc\n");
+        sb.append("ddd\n");
+        assertThat(
+                new BufferedReader(new StringReader(sb.toString())).lines().collect(Collectors.toList()))
+                        .isEqualTo(List.of("aaa", "bbb", "ccc", "ddd"));
     }
 
-    public void testFileToStreamOfLines() {
-        // TODO
+    @Test
+    public void testFileToStreamOfLines(@TempDir final Path tempDir) throws IOException {
+        final Path tempFile = Path.of(tempDir.toString(), "aaa.txt");
+        Files.writeString(tempFile, "あいうえお\nかきくけこ\nさしすせそ\n",
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE_NEW,
+                StandardOpenOption.WRITE,
+                StandardOpenOption.APPEND);
+        assertThat(Files.lines(tempFile, StandardCharsets.UTF_8).collect(Collectors.toList())).isEqualTo(
+                List.of("あいうえお", "かきくけこ", "さしすせそ"));
     }
 
     @Test
@@ -70,15 +98,36 @@ public class TestStreamCreateExamples {
                 .isEqualTo(new int[] { 1, 3, 6, 7, 9, 10, 11, 12, 13, 14, 15 });
     }
 
+    @Test
     public void testStreamStaticMethods() {
-        // TODO
-        // Stream.of()
-        // Stream.empty()
-        // Stream.concat()
-        // Stream.generate()
-        // Stream.iterate()
-        // IntStream.range()
-        // LongStream.range()
+        assertThat(Stream.of("aaa").collect(Collectors.toList())).isEqualTo(List.of("aaa"));
+        assertThat(Stream.of("aaa", "bbb", "ccc").collect(Collectors.toList())).isEqualTo(List.of("aaa", "bbb", "ccc"));
+
+        assertThat(Stream.empty().count()).isEqualTo(0);
+
+        final AtomicInteger counter = new AtomicInteger(0);
+        final Supplier<String> sup0 = new Supplier<>() {
+            @Override
+            public String get() {
+                return "cnt" + counter.incrementAndGet();
+            }
+        };
+        assertThat(Stream.generate(sup0).limit(5).collect(Collectors.toList()))
+                .isEqualTo(List.of("cnt1", "cnt2", "cnt3", "cnt4", "cnt5"));
+        assertThat(Stream.concat(
+                Stream.generate(sup0).limit(5),
+                Stream.generate(sup0).limit(5))
+                .limit(5)
+                .collect(Collectors.toList())).isEqualTo(List.of("cnt6", "cnt7", "cnt8", "cnt9", "cnt10"));
+        assertThat(counter.get()).isEqualTo(10);
+
+        assertThat(Stream.iterate(1, i -> i * 2)
+                .limit(5)
+                .collect(Collectors.toList()))
+                        .isEqualTo(List.of(1, 2, 4, 8, 16));
+
+        assertThat(IntStream.range(1, 5).boxed().collect(Collectors.toList())).isEqualTo(List.of(1, 2, 3, 4));
+        assertThat(LongStream.range(1, 5).boxed().collect(Collectors.toList())).isEqualTo(List.of(1L, 2L, 3L, 4L));
     }
 
     @Test
