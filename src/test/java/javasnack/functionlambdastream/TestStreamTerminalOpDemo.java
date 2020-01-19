@@ -88,4 +88,50 @@ public class TestStreamTerminalOpDemo {
         assertThat(Stream.of("aaa", "bbb", "cccx").noneMatch(s -> s.length() == 3)).isFalse();
         assertThat(Stream.of("aaax", "bbbx", "cccx").noneMatch(s -> s.length() == 3)).isTrue();
     }
+
+    @Test
+    public void testReduce() {
+        assertThat(Stream.of("aa", "bb", "cc", "dd")
+                .reduce((s1, s2) -> {
+                    return s1 + ":" + s2;
+                }).get()).isEqualTo("aa:bb:cc:dd");
+        assertThat(Stream.empty()
+                .reduce((s1, s2) -> {
+                    return s1 + ":" + s2;
+                }).isPresent()).isFalse();
+
+        assertThat(Stream.of("aa", "bb", "cc", "dd")
+                .reduce("xxx", (s1, s2) -> {
+                    return s1 + ":" + s2;
+                })).isEqualTo("xxx:aa:bb:cc:dd");
+        assertThat(Stream.empty()
+                .reduce("xxx", (s1, s2) -> {
+                    return s1 + ":" + s2;
+                })).isEqualTo("xxx");
+
+        assertThat(Stream.of("aa", "bb", "cc", "dd")
+                .reduce("xxx", (s1, s2) -> {
+                    return s1 + ":" + s2;
+                }, (s1, s2) -> {
+                    return s1 + ":" + s2;
+                })).isEqualTo("xxx:aa:bb:cc:dd");
+        assertThat(Stream.empty()
+                .reduce("xxx", (s1, s2) -> {
+                    return s1 + ":" + s2;
+                }, (s1, s2) -> {
+                    return s1 + ":" + s2;
+                })).isEqualTo("xxx");
+    }
+
+    @Test
+    public void testCollect() {
+        final List<String> l0 = Stream.of("aa", "bb", "cc", "dd")
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        assertThat(l0).isEqualTo(List.of("aa", "bb", "cc", "dd"));
+
+        final String s0 = Stream.of("aa", "bb", "cc", "dd")
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+        assertThat(s0).isEqualTo("aabbccdd");
+    }
 }
