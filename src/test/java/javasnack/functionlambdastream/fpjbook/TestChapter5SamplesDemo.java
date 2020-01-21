@@ -46,7 +46,7 @@ public class TestChapter5SamplesDemo {
     public void testAutoCloseableFileWriter(@TempDir final Path tempDir) throws IOException {
         final Path tempFile = Path.of(tempDir.toString(), "aaa.txt");
         final AtomicBoolean closed = new AtomicBoolean(false);
-        try (final FileWriterARM writerARM = new FileWriterARM(tempFile.toString(), closed)) {
+        try (FileWriterARM writerARM = new FileWriterARM(tempFile.toString(), closed)) {
             writerARM.writeStuff("hello");
         }
         final String data = Files.readString(tempFile);
@@ -57,7 +57,7 @@ public class TestChapter5SamplesDemo {
     // chapter 5.2 : execute around method
 
     @FunctionalInterface
-    static interface MyThrowableConsumer<T, X extends Throwable> {
+    interface MyThrowableConsumer<T, X extends Throwable> {
         void accept(T instance) throws X;
     }
 

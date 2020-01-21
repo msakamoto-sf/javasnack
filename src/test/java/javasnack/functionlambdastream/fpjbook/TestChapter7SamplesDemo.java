@@ -160,7 +160,7 @@ public class TestChapter7SamplesDemo {
      * https://www.geeksforgeeks.org/tail-recursion/
      * https://ja.wikipedia.org/wiki/%E6%9C%AB%E5%B0%BE%E5%86%8D%E5%B8%B0
      */
-    static interface TailCall<T> {
+    interface TailCall<T> {
         TailCall<T> apply();
 
         default boolean isComplete() {

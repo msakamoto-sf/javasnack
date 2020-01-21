@@ -159,7 +159,7 @@ public class TestChapter4SamplesDemo {
 
     // chapter 4.4 : default method examples
 
-    static interface Fly {
+    interface Fly {
         default String takeOff() {
             return "Fly::takeOff";
         }
@@ -177,13 +177,13 @@ public class TestChapter4SamplesDemo {
         }
     }
 
-    static interface FastFly extends Fly {
+    interface FastFly extends Fly {
         default String takeOff() {
             return "FastFly::takeOff";
         }
     }
 
-    static interface Sail {
+    interface Sail {
         default String cruise() {
             return "Sail::cruise";
         }
