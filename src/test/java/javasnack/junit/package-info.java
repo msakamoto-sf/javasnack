@@ -1,7 +1,7 @@
-package javasnack.junit;
 /**
  * JUnit5 samples and exercise.
  */
+package javasnack.junit;
 /* see:
  * https://junit.org/junit5/
  * http://nowokay.hatenablog.com/entry/20171012/1507769090

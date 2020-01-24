@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * Basic Java Serialize Examples.
  */
+package javasnack.ser;
 /* see:
  * http://www.ibm.com/developerworks/jp/java/library/j-5things1/
  * http://www.ne.jp/asahi/hishidama/home/tech/java/serial.html
@@ -25,5 +27,3 @@
  * http://stackoverflow.com/questions/134492/how-to-serialize-an-object-into-a-string
  * http://stackoverflow.com/questions/2836646/java-serializable-object-to-byte-array
  */
-
-package javasnack.ser;
