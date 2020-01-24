@@ -18,6 +18,9 @@
 
   <suppress checks="MemberNameCheck" files="TestUnicodeNormalize1.java" message="Member name 'NF.*" />
 
+  <suppress checks="OverloadMethodsDeclarationOrderCheck" files="TestChapter4SamplesDemo.java" />
+  <suppress checks="OverloadMethodsDeclarationOrderCheck" files="TestChapter7SamplesDemo.java" />
+
   <!-- わざとbuggyでcheckstyle-violatedなソースコードのデモ。実際にviolateさせるときはここをコメントアウト -->
   <suppress checks=".*" files="Buggy1.java" />
 </suppressions>
