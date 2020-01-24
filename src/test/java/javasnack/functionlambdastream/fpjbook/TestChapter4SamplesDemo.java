@@ -81,8 +81,8 @@ public class TestChapter4SamplesDemo {
     static class CalculateNAV {
         private final Function<String, BigDecimal> priceFinder;
 
-        public CalculateNAV(final Function<String, BigDecimal> aPriceFinder) {
-            this.priceFinder = aPriceFinder;
+        public CalculateNAV(final Function<String, BigDecimal> priceFinder) {
+            this.priceFinder = priceFinder;
         }
 
         public BigDecimal computeStockWorth(final String ticker, final int shares) {
