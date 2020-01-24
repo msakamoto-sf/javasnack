@@ -19,9 +19,10 @@ public class TestChapter4SamplesDemo {
     // chapter 4.1 : demonstration of Strategy Design Pattern using Function
 
     static class Asset {
+
         public enum AssetType {
             BOND, STOCK
-        };
+        }
 
         private final AssetType type;
         private final int value;
@@ -225,13 +226,25 @@ public class TestChapter4SamplesDemo {
 
     // old style
     static class Mailer {
-        // @formatter:off
-        public void from(final String address) { /* ... */ }
-        public void to(final String address) { /* ... */ }
-        public void subject(final String line) { /* ... */ }
-        public void body(final String message) { /* ... */ }
-        public void send() { System.out.println("old style Mailer::send() called."); }
-        // @formatter:on
+        public void from(final String address) {
+            // ...
+        }
+
+        public void to(final String address) {
+            // ...
+        }
+
+        public void subject(final String line) {
+            // ...
+        }
+
+        public void body(final String message) {
+            // ...
+        }
+
+        public void send() {
+            System.out.println("old style Mailer::send() called.");
+        }
     }
 
     @Test
@@ -246,13 +259,29 @@ public class TestChapter4SamplesDemo {
 
     // builder style (fluent interface)
     static class MailBuilder {
-        // @formatter:off
-        public MailBuilder from(final String address) { /* ... */ return this; }
-        public MailBuilder to(final String address) { /* ... */ return this; }
-        public MailBuilder subject(final String line) { /* ... */ return this; }
-        public MailBuilder body(final String message) { /* ... */ return this; }
-        public void send() { System.out.println("old style MailBuilder::send() called."); }
-        // @formatter:on
+        public MailBuilder from(final String address) {
+            // ...
+            return this;
+        }
+
+        public MailBuilder to(final String address) {
+            // ...
+            return this;
+        }
+
+        public MailBuilder subject(final String line) {
+            // ...
+            return this;
+        }
+
+        public MailBuilder body(final String message) {
+            // ...
+            return this;
+        }
+
+        public void send() {
+            System.out.println("old style MailBuilder::send() called.");
+        }
     }
 
     @Test
@@ -266,17 +295,34 @@ public class TestChapter4SamplesDemo {
 
     // fluent style with loan pattern
     static class FluentMailer {
-        // @formatter:off
         private String from = "";
         private String to = "";
         private String subject = "";
         private String body = "";
-        private FluentMailer() {}
-        public FluentMailer from(final String address) { from = address; return this; }
-        public FluentMailer to(final String address) { to = address; return this; }
-        public FluentMailer subject(final String line) { subject = line; return this; }
-        public FluentMailer body(final String message) { body = message; return this; }
-        // @formatter:on
+
+        private FluentMailer() {
+        }
+
+        public FluentMailer from(final String address) {
+            from = address;
+            return this;
+        }
+
+        public FluentMailer to(final String address) {
+            to = address;
+            return this;
+        }
+
+        public FluentMailer subject(final String line) {
+            subject = line;
+            return this;
+        }
+
+        public FluentMailer body(final String message) {
+            body = message;
+            return this;
+        }
+
         public static String send(final Consumer<FluentMailer> setup) {
             final FluentMailer mailer = new FluentMailer();
             setup.accept(mailer);

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 public class TestChapter8SamplesDemo {
     static final Map<String, BigDecimal> TICKER_PRICE;
     static final List<String> TICKERS;
+
     static {
         final Map<String, BigDecimal> src = new HashMap<>();
         src.put("AMD", BigDecimal.valueOf(100.0));

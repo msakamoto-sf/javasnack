@@ -95,6 +95,7 @@ public class TestChapter6SamplesDemo {
                     return this.heavyInstance;
                 }
             }
+
             if (!HeavyFactory.class.isInstance(this.heavy)) {
                 slog.log("Heavy factory created");
                 /* ここ、すごい分かりづらいけど Holder クラスの
