@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 public class TestMethodRefDemo {
 
     static class WithNoArg {
-        public final String s;
+        public final String str;
 
         public WithNoArg() {
-            s = "hello";
+            str = "hello";
         }
 
         public static int staticMethod() {
@@ -44,7 +44,7 @@ public class TestMethodRefDemo {
         }
 
         public String instanceMethod() {
-            return s.toUpperCase();
+            return str.toUpperCase();
         }
     }
 
@@ -53,7 +53,7 @@ public class TestMethodRefDemo {
         // constructor reference
         final Supplier<WithNoArg> sup1 = WithNoArg::new;
         final WithNoArg o0 = sup1.get();
-        assertThat(o0.s).isEqualTo("hello");
+        assertThat(o0.str).isEqualTo("hello");
 
         // static method reference
         IntSupplier sup2 = WithNoArg::staticMethod;
@@ -69,10 +69,10 @@ public class TestMethodRefDemo {
     }
 
     static class WithUniArg {
-        public final String s;
+        public final String str;
 
         public WithUniArg(final String s) {
-            this.s = s;
+            this.str = s;
         }
 
         public static int staticMethod(final int a) {
@@ -80,7 +80,7 @@ public class TestMethodRefDemo {
         }
 
         public String instanceMethod(final String a1) {
-            return this.s + ":" + a1;
+            return this.str + ":" + a1;
         }
     }
 
@@ -89,7 +89,7 @@ public class TestMethodRefDemo {
         // constructor reference
         final Function<String, WithUniArg> gen1 = WithUniArg::new;
         final WithUniArg o1 = gen1.apply("xxx");
-        assertThat(o1.s).isEqualTo("xxx");
+        assertThat(o1.str).isEqualTo("xxx");
 
         // static method reference
         Function<Integer, Integer> gen2 = WithUniArg::staticMethod;
@@ -105,12 +105,12 @@ public class TestMethodRefDemo {
     }
 
     static class WithBiArg {
-        public final String s;
-        public final int n;
+        public final String str;
+        public final int num;
 
         public WithBiArg(final String s, final int n) {
-            this.s = s;
-            this.n = n;
+            this.str = s;
+            this.num = n;
         }
 
         public static String staticMethod(final String a, final int b) {
@@ -118,7 +118,7 @@ public class TestMethodRefDemo {
         }
 
         public String instanceMethod(final String a1, final String b1) {
-            return (this.s + ":" + a1 + ":" + b1).repeat(this.n);
+            return (this.str + ":" + a1 + ":" + b1).repeat(this.num);
         }
     }
 
@@ -127,8 +127,8 @@ public class TestMethodRefDemo {
         // constructor reference
         final BiFunction<String, Integer, WithBiArg> gen1 = WithBiArg::new;
         final WithBiArg o1 = gen1.apply("xxx", 3);
-        assertThat(o1.s).isEqualTo("xxx");
-        assertThat(o1.n).isEqualTo(3);
+        assertThat(o1.str).isEqualTo("xxx");
+        assertThat(o1.num).isEqualTo(3);
 
         // static method reference
         BiFunction<String, Integer, String> gen2 = WithBiArg::staticMethod;
