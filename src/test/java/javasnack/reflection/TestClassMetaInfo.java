@@ -238,8 +238,8 @@ public class TestClassMetaInfo {
     @ParameterizedTest
     @MethodSource("provideTypicalClassMetaInfoArguments")
     public void testTypicalClassMetaInfo(final Class<?> c, final TypicalClassMetaInfo expected) {
+        // @formatter:off
         TypicalClassMetaInfo actual = new TypicalClassMetaInfo(
-            // @formatter:off
             c.getName(),
             c.getCanonicalName(),
             c.getSimpleName(),
@@ -249,8 +249,8 @@ public class TestClassMetaInfo {
             c.isPrimitive(),
             c.isInterface(),
             c.isArray()
-            // @formatter:on
         );
+        // @formatter:on
         assertEquals(expected.name, actual.name);
         assertEquals(expected.canonicalName, actual.canonicalName);
         assertEquals(expected.simpleName, actual.simpleName);
