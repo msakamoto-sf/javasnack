@@ -26,7 +26,7 @@ import checkstyle configuration xml into eclipse:
 1. import xml into eclipse global configuration.
    1. Window -> Preferences -> Checkstyle -> Global Check Configurations : click "New"
    2. Select: "Project Relative Configuration"
-   3. Location: click "Browse" -> then select project -> select `javasnack/checkstyle-settings/google_checks-8.18_custom.xml`
+   3. Location: click "Browse" -> then select project -> select `javasnack/checkstyle-settings/google_checks-8.28_custom.xml`
    4. Name: set proper name
    5. Apply and Close
 2. setup project specific setting

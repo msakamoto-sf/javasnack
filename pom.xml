@@ -44,12 +44,12 @@
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
     <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
-    <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.18_custom.xml</checkstyle.config.location>
+    <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.28_custom.xml</checkstyle.config.location>
     <!--
     see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html
     -> enforce specific version same to what eclipse checkstyle plugin is using at 2019-07.
     -->
-    <maven-checkstyle-engine.version>8.18</maven-checkstyle-engine.version>
+    <maven-checkstyle-engine.version>8.28</maven-checkstyle-engine.version>
 
     <!--
     see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html
