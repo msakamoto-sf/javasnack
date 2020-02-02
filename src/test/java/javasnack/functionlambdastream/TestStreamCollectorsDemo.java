@@ -14,12 +14,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.Test;
+
+import lombok.Value;
 
 public class TestStreamCollectorsDemo {
 
@@ -166,11 +169,174 @@ public class TestStreamCollectorsDemo {
         assertThat(thrown1).isInstanceOf(UnsupportedOperationException.class);
     }
 
-    /* TODO
-     * flatMapping
-     * mapping
-     * partitioningBy
-     * groupingBy
-     * reducing
-     */
+    enum RoleOfEmployee {
+        JUNIOR, SENIOR, MANAGER, CHIEF;
+    }
+
+    @Value(staticConstructor = "of")
+    static class Employee {
+        private String name;
+        private int age;
+        private RoleOfEmployee role;
+        private Set<String> hobbies;
+
+        static Employee of(final String name, final int age, final RoleOfEmployee role) {
+            return of(name, age, role, Collections.emptySet());
+        }
+
+        static Employee of(final String name, final int age, final RoleOfEmployee role, final String... hobbies) {
+            return of(name, age, role, Set.of(hobbies));
+        }
+    }
+
+    @Test
+    public void testMappingDemo() {
+        final Collector<Employee, ?, Set<RoleOfEmployee>> col1 = Collectors.mapping(
+                Employee::getRole,
+                Collectors.toSet());
+        final Set<RoleOfEmployee> s1 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 20, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 20, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 20, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 20, RoleOfEmployee.MANAGER)).collect(col1);
+        assertThat(s1).hasSize(3);
+        assertThat(s1.contains(RoleOfEmployee.JUNIOR)).isTrue();
+        assertThat(s1.contains(RoleOfEmployee.SENIOR)).isTrue();
+        assertThat(s1.contains(RoleOfEmployee.MANAGER)).isTrue();
+    }
+
+    @Test
+    public void testReducingDemo() {
+        final Collector<Employee, ?, Optional<Employee>> col1 = Collectors
+                .reducing(BinaryOperator.maxBy(Comparator.comparing(Employee::getAge)));
+        final Employee e1 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 30, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 40, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 30, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 50, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 10, RoleOfEmployee.MANAGER)).collect(col1).get();
+        assertThat(e1.getName()).isEqualTo("evan");
+        assertThat(e1.getAge()).isEqualTo(50);
+
+        final Collector<Employee, ?, Employee> col2 = Collectors
+                .reducing(
+                        Employee.of("george", 90, RoleOfEmployee.CHIEF),
+                        BinaryOperator.maxBy(Comparator.comparing(Employee::getAge)));
+        final Employee e2 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 30, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 40, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 30, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 50, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 10, RoleOfEmployee.MANAGER)).collect(col2);
+        assertThat(e2.getName()).isEqualTo("george");
+        assertThat(e2.getAge()).isEqualTo(90);
+
+        final Collector<Employee, ?, String> col3 = Collectors.reducing("", Employee::getName,
+                BinaryOperator.maxBy(Comparator.comparing(String::length)));
+        final String s3 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 20, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 20, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 20, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 20, RoleOfEmployee.MANAGER)).collect(col3);
+        assertThat(s3).isEqualTo("daniel");
+    }
+
+    @Test
+    public void testFlatMappingDemo() {
+        final Collector<Employee, ?, Set<String>> col1 = Collectors
+                .flatMapping((Employee employee) -> employee.getHobbies().stream(), Collectors.toSet());
+        final Set<String> s1 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR, "cooking"),
+                Employee.of("bob", 20, RoleOfEmployee.JUNIOR, "walking", "reading"),
+                Employee.of("clice", 20, RoleOfEmployee.JUNIOR, "travel"),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR, "cooking", "movie"),
+                Employee.of("evan", 20, RoleOfEmployee.JUNIOR, "reading", "movie"),
+                Employee.of("freddy", 20, RoleOfEmployee.JUNIOR)).collect(col1);
+        assertThat(s1).hasSize(5);
+        assertThat(s1.contains("cooking")).isTrue();
+        assertThat(s1.contains("walking")).isTrue();
+        assertThat(s1.contains("reading")).isTrue();
+        assertThat(s1.contains("travel")).isTrue();
+        assertThat(s1.contains("movie")).isTrue();
+    }
+
+    @Test
+    public void testGroupingByDemo() {
+        final Collector<Employee, ?, Map<RoleOfEmployee, List<Employee>>> col1 = Collectors
+                .groupingBy((Employee employee) -> employee.getRole());
+        final Map<RoleOfEmployee, List<Employee>> m1 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 20, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 20, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 20, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 20, RoleOfEmployee.MANAGER)).collect(col1);
+        assertThat(m1).hasSize(3);
+        List<Employee> l0 = m1.get(RoleOfEmployee.JUNIOR);
+        assertThat(l0).hasSize(2);
+        assertThat(l0.contains(Employee.of("alice", 20, RoleOfEmployee.JUNIOR)));
+        assertThat(l0.contains(Employee.of("daniel", 20, RoleOfEmployee.JUNIOR)));
+        l0 = m1.get(RoleOfEmployee.SENIOR);
+        assertThat(l0).hasSize(2);
+        assertThat(l0.contains(Employee.of("bob", 20, RoleOfEmployee.JUNIOR)));
+        assertThat(l0.contains(Employee.of("evan", 20, RoleOfEmployee.JUNIOR)));
+        l0 = m1.get(RoleOfEmployee.MANAGER);
+        assertThat(l0).hasSize(2);
+        assertThat(l0.contains(Employee.of("clice", 20, RoleOfEmployee.JUNIOR)));
+        assertThat(l0.contains(Employee.of("freddy", 20, RoleOfEmployee.JUNIOR)));
+
+        final Collector<Employee, ?, Map<RoleOfEmployee, Set<String>>> col2 = Collectors
+                .groupingBy((Employee employee) -> employee.getRole(),
+                        Collectors.mapping(Employee::getName, Collectors.toSet()));
+        final Map<RoleOfEmployee, Set<String>> m2 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 20, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 20, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 20, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 20, RoleOfEmployee.MANAGER)).collect(col2);
+        assertThat(m2).hasSize(3);
+        assertThat(m2.get(RoleOfEmployee.JUNIOR).containsAll(Set.of("alice", "daniel"))).isTrue();
+        assertThat(m2.get(RoleOfEmployee.SENIOR).containsAll(Set.of("bob", "evan"))).isTrue();
+        assertThat(m2.get(RoleOfEmployee.MANAGER).containsAll(Set.of("clice", "freddy"))).isTrue();
+    }
+
+    @Test
+    public void testPartitionByDemo() {
+        final Collector<Employee, ?, Map<Boolean, List<Employee>>> col1 = Collectors
+                .partitioningBy((Employee employee) -> employee.getName().length() == 5);
+        final Map<Boolean, List<Employee>> m1 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 20, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 20, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 20, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 20, RoleOfEmployee.MANAGER)).collect(col1);
+        assertThat(m1).hasSize(2);
+        List<Employee> l0 = m1.get(Boolean.TRUE);
+        assertThat(l0.stream().map(e -> e.getName()).collect(Collectors.toList())).isEqualTo(List.of("alice", "clice"));
+        l0 = m1.get(Boolean.FALSE);
+        assertThat(l0.stream().map(e -> e.getName()).collect(Collectors.toList()))
+                .isEqualTo(List.of("bob", "daniel", "evan", "freddy"));
+
+        final Collector<Employee, ?, Map<Boolean, Set<String>>> col2 = Collectors
+                .partitioningBy((Employee employee) -> employee.getName().length() == 5,
+                        Collectors.mapping((Employee employee) -> employee.getName(), Collectors.toSet()));
+        final Map<Boolean, Set<String>> m2 = Stream.of(
+                Employee.of("alice", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("bob", 20, RoleOfEmployee.SENIOR),
+                Employee.of("clice", 20, RoleOfEmployee.MANAGER),
+                Employee.of("daniel", 20, RoleOfEmployee.JUNIOR),
+                Employee.of("evan", 20, RoleOfEmployee.SENIOR),
+                Employee.of("freddy", 20, RoleOfEmployee.MANAGER)).collect(col2);
+        assertThat(m2).hasSize(2);
+        assertThat(m2.get(Boolean.TRUE)).isEqualTo(Set.of("alice", "clice"));
+        assertThat(m2.get(Boolean.FALSE)).isEqualTo(Set.of("bob", "daniel", "evan", "freddy"));
+    }
 }
