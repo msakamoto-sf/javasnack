@@ -3,12 +3,18 @@ package javasnack.functionlambdastream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
+
+import lombok.Value;
 
 /* refs:
  * - [Java] IteratorをStreamにする - Qiita
@@ -80,5 +86,67 @@ public class TestSpliteratorDemo {
         assertThat(received).isEqualTo(List.of("aaa", "bbb", "ccc", "ddd"));
     }
 
-    // TODO zip demo
+    // zip demo (refs: http://enterprisegeeks.hatenablog.com/entry/2014/05/19/100422 )
+
+    @Value(staticConstructor = "of")
+    static class Pair<T, U> {
+        public final T left;
+        public final U right;
+    }
+
+    static class PairIterator<T, U, R> implements Iterator<R> {
+        private final Iterator<T> itLeft;
+        private final Iterator<U> itRight;
+        private final BiFunction<T, U, R> mapper;
+
+        public PairIterator(Iterator<T> itLeft, Iterator<U> itRight, BiFunction<T, U, R> mapper) {
+            this.itLeft = itLeft;
+            this.itRight = itRight;
+            this.mapper = mapper;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return itLeft.hasNext() && itRight.hasNext();
+        }
+
+        @Override
+        public R next() {
+            return mapper.apply(itLeft.next(), itRight.next());
+        }
+    }
+
+    static <T, U> Stream<Pair<T, U>> zip(Stream<T> s1, Stream<U> s2, int size) {
+        PairIterator<T, U, Pair<T, U>> itr = new PairIterator<>(s1.iterator(), s2.iterator(), Pair::new);
+        int characteristics = Spliterator.IMMUTABLE | Spliterator.NONNULL;
+        if (size < 0) {
+            return StreamSupport.stream(
+                    Spliterators.spliteratorUnknownSize(itr, characteristics), false);
+        } else {
+            return StreamSupport.stream(
+                    Spliterators.spliterator(itr, size, characteristics), false);
+        }
+    }
+
+    static <T, U> Stream<Pair<T, U>> zip(Stream<T> s1, Stream<U> s2) {
+        return zip(s1, s2, -1);
+    }
+
+    @Test
+    public void testZipDemo() {
+        final List<String> left1 = List.of("aaa", "bbb", "ccc", "ddd");
+        final List<String> right1 = List.of("AAA", "BBB", "CCC");
+        final List<Pair<String, String>> pairs1 = zip(left1.stream(), right1.stream()).collect(Collectors.toList());
+        assertThat(pairs1).hasSize(3);
+        assertThat(pairs1.get(0)).isEqualTo(Pair.of("aaa", "AAA"));
+        assertThat(pairs1.get(1)).isEqualTo(Pair.of("bbb", "BBB"));
+        assertThat(pairs1.get(2)).isEqualTo(Pair.of("ccc", "CCC"));
+
+        final List<Pair<Integer, String>> pairs2 = zip(Stream.iterate(0, i -> i + 1), right1.stream())
+                .collect(Collectors.toList());
+        assertThat(pairs2).hasSize(3);
+        assertThat(pairs2.get(0)).isEqualTo(Pair.of(Integer.valueOf(0), "AAA"));
+        assertThat(pairs2.get(1)).isEqualTo(Pair.of(Integer.valueOf(1), "BBB"));
+        assertThat(pairs2.get(2)).isEqualTo(Pair.of(Integer.valueOf(2), "CCC"));
+    }
 }
