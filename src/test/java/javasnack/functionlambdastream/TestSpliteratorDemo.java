@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,12 +43,14 @@ public class TestSpliteratorDemo {
         assertThat(received).isEqualTo(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         received.clear();
 
+        final AtomicInteger counter = new AtomicInteger(0);
         final Spliterator.OfInt spi1 = Spliterators.spliterator(ints, ac0);
         while (spi1.tryAdvance((Integer i) -> {
             received.add(i);
         })) {
-            // nothing todo
+            counter.incrementAndGet();
         }
+        assertThat(counter.get()).isEqualTo(10);
         assertThat(received).isEqualTo(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         received.clear();
 
