@@ -138,8 +138,10 @@ public class TestJUnit5BasicAnnotationAssertion {
 
     @Test
     public void assertExceptionThrows() {
-        final Exception exception = assertThrows(ArithmeticException.class, () -> this.div(1, 0));
-        assertEquals("/ by zero", exception.getMessage());
+        assertThrows(ArithmeticException.class, () -> this.div(1, 0));
+        // JVMによってはOS側のlocaleに応じてメッセージが国際化されたりするため、ここのassertはスキップ。
+        //final Exception exception = assertThrows(ArithmeticException.class, () -> this.div(1, 0));
+        //assertEquals("/ by zero", exception.getMessage());
     }
 
     @Test
