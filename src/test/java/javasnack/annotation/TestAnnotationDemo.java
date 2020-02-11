@@ -19,6 +19,8 @@ package javasnack.annotation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -443,5 +445,57 @@ public class TestAnnotationDemo {
                 .getAnnotation(SomeFieldWithIntDefaultAndStrings.class);
         assertThat(a18.intValue()).isEqualTo(-1);
         assertThat(a18.stringValues()).isEqualTo(new String[] { "ttt" });
+    }
+
+    /* about composed (meta) annotation:
+     * - What Are Meta-Annotations in Java? - DZone Java
+     *   - https://dzone.com/articles/what-are-meta-annotations-in-java
+     * - Meta-Annotations について | さにあらず
+     *   - https://blog.satotaichi.info/meta-annotations/
+     */
+
+    @SomeComposedType1("FOO")
+    private static class WithComposed1 {
+    }
+
+    @SomeComposedType2("BAR")
+    private static class WithComposed2 {
+    }
+
+    @Test
+    public void testGetComposedAnnotationDemo() throws NoSuchFieldException, SecurityException {
+        final Annotation[] al1 = WithComposed1.class.getAnnotations();
+        assertThat(al1.length).isEqualTo(1);
+        final var at0 = al1[0].annotationType();
+        assertThat(at0).isEqualTo(SomeComposedType1.class);
+        final SomeComposedType1 at1 = (SomeComposedType1) WithComposed1.class.getAnnotation(SomeComposedType1.class);
+        assertThat(at1.value()).isEqualTo("FOO");
+        final var acs1b = a2acs(at0.getAnnotations());
+        assertThat(acs1b).hasSize(4);
+        assertThat(acs1b.contains(SomeComposableMark.class)).isTrue();
+        assertThat(acs1b.contains(SomeComposableType.class)).isTrue();
+        assertThat(acs1b.contains(Retention.class)).isTrue();
+        assertThat(acs1b.contains(Target.class)).isTrue();
+        final SomeComposableMark at1b = (SomeComposableMark) at0.getAnnotation(SomeComposableMark.class);
+        assertThat(at1b.value()).isEqualTo("mark");
+        final SomeComposableType at1c = (SomeComposableType) at0.getAnnotation(SomeComposableType.class);
+        assertThat(at1c.value()).isEqualTo("xxx");
+
+        final Annotation[] al2 = WithComposed2.class.getAnnotations();
+        assertThat(al2.length).isEqualTo(1);
+        final var at3 = al2[0].annotationType();
+        assertThat(at3).isEqualTo(SomeComposedType2.class);
+        final SomeComposedType2 at4 = (SomeComposedType2) WithComposed2.class.getAnnotation(SomeComposedType2.class);
+        assertThat(at4.value()).isEqualTo("BAR");
+        final var acs2b = a2acs(at3.getAnnotations());
+        assertThat(acs2b).hasSize(4);
+        assertThat(acs2b.contains(SomeComposableMark.class)).isTrue();
+        assertThat(acs2b.contains(SomeComposableType.class)).isTrue();
+        assertThat(acs2b.contains(Retention.class)).isTrue();
+        assertThat(acs2b.contains(Target.class)).isTrue();
+        final SomeComposableMark at4b = (SomeComposableMark) at3.getAnnotation(SomeComposableMark.class);
+        assertThat(at4b.value()).isEqualTo("goodmorning");
+        final SomeComposableType at4c = (SomeComposableType) at3.getAnnotation(SomeComposableType.class);
+        assertThat(at4c.value()).isEqualTo("type");
     }
 }
