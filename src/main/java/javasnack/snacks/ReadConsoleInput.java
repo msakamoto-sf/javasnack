@@ -20,9 +20,11 @@ import java.io.BufferedReader;
 import java.io.Console;
 import java.io.InputStreamReader;
 
-public class ReadConsoleInput implements Runnable {
+import javasnack.RunnableSnack;
+
+public class ReadConsoleInput implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
 
         // Traditional STDIN Read
         try {
@@ -51,5 +53,4 @@ public class ReadConsoleInput implements Runnable {
 
         System.out.println("(END)");
     }
-
 }

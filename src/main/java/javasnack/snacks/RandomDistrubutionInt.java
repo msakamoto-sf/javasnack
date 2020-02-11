@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class RandomDistrubutionInt implements Runnable {
+import javasnack.RunnableSnack;
+
+public class RandomDistrubutionInt implements RunnableSnack {
     class ErrorneousInteger {
         public final int base;
         public final int error;
@@ -41,7 +43,7 @@ public class RandomDistrubutionInt implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         Map<ErrorneousInteger, Integer> seeds = new LinkedHashMap<ErrorneousInteger, Integer>();
         seeds.put(new ErrorneousInteger(40, 0), 1);
         seeds.put(new ErrorneousInteger(50, 1), 2);
@@ -65,5 +67,4 @@ public class RandomDistrubutionInt implements Runnable {
             System.out.println(distlist.get(randp).nextInt(r));
         }
     }
-
 }

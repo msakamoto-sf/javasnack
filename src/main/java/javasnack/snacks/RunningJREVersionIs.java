@@ -16,11 +16,11 @@
 
 package javasnack.snacks;
 
-public class RunningJREVersionIs implements Runnable {
+import javasnack.RunnableSnack;
 
+public class RunningJREVersionIs implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         System.out.println(System.getProperty("java.version"));
     }
-
 }

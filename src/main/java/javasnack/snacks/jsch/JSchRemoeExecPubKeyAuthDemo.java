@@ -26,6 +26,7 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
+import javasnack.RunnableSnack;
 import javasnack.tool.ConsoleUtil;
 
 /* see:
@@ -34,9 +35,9 @@ import javasnack.tool.ConsoleUtil;
  * http://www.jcraft.com/jsch/examples/Exec.java.html
  * http://www.jcraft.com/jsch/examples/UserAuthPubKey.java.html
  */
-public class JSchRemoeExecPubKeyAuthDemo implements Runnable {
+public class JSchRemoeExecPubKeyAuthDemo implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         final String hostname = ConsoleUtil.readLine("hostname:");
         final int port = Integer.parseInt(ConsoleUtil.readLine("port num:"));
         final String username = ConsoleUtil.readLine("username:");

@@ -22,6 +22,7 @@ import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 import org.xeustechnologies.jcl.JclUtils;
 
+import javasnack.RunnableSnack;
 import myapi.GreetingImpl;
 import myapi.GreetingInterface;
 
@@ -30,7 +31,7 @@ import myapi.GreetingInterface;
  * 
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
-public class JCLDemo implements Runnable {
+public class JCLDemo implements RunnableSnack {
 
     void sandbox(String jarResourceName) {
         try {
@@ -54,7 +55,7 @@ public class JCLDemo implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         System.out.println("===== Default GreetingImpl:");
         GreetingImpl gi = new GreetingImpl("Firstname", "Lastname");
         System.out.println(gi.morning("Java"));
@@ -66,5 +67,4 @@ public class JCLDemo implements Runnable {
         sandbox("JCLDemo/myapi-impl2.jar");
         System.out.println("(END)");
     }
-
 }

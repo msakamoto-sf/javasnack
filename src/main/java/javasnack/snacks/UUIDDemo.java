@@ -19,9 +19,10 @@ package javasnack.snacks;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
+import javasnack.RunnableSnack;
 import javasnack.tool.UnsignedByte;
 
-public class UUIDDemo implements Runnable {
+public class UUIDDemo implements RunnableSnack {
 
     static byte[] long2bytea(long src) {
         byte[] bytes = ByteBuffer.allocate(8).putLong(src).array();
@@ -95,7 +96,7 @@ public class UUIDDemo implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         UUID u1 = UUID.randomUUID();
         String u1str = u1.toString();
         System.out.println("UUID=[" + u1str + "]");

@@ -26,6 +26,7 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
+import javasnack.RunnableSnack;
 import javasnack.tool.ConsoleUtil;
 
 /* see:
@@ -33,9 +34,9 @@ import javasnack.tool.ConsoleUtil;
  * https://dev.classmethod.jp/server-side/java/exec_remote_program/
  * http://www.jcraft.com/jsch/examples/Exec.java.html
  */
-public class JSchRemoeExecPasswdAuthDemo implements Runnable {
+public class JSchRemoeExecPasswdAuthDemo implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         final String hostname = ConsoleUtil.readLine("hostname:");
         final int port = Integer.parseInt(ConsoleUtil.readLine("port num:"));
         final String username = ConsoleUtil.readLine("username:");

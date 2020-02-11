@@ -16,10 +16,11 @@
 
 package javasnack.snacks;
 
-public class LivingUserThreads implements Runnable {
+import javasnack.RunnableSnack;
 
+public class LivingUserThreads implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -35,5 +36,4 @@ public class LivingUserThreads implements Runnable {
         new Thread(r, "Thread-A").start();
         new Thread(r, "Thread-B").start();
     }
-
 }

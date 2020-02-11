@@ -18,26 +18,16 @@ package javasnack;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
 
-import javasnack.snacks.CollectionTypes1;
-import javasnack.snacks.HelloWorld;
-import javasnack.snacks.InfiniteLoop;
-import javasnack.snacks.JCLDemo;
-import javasnack.snacks.ListAvailableCharsets;
-import javasnack.snacks.LivingUserThreads;
-import javasnack.snacks.LocalJarDemo;
-import javasnack.snacks.NetworkInterface1;
-import javasnack.snacks.RandomDistrubution;
-import javasnack.snacks.RandomDistrubutionInt;
-import javasnack.snacks.ReadConsoleInput;
-import javasnack.snacks.RunningJREVersionIs;
-import javasnack.snacks.SystemPropertiesAndEnvs;
-import javasnack.snacks.UUIDDemo;
-import javasnack.snacks.Write0x00To0xFF;
-import javasnack.snacks.jsch.JSchRemoeExecPasswdAuthDemo;
-import javasnack.snacks.jsch.JSchRemoeExecPubKeyAuthDemo;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
 import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
 import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
@@ -57,16 +47,8 @@ import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class Main {
+    // TODO -> migrate to JMH Benchmark
     static Runnable[] snacks = new Runnable[] {
-            new HelloWorld(),
-            new RunningJREVersionIs(),
-            new LivingUserThreads(),
-            new InfiniteLoop(),
-            new Write0x00To0xFF(),
-            new ReadConsoleInput(),
-            new ListAvailableCharsets(),
-            new UUIDDemo(),
-            new SystemPropertiesAndEnvs(),
             new PerfJavaArrayFinePutGet(),
             new PerfArrayListFinePutGet(),
             new PerfLinkedListFinePutGet(),
@@ -76,50 +58,63 @@ public class Main {
             new PerfLinkedHashMapTotalAvg(),
             new PerfTreeMapFinePutGet(),
             new PerfTreeMapTotalAvg(),
-            new CollectionTypes1(),
-            new LocalJarDemo(),
-            new JCLDemo(),
-            new RandomDistrubution(),
-            new RandomDistrubutionInt(),
-            new NetworkInterface1(),
-            new JSchRemoeExecPasswdAuthDemo(),
-            new JSchRemoeExecPubKeyAuthDemo(),
     };
 
+    static void usage(final Set<String> snackNames) {
+        System.out.println("usage: java -jar javasnack-(version).jar <snackName> (args1, args2, ...)");
+        System.out.println("available snack names:");
+        for (final String snackName : snackNames) {
+            System.out.println("  " + snackName);
+        }
+        System.exit(-1);
+    }
+
     public static void main(String[] args) throws Exception {
-        for (int i = 0; i < args.length; i++) {
-            System.out.println("-- args[" + i + "]=" + args[i]);
+        final Map<String, Class<?>> runnableSnackClasses = new TreeMap<>();
+        try (ScanResult scanResult = new ClassGraph()
+                .enableClassInfo()
+                .whitelistPackages("javasnack.snacks")
+                .scan()) {
+            for (final ClassInfo classInfo : scanResult.getClassesImplementing(RunnableSnack.class.getName())) {
+                final Class<?> clazz = classInfo.loadClass();
+                runnableSnackClasses.put(clazz.getSimpleName(), clazz);
+            }
         }
-        if (args.length > 0 && "JmhBenchmark".equals(args[0])) {
-            final String[] args1 = Arrays.copyOfRange(args, 1, args.length);
-            javasnack.snacks.jmh.JmhBenchmark.main(args1);
-            return;
-        }
-        System.out.println("Welcome to Java Snack!!");
-        for (int i = 0; i < snacks.length; i++) {
-            Runnable r = snacks[i];
-            System.out.println("Snack No.[" + i + "] - " + r.getClass().getCanonicalName());
-        }
-        System.out.print("Enter snack number (exit for -1):");
-        try {
+
+        final String snackName;
+        final String[] args1;
+        if (args.length < 1) {
+            System.out.println("Welcome to Java Snack!!");
+            System.out.println("available snack names:");
+            for (final String n : runnableSnackClasses.keySet()) {
+                System.out.println("  " + n);
+            }
+            System.out.print("Enter snack name (exit for ENTER):");
             final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             final String readLine = br.readLine();
             if (Objects.isNull(readLine)) {
                 return;
             }
-            int i = Integer.parseInt(readLine.trim());
-            if (i >= snacks.length) {
-                System.out.println("Enter 0 - " + (snacks.length - 1) + " number.");
-                return;
-            }
-            if (i < 0) {
-                return;
-            }
-            new Thread(snacks[i]).start();
-        } catch (NumberFormatException e) {
-            System.out.println("Enter 0 - " + (snacks.length - 1) + " number.");
-        } finally {
-            System.out.println("Exiting main thread...");
+            snackName = readLine.trim();
+            args1 = args;
+        } else {
+            snackName = args[0];
+            args1 = Arrays.copyOfRange(args, 1, args.length);
         }
+
+        final Class<?> snackClazz = runnableSnackClasses.get(snackName);
+        if (Objects.isNull(snackClazz)) {
+            usage(runnableSnackClasses.keySet());
+        }
+
+        final Constructor<?> c0 = snackClazz.getConstructor();
+        final RunnableSnack snack = (RunnableSnack) c0.newInstance();
+        new Thread(() -> {
+            try {
+                snack.run(args1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

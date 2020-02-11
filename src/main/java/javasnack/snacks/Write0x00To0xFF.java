@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-public class Write0x00To0xFF implements Runnable {
+import javasnack.RunnableSnack;
+
+public class Write0x00To0xFF implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         byte[] bdata = new byte[256];
         byte b = 0;
         for (short s = 0; s < 256; s++, b++) {
@@ -47,5 +49,4 @@ public class Write0x00To0xFF implements Runnable {
             e.printStackTrace();
         }
     }
-
 }

@@ -20,7 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class InfiniteLoop implements Runnable {
+import javasnack.RunnableSnack;
+
+public class InfiniteLoop implements RunnableSnack {
 
     static class Looper implements Runnable {
         @Override
@@ -38,7 +40,7 @@ public class InfiniteLoop implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         ExecutorService pool = Executors.newSingleThreadExecutor();
         Future<?> f = pool.submit(new Looper());
         try {

@@ -22,9 +22,10 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javasnack.RunnableSnack;
 import javasnack.tool.RandomString;
 
-public class CollectionTypes1 implements Runnable {
+public class CollectionTypes1 implements RunnableSnack {
 
     static final int NUM = 10;
     static final String DUMMY_STR = "";
@@ -212,7 +213,7 @@ public class CollectionTypes1 implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         demoOfHashMap();
         demoOfHashMap2();
         demoOfLinkedHashMap();
@@ -221,5 +222,4 @@ public class CollectionTypes1 implements Runnable {
         demoOfTreeMap();
         demoOfTreeMap2();
     }
-
 }

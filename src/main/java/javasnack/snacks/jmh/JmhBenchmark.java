@@ -1,11 +1,10 @@
 package javasnack.snacks.jmh;
 
-public class JmhBenchmark {
+import javasnack.RunnableSnack;
 
-    public static void main(String[] args) throws Exception {
-        for (int i = 0; i < args.length; i++) {
-            System.out.println("args[" + i + "] - " + args[i]);
-        }
+public class JmhBenchmark implements RunnableSnack {
+    @Override
+    public void run(String... args) throws Exception {
         org.openjdk.jmh.Main.main(args);
     }
 }

@@ -16,11 +16,14 @@
 
 package javasnack.snacks;
 
-public class HelloWorld implements Runnable {
+import javasnack.RunnableSnack;
 
+public class HelloWorld implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         System.out.println("Hello, World!");
+        for (int i = 0; i < args.length; i++) {
+            System.out.println("args[" + i + "]=[" + args[i] + "]");
+        }
     }
-
 }

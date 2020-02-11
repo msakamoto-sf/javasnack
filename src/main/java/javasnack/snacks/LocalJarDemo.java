@@ -16,14 +16,13 @@
 
 package javasnack.snacks;
 
+import javasnack.RunnableSnack;
 import testjar1.Greeting;
 
-public class LocalJarDemo implements Runnable {
-
+public class LocalJarDemo implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         Greeting g = new Greeting();
         System.out.println(g.morning("Load from pom.xml's <systemPath>"));
     }
-
 }

@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.List;
 
+import javasnack.RunnableSnack;
+
 /**
  * Original source code:
  * - http://itpro.nikkeibp.co.jp/article/COLUMN/20070801/278834/
@@ -16,9 +18,9 @@ import java.util.List;
  * 
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
-public class NetworkInterface1 implements Runnable {
+public class NetworkInterface1 implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         try {
             final InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
             System.out.println("=============== InetAddress.getLoopbackAddress()");
