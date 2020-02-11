@@ -39,6 +39,7 @@
     <java.compiler.debug>true</java.compiler.debug>
     <exec.mainClass>javasnack.Main</exec.mainClass>
 
+    <jmh.version>1.23</jmh.version>
     <junit5.version>5.5.2</junit5.version>
     <surefire.version>3.0.0-M3</surefire.version>
 
@@ -74,6 +75,19 @@
       <artifactId>lombok</artifactId>
       <version>1.18.8</version>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- from org.openjdk.jmh:jmh-java-benchmark-archetype -->
+    <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${jmh.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${jmh.version}</version>
+        <scope>provided</scope>
     </dependency>
 
     <!-- compile and runtime -->
