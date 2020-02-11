@@ -41,6 +41,8 @@ import org.junit.jupiter.api.Test;
 public class TestAnnotationDemo {
 
     @SomeMark1
+    @SomeType0a
+    @SomeType0b
     @SomeType1
     private static class Sample1 {
 
@@ -92,6 +94,8 @@ public class TestAnnotationDemo {
         assertThat(acs1).hasSize(2);
         assertThat(acs1.contains(SomeMark1.class)).isTrue();
         assertThat(acs1.contains(SomeType1.class)).isTrue();
+        // SomeType0a => RetentionPolicy.SOURCE, not found in reflections
+        // SomeType0b => RetentionPolicy.CLASS, not found in reflections
 
         final Constructor<Sample1> c1 = Sample1.class.getConstructor(int.class, int.class);
         final var acsc1 = a2acs(c1.getAnnotations());
