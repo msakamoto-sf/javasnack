@@ -20,6 +20,23 @@ tutorials:
 - Microbenchmarking with Java | Baeldung
   - https://www.baeldung.com/java-microbenchmark-harness
 
+
+marjor options:
+
+```
+(list available benchmarks)
+java -jar javasnack-xxx.jar JmhBenchmark -l
+
+(major benchmark options)
+-f [fork count per benchmark]
+-i [iteration count per fork]
+-r [NNs: Minimum time to spend at each measurement iteration]
+
+-w [NNS: Minimum time to spend at each warmup iteration]
+-wf [fork count for benchmark warmup]
+-wi [iteration count for warmup]
+```
+
 show JMH help:
 
 ```
