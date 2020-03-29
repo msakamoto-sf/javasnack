@@ -5,9 +5,9 @@ import org.openjdk.jmh.annotations.Benchmark;
 /* from:
  * https://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/
  * 
- * jmh args: JmhSamples00HelloWorld (-f [forks] -i [iterations] ...) 
+ * jmh args: JmhSamples01HelloWorld (-f [forks] -i [iterations] -wi [warmup-iterations]...) 
  */
-public class JmhSamples00HelloWorld {
+public class JmhSamples01HelloWorld {
     @Benchmark
     public void wellHelloThere() {
         // this method was intentionally left blank.
