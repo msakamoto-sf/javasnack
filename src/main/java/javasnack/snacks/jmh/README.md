@@ -31,6 +31,7 @@ java -jar javasnack-xxx.jar JmhBenchmark -l
 -f [fork count per benchmark]
 -i [iteration count per fork]
 -r [NNs: Minimum time to spend at each measurement iteration]
+-t [number of threads]
 
 -w [NNS: Minimum time to spend at each warmup iteration]
 -wf [fork count for benchmark warmup]
