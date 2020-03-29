@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
-/* from:
+/* copied from:
  * https://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/
  * 
  * jmh args: JmhSamples03States -f 1 -i 2 -r 3s -t 4 -w 2s

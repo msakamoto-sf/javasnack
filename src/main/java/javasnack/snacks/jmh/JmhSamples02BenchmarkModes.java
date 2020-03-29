@@ -7,7 +7,7 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 
-/* from:
+/* copied from:
  * https://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/
  * 
  * jmh args: JmhSamples02BenchmarkModes (-f [forks] -i [iterations] -wi [warmup-iterations]...) 
