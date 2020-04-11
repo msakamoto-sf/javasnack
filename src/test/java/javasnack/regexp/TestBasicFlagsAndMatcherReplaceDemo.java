@@ -137,13 +137,37 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("abc");
         assertThat(m.groupCount()).isEqualTo(0);
-        assertTrue(m.find());
+        // matches to whole input
         assertTrue(m.matches());
-        assertFalse(m.find()); // CAUTION!
-        assertTrue(m.lookingAt());
-        m.reset();
-        assertTrue(m.find()); // CAUTION!
+        m.reset(); // reset internal start/end position
+
+        // scans next subsequence for input 
+        assertTrue(m.find());
+        // scans next -> no matching input, return false
         assertFalse(m.find());
+        m.reset(); // reset internal start/end position
+
+        // matches from beginning of input
+        assertTrue(m.lookingAt());
+        m.reset(); // reset internal start/end position
+
+        // matches to whole input -> consume entire input sequence
+        assertTrue(m.matches());
+        // match from current position -> no input remains, no-match
+        assertFalse(m.find());
+        // find() consumption does not affect to lookingAt() 
+        assertTrue(m.lookingAt());
+        m.reset(); // reset internal start/end position
+
+        // lookingAt() consumption affect to find()
+        assertTrue(m.lookingAt());
+        assertFalse(m.find());
+        m.reset(); // reset internal start/end position
+
+        assertTrue(m.find());
+        assertFalse(m.find());
+        // find() consumption does not affect to match() and lookingAt()
+        assertTrue(m.matches());
         assertTrue(m.lookingAt());
     }
 
@@ -152,13 +176,17 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("abc def ghi");
         assertThat(m.groupCount()).isEqualTo(0);
+
+        // not match to whole input
+        assertFalse(m.matches());
+        m.reset(); // reset internal start/end position
+
+        // matches to subsequence of input
         assertTrue(m.find());
-        assertFalse(m.matches()); // CAUTION!
-        assertFalse(m.find()); // CAUTION!
-        assertTrue(m.lookingAt());
-        m.reset();
-        assertTrue(m.find()); // CAUTION!
         assertFalse(m.find());
+        m.reset(); // reset internal start/end position
+
+        // matches from beginning of input
         assertTrue(m.lookingAt());
     }
 
@@ -166,9 +194,16 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
     public void testMatcherBasicUsage3() {
         Pattern p = Pattern.compile("abc");
         Matcher m = p.matcher("aaa abc bbb abc ccc abc\nddd abc\nabc");
-        assertFalse(m.matches()); // CAUTION!
-        assertFalse(m.lookingAt()); // CAUTION!
+        // not match to whole input
+        assertFalse(m.matches());
+        m.reset();
+
+        // not match from beginning of input
+        assertFalse(m.lookingAt());
+        m.reset();
+
         assertThat(m.groupCount()).isEqualTo(0);
+        // match to subsequence of input
         assertTrue(m.find());
         assertThat(m.start()).isEqualTo(4);
         assertThat(m.end()).isEqualTo(7);
@@ -295,6 +330,49 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
 
     @Test
     public void testGroupMatch4() {
+        Pattern p = Pattern.compile("xx ((ab)(?:cd)(ef)) yy");
+        Matcher m = p.matcher("aaa xx abcdef yy ccc\nddd xx abcdef yy eee");
+        assertFalse(m.matches());
+        assertFalse(m.lookingAt());
+        // outer () : +1, (ab) : +1, (?:cd) : 0, (ef) : +1 
+        assertThat(m.groupCount()).isEqualTo(3);
+        assertTrue(m.find());
+        assertThat(m.start()).isEqualTo(4);
+        assertThat(m.end()).isEqualTo(16);
+        assertThat(m.group()).isEqualTo("xx abcdef yy");
+        assertThat(m.group(0)).isEqualTo("xx abcdef yy");
+        assertThat(m.group(1)).isEqualTo("abcdef");
+        assertThat(m.group(2)).isEqualTo("ab");
+        assertThat(m.group(3)).isEqualTo("ef");
+        assertThat(m.start(0)).isEqualTo(4);
+        assertThat(m.end(0)).isEqualTo(16);
+        assertThat(m.start(1)).isEqualTo(7);
+        assertThat(m.end(1)).isEqualTo(13);
+        assertThat(m.start(2)).isEqualTo(7);
+        assertThat(m.end(2)).isEqualTo(9);
+        assertThat(m.start(3)).isEqualTo(11);
+        assertThat(m.end(3)).isEqualTo(13);
+        assertTrue(m.find());
+        assertThat(m.start()).isEqualTo(25);
+        assertThat(m.end()).isEqualTo(37);
+        assertThat(m.group()).isEqualTo("xx abcdef yy");
+        assertThat(m.group(0)).isEqualTo("xx abcdef yy");
+        assertThat(m.group(1)).isEqualTo("abcdef");
+        assertThat(m.group(2)).isEqualTo("ab");
+        assertThat(m.group(3)).isEqualTo("ef");
+        assertThat(m.start(0)).isEqualTo(25);
+        assertThat(m.end(0)).isEqualTo(37);
+        assertThat(m.start(1)).isEqualTo(28);
+        assertThat(m.end(1)).isEqualTo(34);
+        assertThat(m.start(2)).isEqualTo(28);
+        assertThat(m.end(2)).isEqualTo(30);
+        assertThat(m.start(3)).isEqualTo(32);
+        assertThat(m.end(3)).isEqualTo(34);
+        assertFalse(m.find());
+    }
+
+    @Test
+    public void testGroupMatch5() {
         Pattern p = Pattern.compile("((ab)cd(ef))");
         Matcher m = p.matcher("aaa abcdef ccc\nddd abcdef eee");
         assertFalse(m.matches());
@@ -336,7 +414,7 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
     }
 
     @Test
-    public void testGroupMatch5() {
+    public void testGroupMatch6() {
         Pattern p = Pattern.compile("((ab)cd(?:ef|EF))");
         Matcher m = p.matcher("aaa abcdef ccc\nddd abcdEF eee");
         assertFalse(m.matches());
@@ -372,7 +450,7 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
     }
 
     @Test
-    public void testGroupMatch6() {
+    public void testGroupMatch7() {
         Pattern p = Pattern.compile("<(div|p)>.*<(h1|h2)>.*<\\/\\2>.*<\\/\\1>");
         Matcher m = p.matcher("abc<div>def<h2>heading1</h2>ghi</div><p>jkl<h1>mno</h1>pqr</p>");
         assertFalse(m.matches());
@@ -478,11 +556,11 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
     public void testDotAll1() {
         Pattern p = Pattern.compile("ab.*g");
         Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
-        assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // CAUTION!
-        assertTrue(m.find()); // CAUTION!
-        m.reset(); // CAUTION!
-        assertTrue(m.find()); // CAUTION!
+        assertFalse(m.matches()); // not match to whole input
+        assertFalse(m.lookingAt()); // not match from beginning of input
+        assertTrue(m.find()); // match to subsequence of input
+        m.reset();
+        assertTrue(m.find());
         assertThat(m.groupCount()).isEqualTo(0);
         assertThat(m.start()).isEqualTo(3);
         assertThat(m.end()).isEqualTo(10);
@@ -495,11 +573,11 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
         // see: http://stackoverflow.com/questions/3651725/match-multiline-text-using-regular-expression
         Pattern p = Pattern.compile("ab.*g", Pattern.DOTALL);
         Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
-        assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // CAUTION!
-        assertTrue(m.find()); // CAUTION!
-        m.reset(); // CAUTION!
-        assertTrue(m.find()); // CAUTION!
+        assertFalse(m.matches()); // not match to whole input
+        assertFalse(m.lookingAt()); // not match from beginning of input
+        assertTrue(m.find()); // match to subsequence of input
+        m.reset();
+        assertTrue(m.find());
         assertThat(m.groupCount()).isEqualTo(0);
         assertThat(m.start()).isEqualTo(3);
         assertThat(m.end()).isEqualTo(21);
@@ -514,11 +592,11 @@ public class TestBasicFlagsAndMatcherReplaceDemo {
         // see: http://stackoverflow.com/questions/5319840/greedy-vs-reluctant-vs-possessive-quantifiers
         Pattern p = Pattern.compile("(?s)ab.*?g");
         Matcher m = p.matcher("123abcdefghi\nabc\ndefghi");
-        assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // CAUTION!
-        assertTrue(m.find()); // CAUTION!
-        m.reset(); // CAUTION!
-        assertTrue(m.find()); // CAUTION!
+        assertFalse(m.matches()); // not match to whole input
+        assertFalse(m.lookingAt()); // not match from beginning of input
+        assertTrue(m.find()); // match to subsequence of input
+        m.reset();
+        assertTrue(m.find());
         assertThat(m.groupCount()).isEqualTo(0);
         assertThat(m.start()).isEqualTo(3);
         assertThat(m.end()).isEqualTo(10);

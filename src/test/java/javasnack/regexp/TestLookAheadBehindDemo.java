@@ -138,6 +138,27 @@ public class TestLookAheadBehindDemo {
         assertNextGroup(m, 24, 28, "AAA ");
         assertFalse(m.find());
 
+        p = Pattern.compile("(?i)aaa (?!xxx)");
+        m = p.matcher("aaa AAA aaa ");
+        assertFalse(m.matches());
+        assertTrue(m.lookingAt());
+        m.reset();
+        assertNextGroup(m, 0, 4, "aaa ");
+        assertNextGroup(m, 4, 8, "AAA ");
+        assertNextGroup(m, 8, 12, "aaa ");
+        assertFalse(m.find());
+
+        p = Pattern.compile("(?i)aaa (?!(xx|yy))");
+        m = p.matcher("aaa AAA aaa ");
+        assertFalse(m.matches());
+        assertTrue(m.lookingAt());
+        m.reset();
+        // "(xx|yy)" does not match but included to groupCount() : group() return null
+        assertNextGroup(m, 0, 4, "aaa ", null);
+        assertNextGroup(m, 4, 8, "AAA ", null);
+        assertNextGroup(m, 8, 12, "aaa ", null);
+        assertFalse(m.find());
+
         p = Pattern.compile("(?i)(aaa|bbb) (?!xxx)");
         m = p.matcher("aaa yyy AAA XXX bbb YYY AAA yyy");
         assertFalse(m.matches());
@@ -168,7 +189,7 @@ public class TestLookAheadBehindDemo {
         Pattern p = Pattern.compile("(?i)(?<=xxx) aaa");
         Matcher m = p.matcher("xxx aaa yyy AAA XXX AAA XXX bbb");
         assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // !?
+        assertFalse(m.lookingAt()); // not match from beginning of input
         m.reset();
         assertNextGroup(m, 3, 7, " aaa");
         assertNextGroup(m, 19, 23, " AAA");
@@ -177,7 +198,7 @@ public class TestLookAheadBehindDemo {
         p = Pattern.compile("(?i)(?<=xxx) (aaa|bbb)");
         m = p.matcher("xxx aaa yyy AAA XXX AAA XXX bbb");
         assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // !?
+        assertFalse(m.lookingAt()); // not match from beginning of input
         m.reset();
         assertNextGroup(m, 3, 7, " aaa", "aaa");
         assertNextGroup(m, 19, 23, " AAA", "AAA");
@@ -204,20 +225,38 @@ public class TestLookAheadBehindDemo {
         // ... (snip) ...
 
         p = Pattern.compile("(?i)(?<!xxx) aaa");
-        m = p.matcher("xxx aaa yyy AAA XXX AAA AaA");
+        m = p.matcher("xxx aaa yyy aAA XXX AAA AaA");
         assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // !?
+        assertFalse(m.lookingAt()); // not match from beginning of input
         m.reset();
-        assertNextGroup(m, 11, 15, " AAA");
+        assertNextGroup(m, 11, 15, " aAA");
         assertNextGroup(m, 23, 27, " AaA");
         assertFalse(m.find());
 
-        p = Pattern.compile("(?i)(?<!xxx) (aaa|bbb)");
-        m = p.matcher("xxx aaa yyy AAA XXX AAA bbb");
+        p = Pattern.compile("(?i)(?<!(xxx|zzz)) aaa");
+        m = p.matcher("xxx aaa yyy aAA XXX AAA AaA");
         assertFalse(m.matches());
-        assertFalse(m.lookingAt()); // !?
+        assertFalse(m.lookingAt()); // not match from beginning of input
         m.reset();
-        assertNextGroup(m, 11, 15, " AAA", "AAA");
+        assertNextGroup(m, 11, 15, " aAA", "xxx");
+        assertNextGroup(m, 23, 27, " AaA", "XXX");
+        assertFalse(m.find());
+
+        p = Pattern.compile("(?i)(?<!(xxx|zzz)) aaa");
+        m = p.matcher("aaa aAA AAA");
+        assertFalse(m.matches());
+        assertFalse(m.lookingAt()); // not match from beginning of input
+        m.reset();
+        assertNextGroup(m, 3, 7, " aAA", null);
+        assertNextGroup(m, 7, 11, " AAA", null);
+        assertFalse(m.find());
+
+        p = Pattern.compile("(?i)(?<!xxx) (aaa|bbb)");
+        m = p.matcher("xxx aaa yyy aAA XXX AAA bbb");
+        assertFalse(m.matches());
+        assertFalse(m.lookingAt()); // not match from beginning of input
+        m.reset();
+        assertNextGroup(m, 11, 15, " aAA", "aAA");
         assertNextGroup(m, 23, 27, " bbb", "bbb");
         assertFalse(m.find());
     }
