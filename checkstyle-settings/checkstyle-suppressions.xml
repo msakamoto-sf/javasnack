@@ -23,4 +23,14 @@
 
   <!-- わざとbuggyでcheckstyle-violatedなソースコードのデモ。実際にviolateさせるときはここをコメントアウト -->
   <suppress checks=".*" files="Buggy1.java" />
+
+  <!--
+  JMH 含む Maven が生成したコードについてはチェックを除外
+  see-also: https://checkstyle.sourceforge.io/config_filters.html
+  -->
+  <suppress checks=".*" files="[/\\]target[/\\]" />
+
+  <!-- JMHサンプルの都合上、読みやすさを考えるとどうしても機械的なcheckstyleチェックを破らざるを得なかった。 -->
+  <suppress checks=".*" files="JmhSamples22FalseSharing.java" />
+
 </suppressions>
