@@ -1,5 +1,11 @@
 ## javasnack : JMH samples and demos
 
+**開発時の注意点**
+
+- Mavenコンパイル時にアノテーションからソースコードを `target/generated-sources/annotations/` 以下に生成している。
+- Eclipseから実行すると、たまに生成されたソースコードが更新されず、以前のバージョンが動いたりする。
+- そのため、確実に実行するなら `mvnw clean -Dmaven.test.skip=true package` などでテストのコンパイル/実行をスキップした状態でパッケージングまでして、jarから実行したほうが安全。
+
 reference:
 
 - OpenJDK: jmh
