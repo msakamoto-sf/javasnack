@@ -19,9 +19,21 @@ package javasnack.snacks.perfs.list;
 import java.math.BigInteger;
 import java.util.LinkedList;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfLinkedListFinePutGet implements Runnable {
+/**
+ * インデックス 0 - 499 までの {@link LinkedList#add(Object)} と {@link LinkedList#get(int)}
+ * の時間を細かくダンプ表示する。
+ * 
+ * add() についてはリンクリストへの追加という特性上、データ量が増えても一定範囲の処理時間で変動しない。
+ * get() についてはリンクを辿る都合上、先頭から後ろのデータにget()が進むについれて処理時間も増えていく。
+ * 折返しを超えると今度は後ろからたどり直すらしく、処理時間が減っていくのが面白い。
+ * 
+ * @author msakamoto
+ */
+public class PerfLinkedListFinePutGet implements RunnableSnack {
 
     long adding(LinkedList<String> list, String val) {
         long startTime = System.nanoTime();
@@ -29,16 +41,16 @@ public class PerfLinkedListFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
-    long getting(LinkedList<String> list, int index) {
+    ElapsedWith<String> getting(LinkedList<String> list, int index) {
         long startTime = System.nanoTime();
-        list.get(index);
-        return System.nanoTime() - startTime;
+        final String r = list.get(index);
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
 
     static final int MASS = 500;
 
     @Override
-    public void run() {
+    public void run(final String... args) {
 
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
@@ -58,7 +70,7 @@ public class PerfLinkedListFinePutGet implements Runnable {
 
         BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(list, i);
+            long elapsed = getting(list, i).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
             sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));

@@ -19,9 +19,21 @@ package javasnack.snacks.perfs.list;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfArrayListFinePutGet implements Runnable {
+/**
+ * インデックス 0 - 499 までの {@link ArrayList#add(Object)} と {@link ArrayList#get(int)}
+ * の時間を細かくダンプ表示する。
+ * 
+ * 全体的に一定範囲の処理時間に収まり、計算量は安定している。
+ * add() についてだけ、ある程度エントリーが追加された状態でさらに追加となると、
+ * 内部の配列を拡張するための処理が走るためデータ量が増えるほどその処理時間が増えていく。
+ * 
+ * @author msakamoto
+ */
+public class PerfArrayListFinePutGet implements RunnableSnack {
 
     long adding(ArrayList<String> list, String val) {
         long startTime = System.nanoTime();
@@ -29,16 +41,16 @@ public class PerfArrayListFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
-    long getting(ArrayList<String> list, int index) {
+    ElapsedWith<String> getting(ArrayList<String> list, int index) {
         long startTime = System.nanoTime();
-        list.get(index);
-        return System.nanoTime() - startTime;
+        final String r = list.get(index);
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
 
     static final int MASS = 500;
 
     @Override
-    public void run() {
+    public void run(final String... args) {
 
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
@@ -58,7 +70,7 @@ public class PerfArrayListFinePutGet implements Runnable {
 
         BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(list, i);
+            long elapsed = getting(list, i).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
             sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));

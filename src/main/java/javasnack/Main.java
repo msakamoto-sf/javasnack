@@ -28,9 +28,6 @@ import java.util.TreeMap;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
-import javasnack.snacks.perfs.list.PerfArrayListFinePutGet;
-import javasnack.snacks.perfs.list.PerfJavaArrayFinePutGet;
-import javasnack.snacks.perfs.list.PerfLinkedListFinePutGet;
 import javasnack.snacks.perfs.map.PerfHashMapFinePutGet;
 import javasnack.snacks.perfs.map.PerfHashMapTotalAvg;
 import javasnack.snacks.perfs.map.PerfLinkedHashMapFinePutGet;
@@ -49,9 +46,6 @@ import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
 public class Main {
     // TODO -> migrate to JMH Benchmark
     static Runnable[] snacks = new Runnable[] {
-            new PerfJavaArrayFinePutGet(),
-            new PerfArrayListFinePutGet(),
-            new PerfLinkedListFinePutGet(),
             new PerfHashMapFinePutGet(),
             new PerfHashMapTotalAvg(),
             new PerfLinkedHashMapFinePutGet(),
