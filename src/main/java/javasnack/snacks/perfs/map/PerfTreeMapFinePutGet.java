@@ -19,28 +19,39 @@ package javasnack.snacks.perfs.map;
 import java.math.BigInteger;
 import java.util.TreeMap;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfTreeMapFinePutGet implements Runnable {
+/**
+ * {@link TreeMap#put(Object, Object)} と {@link TreeMap#get(Object)} の処理時間を細かくダンプするサンプル。
+ * 
+ * 平衡木を内部で作り、キーをソートしているためか put() の前半は処理時間のブレが大きい。
+ * 後半になるとツリー構造が安定してきたのか、ブレが小さくなる。
+ * get() についても前半はブレが感じられるが、後半へのアクセスはブレが小さい印象。
+ * 
+ * put()/get() とも、全体的に HashMap 版よりは時間がかかっている。
+ * 
+ * @author msakamoto
+ */
+public class PerfTreeMapFinePutGet implements RunnableSnack {
 
-    static String DUMMY_FILLING = "";
-
-    long putting(TreeMap<String, String> m, String key) {
+    long putting(TreeMap<String, String> m, String key, final String filling) {
         long startTime = System.nanoTime();
-        m.put(key, DUMMY_FILLING);
+        m.put(key, filling);
         return System.nanoTime() - startTime;
     }
 
-    long getting(TreeMap<String, String> m, String key) {
+    ElapsedWith<String> getting(TreeMap<String, String> m, String key) {
         long startTime = System.nanoTime();
-        m.get(key);
-        return System.nanoTime() - startTime;
+        final String r = m.get(key);
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
 
     static final int MASS = 500;
 
     @Override
-    public void run() {
+    public void run(final String... args) {
 
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
@@ -51,7 +62,7 @@ public class PerfTreeMapFinePutGet implements Runnable {
 
         BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = putting(m, keys[i]);
+            long elapsed = putting(m, keys[i], RandomString.get(10, 30));
             System.out.println(String.format("put()[%d] = %d nano sec.", i,
                     elapsed));
             sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
@@ -60,7 +71,7 @@ public class PerfTreeMapFinePutGet implements Runnable {
 
         BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(m, keys[i]);
+            long elapsed = getting(m, keys[i]).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
             sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));

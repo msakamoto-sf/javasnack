@@ -28,12 +28,6 @@ import java.util.TreeMap;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
-import javasnack.snacks.perfs.map.PerfHashMapFinePutGet;
-import javasnack.snacks.perfs.map.PerfHashMapTotalAvg;
-import javasnack.snacks.perfs.map.PerfLinkedHashMapFinePutGet;
-import javasnack.snacks.perfs.map.PerfLinkedHashMapTotalAvg;
-import javasnack.snacks.perfs.map.PerfTreeMapFinePutGet;
-import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
 
 /**
  * Console Play Board:
@@ -44,15 +38,6 @@ import javasnack.snacks.perfs.map.PerfTreeMapTotalAvg;
  * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
 public class Main {
-    // TODO -> migrate to JMH Benchmark
-    static Runnable[] snacks = new Runnable[] {
-            new PerfHashMapFinePutGet(),
-            new PerfHashMapTotalAvg(),
-            new PerfLinkedHashMapFinePutGet(),
-            new PerfLinkedHashMapTotalAvg(),
-            new PerfTreeMapFinePutGet(),
-            new PerfTreeMapTotalAvg(),
-    };
 
     static void usage(final Set<String> snackNames) {
         System.out.println("usage: java -jar javasnack-(version).jar <snackName> (args1, args2, ...)");

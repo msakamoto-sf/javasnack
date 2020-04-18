@@ -19,28 +19,37 @@ package javasnack.snacks.perfs.map;
 import java.math.BigInteger;
 import java.util.HashMap;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfHashMapFinePutGet implements Runnable {
+/**
+ * {@link HashMap#put(Object, Object)} と {@link HashMap#get(Object)} の処理時間を細かくダンプするサンプル。
+ * 対象のHashMapはバケット数16, スレッショルド 0.75 に設定している。
+ * そのため put() は最初から12 - 16 回目くらいの間でハッシュテーブルの拡張と再構築で時間がかかるタイミングが発生している。
+ * その後もある程度の間隔で同様の延びが発生しているが、それ以外は全体的にコンスタントな処理時間になっている。
+ * get() についてもハッシュテーブルへのアクセスになるため、全体的にコンスタントな傾向が確認できる。
+ * 
+ * @author msakamoto
+ */
+public class PerfHashMapFinePutGet implements RunnableSnack {
 
-    static String DUMMY_FILLING = "";
-
-    long putting(HashMap<String, String> m, String key) {
+    long putting(HashMap<String, String> m, String key, final String filling) {
         long startTime = System.nanoTime();
-        m.put(key, DUMMY_FILLING);
+        m.put(key, filling);
         return System.nanoTime() - startTime;
     }
 
-    long getting(HashMap<String, String> m, String key) {
+    ElapsedWith<String> getting(HashMap<String, String> m, String key) {
         long startTime = System.nanoTime();
-        m.get(key);
-        return System.nanoTime() - startTime;
+        final String r = m.get(key);
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
 
     static final int MASS = 500;
 
     @Override
-    public void run() {
+    public void run(final String... args) {
 
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
@@ -51,7 +60,7 @@ public class PerfHashMapFinePutGet implements Runnable {
 
         BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = putting(m, keys[i]);
+            long elapsed = putting(m, keys[i], RandomString.get(10, 30));
             System.out.println(String.format("put()[%d] = %d nano sec.", i,
                     elapsed));
             sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
@@ -60,7 +69,7 @@ public class PerfHashMapFinePutGet implements Runnable {
 
         BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(m, keys[i]);
+            long elapsed = getting(m, keys[i]).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
             sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
