@@ -1,8 +1,5 @@
 ## TODO
 
-- List <> Array 変換パターンまとめ。
-  - String 系
-  - int - Integer を例にした数値primitive系
 - 例外をthrowできる functionalinterface のデモ
   - （これ、作ってなかったかなぁ・・・）
 - クラス名のバリエーションのテスト補強
