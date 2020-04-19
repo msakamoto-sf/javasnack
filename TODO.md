@@ -1,9 +1,5 @@
 ## TODO
 
-- Java/Java8u60でのラムダ式引数名のリフレクション対応を活用したクールなMapビルダーの参考URLメモ - Glamenv-Septzen.net
-  - https://www.glamenv-septzen.net/view/1445
-  - これ含めて map builder (Java11以前) のをまとめとく。
-  - （これ、作ってなかったかなぁ・・・）
 - List <> Array 変換パターンまとめ。
   - String 系
   - int - Integer を例にした数値primitive系
