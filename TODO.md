@@ -1,9 +1,5 @@
 ## TODO
 
-- Java/Collections/Setの同期化メモ - Glamenv-Septzen.net
-  - https://www.glamenv-septzen.net/view/802
-  - snack化
-  - （これ、作ってなかったかなぁ・・・）
 - Java/Java8u60でのラムダ式引数名のリフレクション対応を活用したクールなMapビルダーの参考URLメモ - Glamenv-Septzen.net
   - https://www.glamenv-septzen.net/view/1445
   - これ含めて map builder (Java11以前) のをまとめとく。
