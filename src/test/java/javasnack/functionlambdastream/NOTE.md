@@ -75,3 +75,28 @@ Wikipedia からざっくり要約してみた関数型プログラミングで�
 ----
 
 2020-01時点の感想 : OOPより学習コスト高い。
+
+## 例外をThrowできるFunctionalInterface
+
+参考:
+
+- `Java8のStreamやOptionalでクールに例外を処理する方法 - Qiita`
+  - https://qiita.com/q-ikawa/items/3f55089e9081e1a854bc
+- `Java Streams API を使って例外処理をきっちり行なうコードを書くことは難しい - Qiita`
+  - https://qiita.com/daylife/items/b977f4f29b1f8ced3a02
+- `[Javaの小枝] lambda式とチェック例外の相性の悪さをなんとかする - Qiita`
+  - https://qiita.com/KIchiro/items/4fafd74c46d08275eb56
+- `[Java] OptionalやStreamで例外を投げたい - Qiita`
+  - https://qiita.com/yoshi389111/items/c6b7d373a00f8fd3d5f3
+- `Java 8 Lambda function that throws exception? - Stack Overflow`
+  - https://stackoverflow.com/questions/18198176/java-8-lambda-function-that-throws-exception
+- `lambda - How can I throw CHECKED exceptions from inside Java 8 streams? - Stack Overflow`
+  - https://stackoverflow.com/questions/27644361/how-can-i-throw-checked-exceptions-from-inside-java-8-streams/
+- `java - Throwing exception from lambda - Stack Overflow`
+  - https://stackoverflow.com/questions/31637892/throwing-exception-from-lambda/31638189
+- `Java 8 Lambda function that throws exception? - Stack Overflow`
+  - https://stackoverflow.com/questions/18198176/java-8-lambda-function-that-throws-exception
+- `java - A better approach to handling exceptions in a functional way - Stack Overflow`
+  - https://stackoverflow.com/questions/31270759/a-better-approach-to-handling-exceptions-in-a-functional-way/
+- `Java8のラムダ式でチェック例外を投げられないのを何とかするやつ`
+  - https://gist.github.com/kokumura/cd88320ee9d667ef8e46

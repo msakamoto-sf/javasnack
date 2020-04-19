@@ -1,7 +1,5 @@
 ## TODO
 
-- 例外をthrowできる functionalinterface のデモ
-  - （これ、作ってなかったかなぁ・・・）
 - クラス名のバリエーションのテスト補強
   - Javaのクラス名の形式まとめ - プログラマーの脳みそ
   - https://nagise.hatenablog.jp/entry/2020/04/14/135846
