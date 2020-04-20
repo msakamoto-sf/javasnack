@@ -1,8 +1,5 @@
 ## TODO
 
-- クラス名のバリエーションのテスト補強
-  - Javaのクラス名の形式まとめ - プログラマーの脳みそ
-  - https://nagise.hatenablog.jp/entry/2020/04/14/135846
 - ジェネリクスの実験テストコード
   - https://adventar.org/calendars/2751
   - https://qiita.com/pebblip/items/1206f866980f2ff91e77
