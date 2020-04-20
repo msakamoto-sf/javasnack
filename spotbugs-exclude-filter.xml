@@ -14,6 +14,11 @@
     <Class name="make.findbugs.angry.DummyBuggy1" />
   </Match>
 
+  <Match>
+    <!-- JMHが生成したコードは除外する。 -->
+    <Class name="~.*\.jmh\..*\.generated\..*" />
+  </Match>
+
   <!--
   このプロジェクトでは実験/テスト用にDBを扱うため、パスワードを空に設定する。
   そのため、DB接続パスワードが空である指摘については指摘されても実際にはセキュリティ上の問題にならないため、
