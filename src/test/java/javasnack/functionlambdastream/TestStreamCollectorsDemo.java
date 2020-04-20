@@ -125,14 +125,14 @@ public class TestStreamCollectorsDemo {
     @Test
     public void testToMapDemo() {
         final Collector<String, ?, Map<String, File>> col1 = Collectors.toMap(s -> s, s -> new File(s));
-        final Map<String, File> m1 = Stream.of("/home/aaa", "/home/bbb", "/home/ccc").collect(col1);
+        final Map<String, File> m1 = Stream.of("./aaa", "./bbb", "./ccc").collect(col1);
         assertThat(m1).hasSize(3);
-        assertThat(m1.get("/home/aaa")).isEqualTo(new File("/home/aaa"));
-        assertThat(m1.get("/home/bbb")).isEqualTo(new File("/home/bbb"));
-        assertThat(m1.get("/home/ccc")).isEqualTo(new File("/home/ccc"));
-        m1.put("/home/ddd", new File("/home/ddd"));
+        assertThat(m1.get("./aaa")).isEqualTo(new File("./aaa"));
+        assertThat(m1.get("./bbb")).isEqualTo(new File("./bbb"));
+        assertThat(m1.get("./ccc")).isEqualTo(new File("./ccc"));
+        m1.put("./ddd", new File("./ddd"));
         assertThat(m1).hasSize(4);
-        assertThat(m1.get("/home/ddd")).isEqualTo(new File("/home/ddd"));
+        assertThat(m1.get("./ddd")).isEqualTo(new File("./ddd"));
     }
 
     @Test
@@ -156,12 +156,12 @@ public class TestStreamCollectorsDemo {
     @Test
     public void testToMapUnmodifiableDemo() {
         final Collector<String, ?, Map<String, File>> col1 = Collectors.toUnmodifiableMap(s -> s, s -> new File(s));
-        final Map<String, File> m1 = Stream.of("/home/aaa", "/home/bbb", "/home/ccc").collect(col1);
+        final Map<String, File> m1 = Stream.of("./aaa", "./bbb", "./ccc").collect(col1);
         assertThat(m1).hasSize(3);
-        assertThat(m1.get("/home/aaa")).isEqualTo(new File("/home/aaa"));
-        assertThat(m1.get("/home/bbb")).isEqualTo(new File("/home/bbb"));
-        assertThat(m1.get("/home/ccc")).isEqualTo(new File("/home/ccc"));
-        final Throwable thrown1 = catchThrowable(() -> m1.put("/home/ddd", new File("/home/ddd")));
+        assertThat(m1.get("./aaa")).isEqualTo(new File("./aaa"));
+        assertThat(m1.get("./bbb")).isEqualTo(new File("./bbb"));
+        assertThat(m1.get("./ccc")).isEqualTo(new File("./ccc"));
+        final Throwable thrown1 = catchThrowable(() -> m1.put("./ddd", new File("./ddd")));
         assertThat(thrown1).isInstanceOf(UnsupportedOperationException.class);
     }
 
