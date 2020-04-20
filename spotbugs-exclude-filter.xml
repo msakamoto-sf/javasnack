@@ -42,4 +42,10 @@
     <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF" />
   </Match>
 
+  <Match>
+    <Class name="javasnack.snacks.jmh.samples.JmhSamples09Blackholes" />
+    <Method name="measureWrong" />
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT" />
+  </Match>
+
 </FindBugsFilter>
