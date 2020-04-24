@@ -6,5 +6,7 @@
   - https://nagise.hatenablog.jp/entry/20140813/1407909646
   - https://nagise.hatenablog.jp/entry/20121221/1356105737
   - https://nagise.hatenablog.jp/entry/20121112/1352731075
+- Effective Java からジェネリクス部分についての各項目をテストコードで表現
+  - https://www.informit.com/articles/article.aspx?p=2861454
 - JMXを使って自分自身のメモリ使用量はCPU使用率・実行スレッド数をセルフチェックしてみる。
 
