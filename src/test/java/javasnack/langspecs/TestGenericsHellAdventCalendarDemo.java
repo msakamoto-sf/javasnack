@@ -148,6 +148,11 @@ public class TestGenericsHellAdventCalendarDemo {
             // compileは通るが、ランタイム例外が発生する。
             objectArray[0] = Integer.valueOf(1);
         });
+
+        /* 「ジェネリクスの配列」のようなより細かいコーナーケースについては以下参照。
+         * - ジェネリクスと配列 - プログラマーの脳みそ
+         *   https://nagise.hatenablog.jp/entry/20180214/1518569217
+         */
     }
 
     @Test
@@ -1209,10 +1214,5 @@ public class TestGenericsHellAdventCalendarDemo {
      * 
      * - new T()したいケースへの対処法 - プログラマーの脳みそ
      * https://nagise.hatenablog.jp/entry/20131121/1385046248
-     */
-
-    /* TODO
-     * - ジェネリクスと配列 - プログラマーの脳みそ
-     * https://nagise.hatenablog.jp/entry/20180214/1518569217
      */
 }
