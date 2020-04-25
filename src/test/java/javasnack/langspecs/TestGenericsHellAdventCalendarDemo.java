@@ -17,9 +17,13 @@
 package javasnack.langspecs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.openjdk.jmh.util.Optional;
 
 public class TestGenericsHellAdventCalendarDemo {
     /* 以下のブログ記事を参考にしたユースケースのデモと練習。
@@ -153,7 +158,7 @@ public class TestGenericsHellAdventCalendarDemo {
          * パラメータ化された型(parameterized type)では共変は成立しない。
          * = 子クラスの実型パラメータでパラメータ化された型(List<SomeChild>)を、
          * 親クラスの実型パラメータでパラメータ化された型(List<SomeParent>)に参照代入できない。
-         * = 非変, invariant
+         * = 非変, invariant(or nonvariant)
          */
         @SuppressWarnings("unused")
         List<SomeChild> children = Collections.emptyList();
@@ -724,21 +729,490 @@ public class TestGenericsHellAdventCalendarDemo {
         assertThat(anylist.get(2)).isNull();
     }
 
-    /* TODO
-     * - Javaのジェネリクスとリフレクション - プログラマーの脳みそ
-     * https://nagise.hatenablog.jp/entry/20121226/1356531878
-     * - Javaのジェネリクスとリフレクション応用編 - プログラマーの脳みそ
-     * https://nagise.hatenablog.jp/entry/20130815/1376527213
+    /* DAY-18, ジェネリックな例外 : https://nagise.hatenablog.jp/entry/20171218/1513595260
      * 
-     * - 引数と戻り値の不一致 - ジェネリクス・ケーススタディ - プログラマーの脳みそ
-     * https://nagise.hatenablog.jp/entry/20150219/1424313791
+     * に行く前に、そもそも interface 側のthrowを、それを継承した interface や実装クラス側でどう変更できるか
+     * いくつかのパターンを試してみる。
+     * 
+     * -> implement 側で例外をinterface側throwsの派生クラスに絞り込める。
+     * interface を継承した場合も、継承先の override で throws を派生クラスに絞り込める。
+     * 
+     * DAY-18の記事では、AutoCloseableを実装した ByteArrayInputStream を例にしている。
+     * ところがこれが、実際は
+     * AutoCloseable (throws Exception) -> Closeable (throws IOException) と絞り込みがあり、
+     * ByteArrayInputStream は Closeable もimplementsしていることから close() の throws はIOExceptionとなっている。
+     * このあたりが記事の方では少々読み取りづらいため、注意が必要。
+     */
+
+    interface SomethingThrowInterface1 {
+        void doSomething() throws Exception;
+    }
+
+    interface SomethingThrowInterface2 {
+        void doSomething() throws IOException;
+    }
+
+    interface SomethingThrowInterface3 {
+        void doSomething() throws IllegalArgumentException;
+    }
+
+    interface SomethingThrowInterface4 extends SomethingThrowInterface1 {
+        // Exception -> IOException と親子関係にあるため、継承先で絞り込むのはOK.
+        @Override
+        void doSomething() throws IOException;
+    }
+
+    // 元が IllegalArgumentException で、親子関係に無いIOExceptionでoverrideしようとするとコンパイルエラー。
+    /*
+    interface SomethingThrowInterface5 extends SomethingThrowInterface3 {
+        @Override
+        void doSomething() throws IOException;
+    }
+    */
+
+    static class SomethingThrows1 implements SomethingThrowInterface1 {
+        // これは普通に実装側も throws Exception でOK.
+        @Override
+        public void doSomething() throws Exception {
+            throw new Exception("demo1");
+        }
+    }
+
+    static class SomethingThrows1b implements SomethingThrowInterface1 {
+        // 実装側で、throws の例外を継承元の派生クラスで絞り込むことはOK.
+        @Override
+        public void doSomething() throws IOException {
+            throw new IOException("demo1b");
+        }
+    }
+
+    static class SomethingThrows2 implements SomethingThrowInterface2 {
+        // これも普通に実装側で throws IOException でOK.
+        @Override
+        public void doSomething() throws IOException {
+            throw new IOException("demo2");
+        }
+    }
+
+    static class SomethingThrows3 implements SomethingThrowInterface1, SomethingThrowInterface2 {
+        // これは throws Exception だとコンパイルエラーになる。
+        @Override
+        public void doSomething() throws IOException {
+            throw new IOException("demo3");
+        }
+    }
+
+    static class SomethingThrows4 implements SomethingThrowInterface1, SomethingThrowInterface3 {
+        // これは throws Exception だとコンパイルエラーになる。 
+        @Override
+        public void doSomething() throws IllegalArgumentException {
+            throw new IllegalArgumentException("demo4");
+        }
+    }
+
+    static class SomethingThrows5 implements SomethingThrowInterface2, SomethingThrowInterface3 {
+        @Override
+        public void doSomething() throws IllegalArgumentException {
+            throw new IllegalArgumentException("demo5");
+        }
+        /* 詳しい理由を追いかけきれていないが、以下はコンパイルエラーになる。
+        @Override
+        public void doSomething() throws IOException {
+            throw new IOException("demo5");
+        }
+        */
+    }
+
+    static class SomethingThrows6 implements SomethingThrowInterface4 {
+        // これは throws Exception だとコンパイルエラーになる。 
+        @Override
+        public void doSomething() throws IOException {
+            throw new IOException("demo6");
+        }
+    }
+
+    @Test
+    public void testInterfaceMethodsThrowDeclarationDemo() {
+        /* 実際に実装クラスをnewしてみて、実装クラスで受けた場合と interface で受けた場合とで、
+         * throwされる例外クラスと try-catch ペアがどう変わるか主なパターンを試してみる。
+         */
+
+        final SomethingThrows1 st1 = new SomethingThrows1();
+        try {
+            st1.doSomething();
+            fail("should not reach here");
+        } catch (Exception e) {
+            // interface - implement でthrowsが一致してるので素直。
+            assertThat(e.getMessage()).isEqualTo("demo1");
+        }
+
+        final SomethingThrows1b st1b = new SomethingThrows1b();
+        try {
+            st1b.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // interface - implement でthrowsが一致してるので素直。
+            assertThat(e.getMessage()).isEqualTo("demo1b");
+        }
+
+        final SomethingThrows2 st2 = new SomethingThrows2();
+        try {
+            st2.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // interface - implement でthrowsが一致してるので素直。
+            assertThat(e.getMessage()).isEqualTo("demo2");
+        }
+
+        final SomethingThrows3 st3 = new SomethingThrows3();
+        try {
+            st3.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // 実装クラスで受けてるので IOException がthrowされる。
+            assertThat(e.getMessage()).isEqualTo("demo3");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+
+        final SomethingThrowInterface1 sti1a = st3;
+        try {
+            sti1a.doSomething();
+            fail("should not reach here");
+        } catch (Exception e) {
+            // interface で受けていても、具象クラスが動いてるのでそちらがthrowした例外を受ける。
+            assertThat(e instanceof IOException).isTrue();
+            assertThat(e.getMessage()).isEqualTo("demo3");
+        }
+
+        final SomethingThrows4 st4 = new SomethingThrows4();
+        try {
+            st4.doSomething();
+            fail("should not reach here");
+        } catch (IllegalArgumentException e) {
+            // 実装クラスで受けてるので IllegalArgumentException がthrowされる。
+            assertThat(e.getMessage()).isEqualTo("demo4");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+
+        final SomethingThrowInterface1 sti1b = st4;
+        try {
+            sti1b.doSomething();
+            fail("should not reach here");
+        } catch (Exception e) {
+            // interface で受けていても、具象クラスが動いてるのでそちらがthrowした例外を受ける。
+            assertThat(e instanceof IllegalArgumentException).isTrue();
+            assertThat(e.getMessage()).isEqualTo("demo4");
+        }
+
+        final SomethingThrows5 st5 = new SomethingThrows5();
+        try {
+            st5.doSomething();
+            fail("should not reach here");
+        } catch (IllegalArgumentException e) {
+            // 実装クラスで受けてるので IllegalArgumentException がthrowされる。
+            assertThat(e.getMessage()).isEqualTo("demo5");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+
+        final SomethingThrowInterface2 sti2b = st5;
+        try {
+            sti2b.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // IOException にはならない。
+            fail("should not reach here");
+        } catch (IllegalArgumentException e) {
+            // interface 上は IOException の throw になるが、具象クラスがthrowした例外を受ける。
+            assertThat(e.getMessage()).isEqualTo("demo5");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+
+        final SomethingThrowInterface3 sti3b = st5;
+        try {
+            sti3b.doSomething();
+            fail("should not reach here");
+        } catch (IllegalArgumentException e) {
+            // interface - implement でthrowsが一致してる。
+            assertThat(e.getMessage()).isEqualTo("demo5");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+
+        final SomethingThrows6 st6 = new SomethingThrows6();
+        try {
+            st6.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // interface - implement でthrowsが一致してる。
+            assertThat(e.getMessage()).isEqualTo("demo6");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+
+        final SomethingThrowInterface1 sti1c = st6;
+        try {
+            sti1c.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // 実装クラスで受けてるので IOException がthrowされる。
+            assertThat(e.getMessage()).isEqualTo("demo6");
+        } catch (Exception e) {
+            fail("should not reach here");
+        }
+    }
+
+    <E extends Exception> void methodScopedGenericsExceptionDemo() throws E {
+        // stub
+    }
+
+    interface InstanceScopedGenericsExceptionInterfaceDemo<E extends Exception> {
+        void doSomething() throws E;
+    }
+
+    @Test
+    public void testExceptionWithGenericsDemo() {
+        // DAY-18, ジェネリックな例外 : https://nagise.hatenablog.jp/entry/20171218/1513595260
+
+        // メソッドスコープでジェネリクスな例外をバインドしてみるデモ
+        try {
+            this.<IOException>methodScopedGenericsExceptionDemo();
+        } catch (IOException expected) {
+        }
+        try {
+            this.<SQLException>methodScopedGenericsExceptionDemo();
+        } catch (SQLException expected) {
+        }
+        // no need to try-catch
+        this.<RuntimeException>methodScopedGenericsExceptionDemo();
+
+        class Foo implements InstanceScopedGenericsExceptionInterfaceDemo<IOException> {
+            @Override
+            public void doSomething() throws IOException {
+                throw new IOException("demo");
+            }
+        }
+
+        final Foo foo = new Foo();
+        InstanceScopedGenericsExceptionInterfaceDemo<IOException> d1 = foo;
+        try {
+            d1.doSomething();
+            fail("should not reach here");
+        } catch (IOException e) {
+            // 実型パラメータに指定された例外で受けられる。
+            assertThat(e.getMessage()).isEqualTo("demo");
+        }
+    }
+
+    /* DAY-19, 内部クラスと型変数のスコープ : https://nagise.hatenablog.jp/entry/20171219/1513681482
+     * -> あまり実際のユースケースや面白そうなデモコードが思いつかなかったためスキップ。
+     */
+
+    /* DAY-20, ブリッジメソッド : https://nagise.hatenablog.jp/entry/20171220/1513780658
+     * 
+     * 先に Java 5 で可能になった共変戻り値(Covariance return type)がどういうものか見てみる。
+     */
+
+    interface CovarianceRTDemoInterface {
+        SomeParent getSomething();
+    }
+
+    static class CovarianceRTDemo1 implements CovarianceRTDemoInterface {
+        // interface側の戻り値型の派生型であれば、戻り値を override できる。
+        @Override
+        public SomeChild getSomething() {
+            return new SomeChild("aa", "bb");
+        }
+    }
+
+    abstract static class CovarianceRTDemoAbstractClass {
+        abstract SomeParent getSomething();
+    }
+
+    static class CovarianceRTDemo2 extends CovarianceRTDemoAbstractClass {
+        // 継承元の戻り値型の派生型であれば、戻り値を override できる。
+        @Override
+        public SomeChild getSomething() {
+            return new SomeChild("cc", "dd");
+        }
+    }
+
+    @Test
+    public void testCovarianceReturnTypeDemo() throws NoSuchMethodException, SecurityException {
+        // 以下、共変戻り値を実際に取得してみるデモ。
+
+        final CovarianceRTDemo1 d1 = new CovarianceRTDemo1();
+        final SomeChild c1 = d1.getSomething();
+        assertThat(c1.field1).isEqualTo("aa");
+
+        final CovarianceRTDemoInterface i1 = d1;
+        // interface 経由だと戻り値はSomeParentなので、以下はコンパイルエラー。
+        //final SomeChild c2 = i1.getSomething();
+        // こちらはコンパイル成功。戻り値自体は SomeChild のインスタンスになっている。
+        final SomeParent p1 = i1.getSomething();
+        assertThat(p1.field1).isEqualTo("aa");
+        assertThat(p1 instanceof SomeChild).isTrue();
+
+        /* getSomething というメソッドは2つあり、戻り値型が異なる。
+         * Class#getMethod(name, ...) では戻り値型までは指定できずどちらが返るかわからないため、
+         * getMethods()でループして探す。
+         */
+        Method getSomethingBridge = null;
+        Method getSomethingNotBridge = null;
+        for (Method m : CovarianceRTDemo1.class.getMethods()) {
+            if (!"getSomething".equals(m.getName())) {
+                continue;
+            }
+            if (m.isBridge() && m.isSynthetic()) {
+                getSomethingBridge = m;
+            } else {
+                getSomethingNotBridge = m;
+            }
+        }
+        // bridge & synthetic メソッドの方が、コンパイラが生成したメソッドで interface 側の戻り値。
+        assertThat(getSomethingBridge.getReturnType()).isEqualTo(SomeParent.class);
+        // 非 bridge & synthetic メソッドがソースコードで宣言した通りのメソッドで 実装側の戻り値。
+        assertThat(getSomethingNotBridge.getReturnType()).isEqualTo(SomeChild.class);
+
+        final CovarianceRTDemo2 d2 = new CovarianceRTDemo2();
+        final SomeChild c2 = d2.getSomething();
+        assertThat(c2.field1).isEqualTo("cc");
+
+        final CovarianceRTDemoAbstractClass b2 = d2;
+        // abstract class 経由だと戻り値はSomeParentなので、以下はコンパイルエラー。
+        //final SomeChild c3 = b2.getSomething();
+        // こちらはコンパイル成功。戻り値自体は SomeChild のインスタンスになっている。
+        final SomeParent p2 = b2.getSomething();
+        assertThat(p2.field1).isEqualTo("cc");
+        assertThat(p2 instanceof SomeChild).isTrue();
+
+        /* getSomething というメソッドは2つあり、戻り値型が異なる。
+         * Class#getMethod(name, ...) では戻り値型までは指定できずどちらが返るかわからないため、
+         * getMethods()でループして探す。
+         */
+        getSomethingBridge = null;
+        getSomethingNotBridge = null;
+        for (Method m : CovarianceRTDemo2.class.getMethods()) {
+            if (!"getSomething".equals(m.getName())) {
+                continue;
+            }
+            if (m.isBridge() && m.isSynthetic()) {
+                getSomethingBridge = m;
+            } else {
+                getSomethingNotBridge = m;
+            }
+        }
+        // bridge & synthetic メソッドの方が、コンパイラが生成したメソッドで interface 側の戻り値。
+        assertThat(getSomethingBridge.getReturnType()).isEqualTo(SomeParent.class);
+        // 非 bridge & synthetic メソッドがソースコードで宣言した通りのメソッドで 実装側の戻り値。
+        assertThat(getSomethingNotBridge.getReturnType()).isEqualTo(SomeChild.class);
+    }
+
+    interface CovarianceRTDemoWithGenericsInterface<T> {
+        T getSomething();
+    }
+
+    static class CovarianceRTDemoWithGenericsDemo1 implements CovarianceRTDemoWithGenericsInterface<SomeParent> {
+        public SomeParent getSomething() {
+            return new SomeParent("xx");
+        }
+    }
+
+    @Test
+    public void testCovarianceReturnTypeWithGenericsDemo() throws NoSuchMethodException, SecurityException {
+        // 以下、パラメータ化された型を戻り値としたメソッドの synthetic/bridge 状態をチェックするデモ。
+
+        final CovarianceRTDemoWithGenericsDemo1 d1 = new CovarianceRTDemoWithGenericsDemo1();
+        SomeParent p1 = d1.getSomething();
+        assertThat(p1.field1).isEqualTo("xx");
+
+        final CovarianceRTDemoWithGenericsInterface<SomeParent> i1 = d1;
+        // パラメータ化された型で受け取っているので、以下はコンパイル正常。
+        p1 = i1.getSomething();
+        assertThat(p1.field1).isEqualTo("xx");
+
+        /* getSomething というメソッドは2つあり、戻り値型が異なる。
+         * Class#getMethod(name, ...) では戻り値型までは指定できずどちらが返るかわからないため、
+         * getMethods()でループして探す。
+         */
+        Method getSomethingBridge = null;
+        Method getSomethingNotBridge = null;
+        for (Method m : CovarianceRTDemoWithGenericsDemo1.class.getMethods()) {
+            if (!"getSomething".equals(m.getName())) {
+                continue;
+            }
+            if (m.isBridge() && m.isSynthetic()) {
+                getSomethingBridge = m;
+            } else {
+                getSomethingNotBridge = m;
+            }
+        }
+        // bridge & synthetic メソッドの方が、コンパイラが生成したメソッドで interface 側の戻り値。
+        // (仮型パラメータが消され、 Object型を戻り値として生成されている)
+        assertThat(getSomethingBridge.getReturnType()).isEqualTo(Object.class);
+        // 非 bridge & synthetic メソッドがソースコードで宣言した通りのメソッドで 実装側の戻り値。
+        assertThat(getSomethingNotBridge.getReturnType()).isEqualTo(SomeParent.class);
+    }
+
+    static <T> Optional<T> wrap(T value) {
+        return Optional.of(value);
+    }
+
+    @Test
+    public void testJava8TypeInferenceImprovementDemo() {
+        /* (advent calendar には含まれていないが興味深いので採用)
+         * - 引数と戻り値の不一致 - ジェネリクス・ケーススタディ - プログラマーの脳みそ
+         *   https://nagise.hatenablog.jp/entry/20150219/1424313791
+         */
+
+        Optional<SomeParent> o1 = wrap(new SomeParent("aa"));
+        assertThat(o1.get().field1).isEqualTo("aa");
+
+        Optional<SomeChild> o2 = wrap(new SomeChild("bb", "cc"));
+        assertThat(o2.get().field1).isEqualTo("bb");
+        assertThat(o2.get().field2).isEqualTo("cc");
+
+        /* java7 までは、ジェネリクスは非変なため Foo<SomeParent> = xxx<SomeChild> はコンパイルエラー。
+         * しかし Java 8 で型推論が強化され、左辺から推論して右辺の仮型パラメータを
+         * SomeParent にバインドしてくれるようになった。
+         */
+        Optional<SomeParent> o3 = wrap(new SomeChild("dd", "ee"));
+        assertThat(o3.get().field1).isEqualTo("dd");
+        // 中身自体は SomeChild のまま。
+        assertThat(o3.get() instanceof SomeChild).isTrue();
+
+        Optional<SomeParent> o4 = wrap((SomeParent) (new SomeChild("ff", "gg")));
+        assertThat(o4.get().field1).isEqualTo("ff");
+        // 中身自体は SomeChild のまま。
+        assertThat(o4.get() instanceof SomeChild).isTrue();
+
+        Optional<SomeParent> o5 = TestGenericsHellAdventCalendarDemo.<SomeParent>wrap(new SomeChild("hh", "ii"));
+        assertThat(o5.get().field1).isEqualTo("hh");
+        // 中身自体は SomeChild のまま。
+        assertThat(o5.get() instanceof SomeChild).isTrue();
+    }
+
+    /* TODO
+     * DAY-22, イレイジャ : https://nagise.hatenablog.jp/entry/20171222/1513951362
+     * 
+     * - Javaのジェネリクスとリフレクション - プログラマーの脳みそ
+     *   https://nagise.hatenablog.jp/entry/20121226/1356531878
+     * - Javaのジェネリクスとリフレクション応用編 - プログラマーの脳みそ
+     *   https://nagise.hatenablog.jp/entry/20130815/1376527213
+     */
+
+    /* TODO
+     * DAY-24, new T() : https://nagise.hatenablog.jp/entry/20171224/1514127133
      * 
      * - new T()したいケースへの対処法 - プログラマーの脳みそ
      * https://nagise.hatenablog.jp/entry/20131121/1385046248
-     * 
-     * - ジェネリクスと配列 - プログラマーの脳みそ
-     * https://nagise.hatenablog.jp/entry/20180214/1518569217
-     *
      */
 
+    /* TODO
+     * - ジェネリクスと配列 - プログラマーの脳みそ
+     * https://nagise.hatenablog.jp/entry/20180214/1518569217
+     */
 }
