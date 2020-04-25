@@ -161,8 +161,10 @@ public class TestClassNames {
     interface InnerInterface {
     }
 
-    static interface NestedInterface {
-    }
+    // member interface は暗黙的にstaticなので、わざわざ static 宣言バージョンを検証する必要は無い。
+    // see: https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-8.5.1
+    //static interface NestedInterface {
+    //}
 
     static class NestedClassA {
         class InnerClassA {
@@ -225,13 +227,6 @@ public class TestClassNames {
                 "##PKG##TestClassNames$InnerInterface",
                 "##PKG##TestClassNames$InnerInterface",
                 "##PKG##TestClassNames.InnerInterface"));
-
-        c0 = NestedInterface.class;
-        assertThat(ClassNames.of(c0)).isEqualTo(ClassNames.of(
-                "NestedInterface",
-                "##PKG##TestClassNames$NestedInterface",
-                "##PKG##TestClassNames$NestedInterface",
-                "##PKG##TestClassNames.NestedInterface"));
 
         c0 = NestedClassA.InnerClassA.class;
         assertThat(ClassNames.of(c0)).isEqualTo(ClassNames.of(
@@ -302,13 +297,6 @@ public class TestClassNames {
                 "##PKG##TestClassNames$InnerInterface[]",
                 "##PKG##TestClassNames.InnerInterface[]"));
 
-        c0 = NestedInterface[].class;
-        assertThat(ClassNames.of(c0)).isEqualTo(ClassNames.of(
-                "NestedInterface[]",
-                "[L##PKG##TestClassNames$NestedInterface;",
-                "##PKG##TestClassNames$NestedInterface[]",
-                "##PKG##TestClassNames.NestedInterface[]"));
-
         c0 = NestedClassA.InnerClassA[].class;
         assertThat(ClassNames.of(c0)).isEqualTo(ClassNames.of(
                 "InnerClassA[]",
@@ -337,7 +325,6 @@ public class TestClassNames {
                 arguments(NestedClass.class.getName(), NestedClass.class),
                 arguments(NestedNestedClass.class.getName(), NestedNestedClass.class),
                 arguments(InnerInterface.class.getName(), InnerInterface.class),
-                arguments(NestedInterface.class.getName(), NestedInterface.class),
                 arguments(NestedClassA.InnerClassA.class.getName(), NestedClassA.InnerClassA.class),
                 arguments(NestedClassA.InnerClassA.class.getName(), NestedClassB.InnerClassA.class));
     }
@@ -371,7 +358,6 @@ public class TestClassNames {
                 NestedClass.class.getCanonicalName(),
                 NestedNestedClass.class.getCanonicalName(),
                 InnerInterface.class.getCanonicalName(),
-                NestedInterface.class.getCanonicalName(),
                 NestedClassA.InnerClassA.class.getCanonicalName(),
                 NestedClassB.InnerClassA.class.getCanonicalName());
     }
