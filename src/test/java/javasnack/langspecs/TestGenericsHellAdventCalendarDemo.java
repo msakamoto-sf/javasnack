@@ -19,6 +19,7 @@ package javasnack.langspecs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,6 +69,8 @@ public class TestGenericsHellAdventCalendarDemo {
 
     @Test
     public void testBasicCovarianceForReferenceType() {
+        /* DAY-4, 配列と変性 : https://nagise.hatenablog.jp/entry/20171204/1512395207
+         */
         SomeChild c0 = new SomeChild("bbb", "ccc");
         SomeGrandChild gc0 = new SomeGrandChild("ddd", "eee", "fff");
 
@@ -98,6 +101,8 @@ public class TestGenericsHellAdventCalendarDemo {
 
     @Test
     public void testPitFallInArrayOfReferenceType() {
+        /* DAY-4, 配列と変性 : https://nagise.hatenablog.jp/entry/20171204/1512395207
+         */
         String[] stringArray = { "one", "two" };
         Object[] objectArray = stringArray; // 代入できる
         assertThrows(ArrayStoreException.class, () -> {
@@ -108,7 +113,9 @@ public class TestGenericsHellAdventCalendarDemo {
 
     @Test
     public void testInvariantForParameterizedType() {
-        /* 実型パラメータ(actual type parameter) に親子関係がありそれ単体なら共変が可能でも、
+        /* DAY-5, パラメタライズドタイプ : https://nagise.hatenablog.jp/entry/20171205/1512480154
+         * 
+         * 実型パラメータ(actual type parameter) に親子関係がありそれ単体なら共変が可能でも、
          * パラメータ化された型(parameterized type)では共変は成立しない。
          * = 子クラスの実型パラメータでパラメータ化された型(List<SomeChild>)を、
          * 親クラスの実型パラメータでパラメータ化された型(List<SomeParent>)に参照代入できない。
@@ -141,7 +148,11 @@ public class TestGenericsHellAdventCalendarDemo {
         assertThat(children.get(1).field2).isEqualTo("ddd");
     }
 
-    /* 基本的な型変数の宣言と使用方法の例示
+    /* DAY-6, ジェネリクスの構文 : https://nagise.hatenablog.jp/entry/20171206/1512567630
+     * DAY-7, メソッドスコープのジェネリクス : https://nagise.hatenablog.jp/entry/20171207/1512654575
+     * DAY-8, インスタンススコープのジェネリクス : https://nagise.hatenablog.jp/entry/20171208/1512741372
+     * 
+     * 基本的な型変数の宣言と使用方法の例示
      */
 
     // メソッドスコープの型変数の例
@@ -205,6 +216,241 @@ public class TestGenericsHellAdventCalendarDemo {
         final Map<String, SomeParent> map2 = d2.asMap();
         assertThat(map2).hasSize(1);
         assertThat(map2.get("ccc").field1).isEqualTo("ddd");
+    }
+
+    /* DAY-11, 型変数の境界 : https://nagise.hatenablog.jp/entry/20171211/1512993295
+     */
+
+    // 型変数の宣言においては境界型パラメータ (bounded type parameter) を使える。
+    static class BoundedTypeParameter1<T extends SomeChild> {
+        final T child;
+
+        BoundedTypeParameter1(final T child) {
+            this.child = child;
+        }
+    }
+
+    static class SomeSerializable implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+
+    static class BoundedTypeParameter2<T extends Serializable> {
+        final T ser;
+
+        BoundedTypeParameter2(final T ser) {
+            this.ser = ser;
+        }
+    }
+
+    static class CloneAndAutoCloseable implements Cloneable, AutoCloseable {
+        String name;
+
+        CloneAndAutoCloseable(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public void close() throws Exception {
+            this.name = "";
+        }
+
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            return new CloneAndAutoCloseable(name);
+        }
+    }
+
+    static class BoundedTypeParameter3<T extends Cloneable & AutoCloseable> {
+        final T poly;
+
+        BoundedTypeParameter3(final T poly) {
+            this.poly = poly;
+        }
+    }
+
+    @Test
+    public void testBoundedTypeParameterDemo() {
+        // 境界型パラメータの境界型を使ってバインドできる。
+        final BoundedTypeParameter1<SomeChild> o1 = new BoundedTypeParameter1<>(new SomeChild("aa", "bb"));
+        assertThat(o1.child.field1).isEqualTo("aa");
+        assertThat(o1.child.field2).isEqualTo("bb");
+
+        // 境界型パラメータの境界型の派生もバインドできる。
+        final BoundedTypeParameter1<SomeGrandChild> o2 = new BoundedTypeParameter1<>(
+                new SomeGrandChild("cc", "dd", "ee"));
+        assertThat(o2.child.field1).isEqualTo("cc");
+        assertThat(o2.child.field2).isEqualTo("dd");
+        assertThat(o2.child.field3).isEqualTo("ee");
+
+        // 境界型と共変関係にない型(境界型の親、全く別の型)ではバインドできない。
+        //new BoundedTypeParameter1<SomeParent>(new SomeParent("ff"));
+        //new BoundedTypeParameter1<String>("gg");
+
+        // 境界型としてinterfaceを使うこともできる。
+        final BoundedTypeParameter2<Serializable> o3 = new BoundedTypeParameter2<>(new Serializable() {
+            private static final long serialVersionUID = 1L;
+        });
+        assertThat(o3.ser instanceof Serializable).isTrue();
+
+        final BoundedTypeParameter2<SomeSerializable> o4 = new BoundedTypeParameter2<>(new SomeSerializable());
+        assertThat(o4.ser instanceof Serializable).isTrue();
+        assertThat(o4.ser instanceof SomeSerializable).isTrue();
+
+        // 複数のinterfaceをすべてimplementした型のみに制限することもできる。
+        // -> 境界型として implement してほしい interface を & で複数指定する。
+        final BoundedTypeParameter3<CloneAndAutoCloseable> o5 = new BoundedTypeParameter3<>(
+                new CloneAndAutoCloseable("xx"));
+        assertThat(o5.poly.name).isEqualTo("xx");
+        assertThat(o5.poly instanceof Cloneable).isTrue();
+        assertThat(o5.poly instanceof AutoCloseable).isTrue();
+        /*
+        new BoundedTypeParameter3<Cloneable>(new Cloneable() {
+        });
+        new BoundedTypeParameter3<AutoCloseable>(new AutoCloseable() {
+            @Override
+            public void close() throws Exception {
+                // stub
+            }
+        });
+        */
+
+        // 使わない型変数を潰したいときにVoid型を使うことがある。
+        new HashMap<String, Void>();
+        // 潰したい型変数が境界型の場合、Void型と共変関係になければコンパイルエラーとなり、この技法は使えない。
+        //new BoundedTypeParameter1<Void>(null);
+
+        // 再帰ジェネリクスについては省略
+    }
+
+    @Test
+    public void testCovarianceAkaBoundedWildcardDemo() {
+        // DAY-13, 共変ワイルドカード : https://nagise.hatenablog.jp/entry/20171213/1513172356
+        final List<SomeParent> parents = List.of(new SomeParent("aa"));
+        final List<SomeChild> children = List.of(new SomeChild("bb", "cc"));
+        final List<SomeGrandChild> grandChildren = List.of(new SomeGrandChild("dd", "ee", "ff"));
+        // ジェネリクスでは実型パラメータ(actual type parameter)については非変となり、以下はコンパイルエラー。
+        //parents = children;
+        //children = parents;
+
+        // 境界ワイルドカード型(bounded wildcard type or 共変ワイルドカード)を使うと共変関係があれば代入可能となる。
+        List<? extends SomeParent> parents2 = parents;
+        assertThat(parents2.get(0).field1).isEqualTo("aa");
+        parents2 = children;
+        assertThat(parents2.get(0).field1).isEqualTo("bb");
+        parents2 = grandChildren;
+        assertThat(parents2.get(0).field1).isEqualTo("dd");
+        List<? extends SomeChild> children2 = grandChildren;
+        //assertThat(children2.get(0).field1).isEqualTo("dd"); // なぜかこれがコンパイルエラーになる。
+        assertThat(children2.get(0).field2).isEqualTo("ee");
+
+        /* 境界ワイルドカード型をリスコフの置換原則から考えてみる。
+         * まずシンプルなジェネリック型Foo<T>を考える。
+         * 
+         * class Foo<T> {
+         *   T value;
+         *   Foo(T value) { this.value = value; }
+         *   T get() { return this.value; }
+         *   void set(T value) { this.value = value; }
+         * }
+         * 
+         * Foo<SomeParent> fooOfParent = new Foo<>(new SomeParent(...));
+         * -> SomeParent を get/set できる。
+         * 
+         * Foo<SomeChild> fooOfChild = new Foo<>(new SomeChild(...));
+         * -> SomeChild を get/set できる。
+         * 
+         * ここで fooOfParent = fooOfChild ができるとはどういうことか？
+         * リスコフの置換原則に従えば、もしこれができたとしたら、
+         * fooOfChild では fooOfParent の機能が使える = SomeParnet を get/set できる必要がある。
+         * 
+         * [a] getについては、SomeChildを返す = 共変関係が成立して SomeParent を返していることになる。
+         * (= SomeParnet parent = fooOfChild.get() が可能)
+         * 
+         * [b] setについては、SomeChildを引数にとるがこれは SomeParent に代替できない。
+         * なぜなら SomeChild を引数にとっている以上、SomeChild の機能を有さない SomeParent を受け取ることができない。
+         * (= fooOfChild.set(new SomeParent(...)) が不可能)
+         * 
+         * つまり、リスコフの置換原則の観点からは fooOfParent = fooOfChild は不可能となる。
+         * 
+         * そこで導入された制限が「仮型パラメータを引数にとるメソッドは使用できない」であり、
+         * これにより [b] の制約をそもそも考えなくて良いことになった。
+         * 
+         * fooOfParent/fooOfChild に話を戻せば、
+         * Foo<SomeParnet> newParents = fooOfChild
+         * としたとき、newParents.set() メソッドを呼び出せないこととすればよい。
+         * 
+         * これを実現するための実型パラメータ(actual type parameter)の表記が
+         * capture であり、境界ワイルドカード型の "? extends SomeParent" になる。
+         * Foo<? extends SomeParent> newParents = fooOfChild; 
+         * 
+         * capture "? extends A" は以下の性質を満たす。
+         * [C1] A型は "? extends A" に変換できない。
+         * -> newParents.set(new SomeParent(...)); // NG
+         * [C2] "? extends A" はA型に暗黙に安全に変換できる。
+         * -> SomeParent x = newParents.get(); // OK
+         * 
+         * 実際、以下のように仮型パラメータを引数にとっているメソッドを呼ぶとコンパイルエラーになる。
+         */
+        /*
+        parents2.add(new SomeParent("gg"));
+        parents2.add(new SomeChild("hh", "ii"));
+        parents2.add(new SomeGrandChild("jj", "kk"));
+        children2.add(new SomeParent("gg"));
+        children2.add(new SomeChild("hh", "ii"));
+        children2.add(new SomeGrandChild("jj", "kk"));
+        */
+
+        // 戻り値については、境界ワイルドカードと同様に扱うことができる。
+        SomeParent x1 = parents2.get(0);
+        assertThat(x1.field1).isEqualTo("dd");
+        //SomeChild x2 = parents2.get(0);
+        //SomeGrandChild x3 = parents2.get(0);
+
+        SomeParent y1 = children2.get(0);
+        assertThat(y1.field1).isEqualTo("dd");
+        SomeChild y2 = children2.get(0);
+        assertThat(y2.field1).isEqualTo("dd");
+        assertThat(y2.field2).isEqualTo("ee");
+        //SomeGrandChild y3 = children2.get(0);
+
+        /* 境界ワイルドカード型をうまく使うと、 void xxx(List<? extends SomeParent> parents)
+         * のようなメソッドにすることで List<SomeChild>, List<SomeGrandChild>, ... 
+         * も引数に渡せるようになる。
+         * (ただしメソッドの内部で add() など仮型パラメータを引数に取るメソッドは使えなくなる。
+         *  immutableに扱うことしかできなくなるが、関数型プログラミング風に実装するのであれば
+         *  大きな制約にはならないかもしれない)
+         */
+    }
+
+    @Test
+    public void testNullCastingDemo() {
+        /* from:
+         * DAY-11, 型変数の境界 : https://nagise.hatenablog.jp/entry/20171211/1512993295
+         * DAY-13, 共変ワイルドカード : https://nagise.hatenablog.jp/entry/20171213/1513172356
+         */
+
+        // nullは配列に混ぜることができる。
+        String[] stringarr1 = { "xxx", "yyy", null };
+        assertThat(stringarr1).hasSize(3);
+        assertThat(stringarr1[0]).isEqualTo("xxx");
+        assertThat(stringarr1[1]).isEqualTo("yyy");
+        assertThat(stringarr1[2]).isNull();
+
+        // nullは他の型の値として使うことができる。
+        final List<String> strings1 = new ArrayList<>();
+        strings1.add("hello");
+        strings1.add(null);
+        assertThat(strings1).hasSize(2);
+        assertThat(strings1.get(0)).isEqualTo("hello");
+        assertThat(strings1.get(1)).isNull();
+
+        final List<? extends SomeChild> strings2 = new ArrayList<>();
+        // 境界ワイルドカード(capture)を使った場合は以下はコンパイルエラー。
+        //strings2.add(new SomeChild("aaa", "bbb"));
+        // nullはcapture部分にキャスト可能なので以下はOK.
+        strings2.add(null);
+        assertThat(strings2).hasSize(1);
+        assertThat(strings2.get(0)).isNull();
     }
 
     /* TODO
