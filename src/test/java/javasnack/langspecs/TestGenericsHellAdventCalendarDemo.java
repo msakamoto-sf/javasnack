@@ -22,8 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
@@ -1211,14 +1214,212 @@ public class TestGenericsHellAdventCalendarDemo {
         assertThat(o5.get() instanceof SomeChild).isTrue();
     }
 
-    /* TODO
-     * DAY-22, イレイジャ : https://nagise.hatenablog.jp/entry/20171222/1513951362
+    /* DAY-22, イレイジャ : https://nagise.hatenablog.jp/entry/20171222/1513951362
      * 
      * - Javaのジェネリクスとリフレクション - プログラマーの脳みそ
      *   https://nagise.hatenablog.jp/entry/20121226/1356531878
      * - Javaのジェネリクスとリフレクション応用編 - プログラマーの脳みそ
      *   https://nagise.hatenablog.jp/entry/20130815/1376527213
+     * 
+     * see-also:
+     * - リフレクションで、ジェネリクスの情報にアクセスする
+     *   https://kazuhira-r.hatenablog.com/entry/20130309/1362838458
+     * - Javaのジェネリック型引数をリフレクションによって取得する方法の実験サンプル。
+     *   https://gist.github.com/seraphy/c8f088fc081054116266011ae56d4bd7
      */
+
+    static class ReflectionDemo1 {
+        final String name;
+        @SuppressWarnings("rawtypes")
+        final List rawlist;
+        final List<SomeChild> parameterizedList;
+
+        @SuppressWarnings("rawtypes")
+        ReflectionDemo1(final String name, final List rawlist, final List<SomeChild> parameterizedList) {
+            this.name = name;
+            this.rawlist = rawlist;
+            this.parameterizedList = parameterizedList;
+        }
+
+        String normalOp(final String name) {
+            return this.name + name;
+        }
+
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List rawOp(final List items) {
+            this.rawlist.addAll(items);
+            return this.rawlist;
+        }
+
+        List<SomeChild> parameterizedOp(final List<SomeChild> parameterizedList) {
+            this.parameterizedList.addAll(parameterizedList);
+            return this.parameterizedList;
+        }
+    }
+
+    @Test
+    public void testReflectionDemo1() throws Exception {
+        Type t0 = null;
+        final Class<?> clazz = ReflectionDemo1.class;
+
+        final Field nameField = clazz.getDeclaredField("name");
+        t0 = nameField.getGenericType();
+        assertThat(t0).isEqualTo(String.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+
+        final Field rawListField = clazz.getDeclaredField("rawlist");
+        t0 = rawListField.getGenericType();
+        assertThat(t0).isEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+
+        final Field parameterizedListField = clazz.getDeclaredField("parameterizedList");
+        t0 = parameterizedListField.getGenericType();
+        // パラメータ化された型のフィールドだと原型とは互換性がなくなり、ParameterizedTypeになる。
+        assertThat(t0).isNotEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isTrue();
+        ParameterizedType pt0 = (ParameterizedType) t0;
+        // 実型パラメータを取得
+        Type[] types = pt0.getActualTypeArguments();
+        assertThat(types).hasSize(1);
+        assertThat(types[0]).isEqualTo(SomeChild.class);
+        // 原型を取得
+        t0 = pt0.getRawType();
+        assertThat(t0).isEqualTo(List.class);
+
+        // コンストラクタ
+        final Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        assertThat(constructors).hasSize(1);
+        final Constructor<?> c0 = constructors[0];
+        // コンストラクタ引数
+        Parameter[] parameters = c0.getParameters();
+        assertThat(parameters).hasSize(3);
+        Parameter p0 = parameters[0];
+        assertThat(p0.getType()).isEqualTo(String.class);
+        t0 = p0.getParameterizedType();
+        assertThat(t0).isEqualTo(String.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+        p0 = parameters[1];
+        assertThat(p0.getType()).isEqualTo(List.class);
+        t0 = p0.getParameterizedType();
+        assertThat(t0).isEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+        p0 = parameters[2];
+        assertThat(p0.getType()).isEqualTo(List.class);
+        t0 = p0.getParameterizedType();
+        // パラメータ化された型のフィールドだと原型とは互換性がなくなり、ParameterizedTypeになる。
+        assertThat(t0).isNotEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isTrue();
+        pt0 = (ParameterizedType) t0;
+        // 実型パラメータを取得
+        types = pt0.getActualTypeArguments();
+        assertThat(types).hasSize(1);
+        assertThat(types[0]).isEqualTo(SomeChild.class);
+        // 原型を取得
+        t0 = pt0.getRawType();
+        assertThat(t0).isEqualTo(List.class);
+
+        Method m0 = clazz.getDeclaredMethod("normalOp", String.class);
+        // メソッド引数
+        parameters = m0.getParameters();
+        assertThat(parameters).hasSize(1);
+        p0 = parameters[0];
+        assertThat(p0.getType()).isEqualTo(String.class);
+        t0 = p0.getParameterizedType();
+        assertThat(t0).isEqualTo(String.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+        // メソッド戻り値
+        Class<?> clazz0 = m0.getReturnType();
+        assertThat(clazz0).isEqualTo(String.class);
+        // メソッド引数(generic対応版)
+        types = m0.getGenericParameterTypes();
+        assertThat(types).hasSize(1);
+        t0 = types[0];
+        assertThat(t0).isEqualTo(String.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+        // メソッド戻り値(generic対応版)
+        t0 = m0.getGenericReturnType();
+        assertThat(t0).isEqualTo(String.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+
+        m0 = clazz.getDeclaredMethod("rawOp", List.class);
+        // メソッド引数
+        parameters = m0.getParameters();
+        assertThat(parameters).hasSize(1);
+        p0 = parameters[0];
+        assertThat(p0.getType()).isEqualTo(List.class);
+        t0 = p0.getParameterizedType();
+        assertThat(t0).isEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+        // メソッド戻り値
+        clazz0 = m0.getReturnType();
+        assertThat(clazz0).isEqualTo(List.class);
+        // メソッド引数(generic対応版)
+        types = m0.getGenericParameterTypes();
+        assertThat(types).hasSize(1);
+        t0 = types[0];
+        assertThat(t0).isEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+        // メソッド戻り値(generic対応版)
+        t0 = m0.getGenericReturnType();
+        assertThat(t0).isEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isFalse();
+
+        m0 = clazz.getDeclaredMethod("parameterizedOp", List.class);
+        // メソッド引数
+        parameters = m0.getParameters();
+        assertThat(parameters).hasSize(1);
+        p0 = parameters[0];
+        assertThat(p0.getType()).isEqualTo(List.class);
+        t0 = p0.getParameterizedType();
+        // パラメータ化された型のフィールドだと原型とは互換性がなくなり、ParameterizedTypeになる。
+        assertThat(t0).isNotEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isTrue();
+        pt0 = (ParameterizedType) t0;
+        // 実型パラメータを取得
+        types = pt0.getActualTypeArguments();
+        assertThat(types).hasSize(1);
+        assertThat(types[0]).isEqualTo(SomeChild.class);
+        // 原型を取得
+        t0 = pt0.getRawType();
+        assertThat(t0).isEqualTo(List.class);
+
+        // メソッド引数(generic対応版)
+        types = m0.getGenericParameterTypes();
+        assertThat(types).hasSize(1);
+        t0 = types[0];
+        // パラメータ化された型のフィールドだと原型とは互換性がなくなり、ParameterizedTypeになる。
+        assertThat(t0).isNotEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isTrue();
+        pt0 = (ParameterizedType) t0;
+        // 実型パラメータを取得
+        types = pt0.getActualTypeArguments();
+        assertThat(types).hasSize(1);
+        assertThat(types[0]).isEqualTo(SomeChild.class);
+        // 原型を取得
+        t0 = pt0.getRawType();
+        assertThat(t0).isEqualTo(List.class);
+
+        // メソッド戻り値
+        clazz0 = m0.getReturnType();
+        assertThat(clazz0).isEqualTo(List.class);
+
+        // メソッド戻り値(generic対応版)
+        t0 = m0.getGenericReturnType();
+        assertThat(t0).isNotEqualTo(List.class);
+        assertThat(t0 instanceof ParameterizedType).isTrue();
+        pt0 = (ParameterizedType) t0;
+        // 実型パラメータを取得
+        types = pt0.getActualTypeArguments();
+        assertThat(types).hasSize(1);
+        assertThat(types[0]).isEqualTo(SomeChild.class);
+        // 原型を取得
+        t0 = pt0.getRawType();
+        assertThat(t0).isEqualTo(List.class);
+    }
+
+    // TODO bounded wildcard type
+
+    // TODO instance scope & bounded interface / abstract class
 
     /* DAY-24, new T() : https://nagise.hatenablog.jp/entry/20171224/1514127133
      * 
