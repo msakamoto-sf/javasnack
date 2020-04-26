@@ -22,7 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.util.Optional;
@@ -121,6 +125,13 @@ public class TestGenericsHellAdventCalendarDemo {
         SomeParent p2 = gc0;
         assertThat(p1.field1).isEqualTo("bbb");
         assertThat(p2.field1).isEqualTo("ddd");
+        // ちなみにキャスト後も instanceof は子クラスでtrueになる。
+        assertThat(p1 instanceof SomeParent).isTrue();
+        assertThat(p1 instanceof SomeChild).isTrue();
+        assertThat(p1 instanceof SomeGrandChild).isFalse(); // 元がSomeChildなのでこれはfalse.
+        assertThat(p2 instanceof SomeParent).isTrue();
+        assertThat(p2 instanceof SomeChild).isTrue();
+        assertThat(p2 instanceof SomeGrandChild).isTrue();
 
         /* 親クラスの参照は代入できない。(代入できる場合は 反変, contravariance となる)
          * ここでは親クラスを子クラスに変換する「ダウンキャスト」はコンパイルエラーになる。
@@ -1209,10 +1220,101 @@ public class TestGenericsHellAdventCalendarDemo {
      *   https://nagise.hatenablog.jp/entry/20130815/1376527213
      */
 
-    /* TODO
-     * DAY-24, new T() : https://nagise.hatenablog.jp/entry/20171224/1514127133
+    /* DAY-24, new T() : https://nagise.hatenablog.jp/entry/20171224/1514127133
      * 
-     * - new T()したいケースへの対処法 - プログラマーの脳みそ
+     * 他, new T[] など含め参照:
+     * 
+     * [ref1] : new T()したいケースへの対処法 - プログラマーの脳みそ
      * https://nagise.hatenablog.jp/entry/20131121/1385046248
+     * 
+     * [ref2] : Java ジェネリクスのポイント - Qiita
+     *   https://qiita.com/pebblip/items/1206f866980f2ff91e77
+     * 
+     * NOTE-1: まとめると Java8 時点では new T() はできず、new T[] もできない。
+     * new T() と同等のことをするには、以下のパターンがある。
+     * [パターン1] : Class<T> を渡してもらってそこから Class#newInstance()
+     * [パターン2] : インスタンススコープの実型パラメータをリフレクションで取り出し Class#newInstance()
+     * [パターン3] : factory クラスを経由。java8 なら Supplier として Foo::new コンストラクタ参照を経由。
+     * 
+     * DAY-24 ではパターン1を非推奨として紹介し、java8時代の記事ということもありパターン3を推奨として紹介している。
+     * また [ref1] ではパターン1に加えてパターン2についても具体的なコードを紹介している。
+     * [ref2] ではパターン1を紹介し、加えて newT[] ができない点についても解説している。
+     * (解決策は明示されていないが、List<T>を作るに留めるしか無い気がする。利用側でlist -> arrayに変換。)
+     * 
+     * NOTE-2: Class#newInstance() は java9 から deprecated されたので、もしパターン1を使うなら
+     * Class#getDeclaredConstructor().newInstance() を使う方が良さそう。
+     * (Class#newInstance() では、Class#newInstance() 自身のチェック例外が定義されているにも
+     *  関わらず元のコンストラクタのチェック例外も送出されてしまい、チェック例外がすり抜けてしまう問題があった。
+     *  -> Class#newInstance() 用に try-catch で補足していても、元のコンストラクタからのチェック例外により
+     *     catch漏れが発生する。
+     *  これの対策として、 Constructor#newInstance() が推奨されるようになったらしい。
+     *  こちらではコンストラクタが送出するチェック例外を InvocationTargetException でラップする。
+     *  InvocationTargetException は Constructor#newInstance() のチェック例外となっているので、
+     *  これについて try-catch で補足していれば、チェック例外が漏れることはなくなる。
+     *  オリジナルのチェック例外を取得する場合は InvocationTargetException#getTargetException() または
+     *  InvocationTargetException#getCause() で取得できる。)
+     * 
+     * see-also:
+     * https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html#newInstance()
+     * https://bugs.openjdk.java.net/browse/JDK-6850612
+     * http://siosio.hatenablog.com/entry/2012/05/15/232823
+     * https://blog.y-yuki.net/entry/2017/07/10/173000
      */
+
+    static class SomeDefaultConstructor {
+    }
+
+    // [パターン1]
+    static <T> T createSomeNewInstance1(Class<T> clazz)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException, SecurityException {
+        //return clazz.newInstance(); // java9 からdeprecated
+        return clazz.getDeclaredConstructor().newInstance();
+    }
+
+    @Test
+    public void testCreateSomeNewInstance1Demo() throws ReflectiveOperationException {
+        final SomeDefaultConstructor o1 = createSomeNewInstance1(SomeDefaultConstructor.class);
+        assertThat(o1 instanceof SomeDefaultConstructor).isTrue();
+    }
+
+    // [パターン2]
+    static class CreateSomeNewInstanceBase<T> {
+        @SuppressWarnings("unchecked")
+        T create() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+                InvocationTargetException, NoSuchMethodException, SecurityException {
+            // 実行時に自分自身の型を取得
+            Class<?> clazz = this.getClass();
+            // 継承でバインドされたことを想定し、ジェネリクス化された親の型情報を取得
+            Type type = clazz.getGenericSuperclass();
+            ParameterizedType pt = (ParameterizedType) type;
+            // 親の型変数に対するバインドされた型がとれる
+            Type[] actualTypeArguments = pt.getActualTypeArguments();
+            Class<?> entityClass = (Class<?>) actualTypeArguments[0];
+            // リフレクションでインスタンスを生成
+            return (T) entityClass.getDeclaredConstructor().newInstance();
+        }
+    }
+
+    // 継承によるバインド
+    static class CreateSomeNewInstance2 extends CreateSomeNewInstanceBase<SomeDefaultConstructor> {
+    }
+
+    @Test
+    public void testCreateSomeNewInstance2Demo() throws ReflectiveOperationException {
+        final CreateSomeNewInstance2 creator = new CreateSomeNewInstance2();
+        final SomeDefaultConstructor o1 = creator.create();
+        assertThat(o1 instanceof SomeDefaultConstructor).isTrue();
+    }
+
+    // [パターン3]
+    static <T> T createSomeNewInstance3(final Supplier<T> factory) {
+        return factory.get();
+    }
+
+    @Test
+    public void testCreateSomeNewInstance3Demo() {
+        final SomeDefaultConstructor o1 = createSomeNewInstance3(SomeDefaultConstructor::new);
+        assertThat(o1 instanceof SomeDefaultConstructor).isTrue();
+    }
 }
