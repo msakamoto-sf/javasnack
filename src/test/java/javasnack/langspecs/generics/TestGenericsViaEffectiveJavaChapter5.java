@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EmptyStackException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -553,5 +554,189 @@ public class TestGenericsViaEffectiveJavaChapter5 {
         assertThat(doubles.get(0)).isEqualTo(1.0);
         assertThat(doubles.get(1)).isEqualTo(2.0);
         assertThat(doubles.get(2)).isEqualTo(3.0);
+    }
+
+    /* item 32 : 可変長引数でジェネリクス使うのは慎重になること。
+     * 
+     * 可変長引数は配列として扱われる。
+     * そこにジェネリクスが入ることで、heap pollution につながる危険性がある。
+     * 
+     * このトピックスについては reifiable type (具象化可能型) と、
+     * ジェネリクス型が主に該当する non-reifiable type (具象化不可能型) の違いに注意する。
+     * 
+     * 参考資料:
+     * - 非具象化可能仮パラメータを可変長引数メソッドに使用する場合のコンパイラの警告の改善
+     *   https://docs.oracle.com/javase/jp/8/docs/technotes/guides/language/non-reifiable-varargs.html
+     * - (他 本 package の README.md 参照)
+     */
+
+    /* 可変長引数の型にジェネリクス型を使う、危険な例。
+     * コンパイラは可変長引数を配列に変換する。
+     * 一方で Java ではジェネリクスの配列作成は許可されていない。
+     * (via : イレイジャによる型消去 + item 28 の例参照)
+     * -> コンパイラはジェネリクス型を使った可変長引数を Object[] に変換する。
+     * 
+     * 可変長引数について "unchecked warning" (Potential heap pollution via varargs parameter stringLists)
+     * が生成されるため、一旦 suppress しておく。 
+     */
+    static void dangerousVarargsDemo(@SuppressWarnings("unchecked") List<String>... stringLists) {
+        // (1) この時点で stringLists は内部的には Object[] として扱われる。
+        // (2) これは普通の Integer の List
+        List<Integer> intList = List.of(42);
+        // Object型の配列であれば、子クラスの配列を参照できる。
+        Object[] objects = stringLists;
+        // (4) Object型なので、なんでも代入できてしまう。
+        objects[0] = intList; // Heap pollution
+        // (5) そうなると (3) で参照していた配列を更新してしまい、実行時に ClassCastException が発生する。
+        @SuppressWarnings("unused")
+        String s = stringLists[0].get(0); // ClassCastException
+        // -> 一般的に、ジェネリクス型の可変長引数に値を保存するのは危険な操作で非推奨。
+    }
+
+    // 続いて、コンパイルエラーにならず一見型安全となるように見えるけど実行時に ClassCastException が発生する例。
+    static <T> T[] dangerousToArray(@SuppressWarnings("unchecked") T... args) {
+        return args;
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T> T[] pickTwo(T a, T b, T c) {
+        switch (ThreadLocalRandom.current().nextInt(3)) {
+        case 0:
+            return dangerousToArray(a, b);
+        case 1:
+            return dangerousToArray(a, c);
+        case 2:
+            return dangerousToArray(b, c);
+        default:
+            new AssertionError(); // Can't get here
+        }
+        throw new AssertionError(); // Can't get here
+    }
+
+    @Test
+    public void testItem32DangerousToArrayDemo() {
+        assertThrows(ClassCastException.class, () -> {
+            @SuppressWarnings("unused")
+            String[] attributes = pickTwo("Good", "Fast", "Cheap");
+        });
+        /* コンパイルエラーが無いのに、なぜ ClassCastException が発生するか？
+         * -> dangerousToArray(T... args) が呼ばれた段階で、型変数がイレイジャによって削除されているため
+         * コンパイラはObject[]に変換している。そのため実際の戻り値は Object[] 型になっており、
+         * Javaでは子に親クラスのインスタンスを参照させることはできず、実行時に ClassCastException が発生してしまう。
+         */
+    }
+
+    /* (ジェネリクス型 or 型変数の)可変長引数について、
+     * 何も保存せず、さらに別のメソッドに配列として渡すようなことをしなければ、
+     * @SafeVarargs によりwarningを抑制できる。
+     */
+    @SafeVarargs
+    static <T> List<T> safeFlatten(List<? extends T>... lists) {
+        List<T> result = new ArrayList<>();
+        for (List<? extends T> list : lists) {
+            result.addAll(list);
+        }
+        /* 境界ワイルドカード型の可変長引数について、何も保存せず(iterateしてるだけ)、
+         * 外部にも渡していないため安全とマークできる。
+         */
+        return result;
+    }
+
+    /* 可変長引数を使わず List<E> でラップすれば、@SafeVarargsは不要。
+     * ただし List の処理で array 操作よりは多少のオーバーヘッドが見込まれる。
+     */
+    static <T> List<T> safeFlatten2(List<List<? extends T>> lists) {
+        List<T> result = new ArrayList<>();
+        for (List<? extends T> list : lists) {
+            result.addAll(list);
+        }
+        return result;
+    }
+
+    @Test
+    public void testItem32SafeFlattenDemo() {
+        final List<String> list1 = List.of("aa", "bb");
+        final List<String> list2 = List.of("cc", "dd");
+        assertThat(safeFlatten(list1, list2)).isEqualTo(List.of("aa", "bb", "cc", "dd"));
+        assertThat(safeFlatten2(List.of(list1, list2))).isEqualTo(List.of("aa", "bb", "cc", "dd"));
+    }
+
+    // -> pickTwo() についても、安全が保証されている List.of() を使えばtype safeな実装にできる。
+    static <T> List<T> pickTwo2(T a, T b, T c) {
+        switch (ThreadLocalRandom.current().nextInt(3)) {
+        case 0:
+            return List.of(a, b);
+        case 1:
+            return List.of(a, c);
+        case 2:
+            return List.of(b, c);
+        default:
+            new AssertionError(); // Can't get here
+        }
+        throw new AssertionError(); // Can't get here
+    }
+
+    /* item 33 : タイプセーフな型混在コンテナの実装例
+     */
+
+    static class TypeSafeHeterogeneousContainerDemo {
+        /* 非境界ワイルドカード型を使っているので、container は put/get できないんじゃ？
+         * -> 非境界ワイルドカード型を使っているのはあくまでもキーとなる Class<?> 部分なので、
+         * Map 全体には影響せず、put/get が可能となっている。
+         * これにより Class<String> や Class<Integer> など型をキーとしたコンテナを実現できる。
+         * 
+         * もう一つのポイントは value を Object 型としていることで、これによりどんな値でも格納可能としている。
+         * 逆に言えば、この場面で「Class<?> に対応する型が入る」型、というような表現が2020-04時点のJavaではできない。
+         */
+        private Map<Class<?>, Object> container = new HashMap<>();
+
+        public <T> void put(Class<T> type, T instance) {
+            container.put(Objects.requireNonNull(type), instance);
+        }
+
+        public <T> T get(Class<T> type) {
+            final Object o = container.get(type);
+            /* Class#cast() は動的なキャストを実現する。
+             * シグネチャは T cast(Object obj) となっていて、内部では型チェックも行われる。
+             * (よってこの時点で o が type のインスタンスでなければ、ClassCastException が発生する。
+             */
+            return type.cast(o);
+        }
+
+        // put()の実装をよりタイプセーフにするため、put()の時点で Class#cast() を使う例。
+        public <T> void putMoreSafe(Class<T> type, T instance) {
+            container.put(Objects.requireNonNull(type), type.cast(instance));
+        }
+    }
+
+    @Test
+    public void testItem33TypeSafeHeterogeneousContainerDemo() {
+        // クラス名長いので2020-04時点ではjavasnack全体がjava11前提なのを良いことに var 使う。
+        final var container = new TypeSafeHeterogeneousContainerDemo();
+        container.put(String.class, "Java");
+        container.put(Integer.class, 0xcafebabe);
+        container.put(Class.class, TypeSafeHeterogeneousContainerDemo.class);
+
+        assertThat(container.get(String.class)).isEqualTo("Java");
+        assertThat(container.get(Integer.class)).isEqualTo(0xcafebabe);
+        assertThat(container.get(Class.class)).isEqualTo(TypeSafeHeterogeneousContainerDemo.class);
+
+        // put() では型がノーチェックなので、ジェネリクス型のイレイジャを考慮するとこんなことも・・・
+        final HashSet<String> set1 = new HashSet<>(Set.of("aa", "bb"));
+        container.put(HashSet.class, set1);
+        @SuppressWarnings("unchecked")
+        final HashSet<Integer> set2 = container.get(HashSet.class);
+        assertThrows(ClassCastException.class, () -> {
+            for (int i : set2) {
+                System.out.println(i);
+            }
+        });
+        // このパターンはputMoreSafe()でも防げない。
+        container.putMoreSafe(HashSet.class, set1);
+        @SuppressWarnings("unchecked")
+        final HashSet<String> set3 = container.get(HashSet.class);
+        assertThat(set3).hasSize(2);
+        assertThat(set3.contains("aa")).isTrue();
+        assertThat(set3.contains("bb")).isTrue();
     }
 }
