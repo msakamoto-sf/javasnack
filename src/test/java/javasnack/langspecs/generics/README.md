@@ -13,7 +13,7 @@
 - generic type
   - ジェネリック型
   - `List<E>`
-- type parameter
+- type parameter, formal type parameter
   - 仮型パラメータ or 型変数
   - `<T>` の `T`
 - parameterized type
@@ -37,6 +37,12 @@
 - (lower) bounded wildcard type
   - 下限付き境界ワイルドカード型 or 反変ワイルドカード
   - `List<? super Number>`
+- generic method
+  - `static <E> List<E> asList(E[] a)`
+- recursive type bound
+  - `<T extends Comparable<T>>`
+- type token
+  - `String.class`
 
 Java ジェネリクス勉強用参考資料:
 
