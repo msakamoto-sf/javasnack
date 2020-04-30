@@ -44,13 +44,13 @@
     <surefire.version>3.0.0-M3</surefire.version>
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
-    <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
     <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.28_custom.xml</checkstyle.config.location>
     <!--
     see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html
-    -> enforce specific version same to what eclipse checkstyle plugin is using at 2019-07.
+    -> enforce specific version same to what eclipse checkstyle plugin is using at 2020-04.
     -->
-    <maven-checkstyle-engine.version>8.29</maven-checkstyle-engine.version>
+    <maven-checkstyle-engine.version>8.31</maven-checkstyle-engine.version>
 
     <!--
     see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html
