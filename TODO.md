@@ -1,10 +1,5 @@
 ## TODO
 
-- CyclicBarrierもう一度。(前回テストコード書いたときはよく分からなかった・・・かも？？)
-  - https://qiita.com/nogitsune413/items/ec0132c306e1f15c6f87
-  - https://nowokay.hatenablog.com/entry/20081128/1227840634
-  - https://www.eeb.co.jp/wordpress/?p=282
-- SpotBugs 再調整(一時期、Eclipseプラグインがうまく動かなかったので無効化してたうちに溜まったwarning対応他)
 - Google re2j 検証
   - https://github.com/google/re2j
 - jsoup 触ってみる。
