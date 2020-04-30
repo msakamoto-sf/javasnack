@@ -30,6 +30,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 public class TestCyclicBarrierDemo {
+    /* CountDownLatch と異なり繰り返し使える・リセットできるのがポイント。
+     * スレッドの待ち合わせを複数回、場合によってはループ中で繰り返したい場合に有用。
+     * 
+     * 以下のURLが、より分かりやすいイメージを提供してくれている。
+     * - JavaのCyclicBarrierを使って平行処理を行う - Qiita
+     *   https://qiita.com/nogitsune413/items/ec0132c306e1f15c6f87
+     * - CyclicBarrierのサンプル - きしだのHatena
+     *   https://nowokay.hatenablog.com/entry/20081128/1227840634
+     */
 
     private static class WaitingTask implements Runnable {
         final CyclicBarrier cb;
@@ -132,6 +141,80 @@ public class TestCyclicBarrierDemo {
         es2.shutdown();
         es2.awaitTermination(100, TimeUnit.MILLISECONDS);
         assertThat(counter.get()).isEqualTo(NUM - 1);
+    }
+
+    // 使い回せるという特徴をメインにした、無限ループで CyclicBarrier#await() を繰り返すデモ。
+    private static class CyclicWaitingTask implements Runnable {
+        final CyclicBarrier cb;
+        final AtomicInteger counter;
+        // 外部からの停止シグナルを volatile で簡易実装
+        volatile boolean shutdown = false;
+
+        CyclicWaitingTask(final CyclicBarrier cb, final AtomicInteger counter) {
+            this.cb = cb;
+            this.counter = counter;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!shutdown) {
+                    this.cb.await();
+                    this.counter.incrementAndGet();
+                }
+            } catch (InterruptedException ignore) {
+                this.counter.addAndGet(10);
+            } catch (BrokenBarrierException ignore) {
+                this.counter.addAndGet(100);
+            }
+        }
+    }
+
+    @Test
+    public void testCyclicWaitingTaskDemo() throws InterruptedException, BrokenBarrierException {
+        final int numOfTasks = 3;
+        final ExecutorService es = Executors.newFixedThreadPool(numOfTasks);
+
+        final CyclicBarrier cb = new CyclicBarrier(numOfTasks + 1);
+        final AtomicInteger counter = new AtomicInteger(0);
+        final CyclicWaitingTask[] tasks = new CyclicWaitingTask[numOfTasks];
+        for (int i = 0; i < numOfTasks; i++) {
+            tasks[i] = new CyclicWaitingTask(cb, counter);
+            es.submit(tasks[i]);
+        }
+        // 生成後すぐに getNumberWaiting() しても、生成したスレッドすべてが await() まで到達してない。
+        // そのため wait を入れる。
+        Thread.sleep(200);
+        // 生成したworkerの数だけ wait 中
+        assertThat(cb.getNumberWaiting()).isEqualTo(numOfTasks);
+        // テスト実行スレッドからも await() -> これでロックが解除される。
+        cb.await();
+        Thread.sleep(200);
+        // worker 数だけ increment されているはず。
+        assertThat(counter.get()).isEqualTo(numOfTasks);
+        // await() 後の wait 経過 -> 再度、すべてのworkerがawait()中になるはず。
+        assertThat(cb.getNumberWaiting()).isEqualTo(numOfTasks);
+        // 再度ロック解除
+        cb.await();
+        Thread.sleep(200);
+        // -> worker 数分 increment されてるはず。
+        assertThat(counter.get()).isEqualTo(numOfTasks * 2);
+        // ダメ押しでもう一回
+        cb.await();
+        Thread.sleep(200);
+        assertThat(counter.get()).isEqualTo(numOfTasks * 3);
+        assertThat(cb.getNumberWaiting()).isEqualTo(numOfTasks);
+
+        // workerのshutdownフラグをセット
+        for (int i = 0; i < numOfTasks; i++) {
+            tasks[i].shutdown = true;
+        }
+        cb.await();
+        // worker のロックが外れ increment された後に、worker終了。
+        es.shutdown();
+        es.awaitTermination(100, TimeUnit.MILLISECONDS);
+        // 最終状態
+        assertThat(counter.get()).isEqualTo(numOfTasks * 4);
     }
 
     @Test
