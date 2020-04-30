@@ -290,6 +290,10 @@ public class TestGenericsHellAdventCalendarDemo {
         }
     }
 
+    static final Serializable SER1 = new Serializable() {
+        private static final long serialVersionUID = 1L;
+    };
+
     static class CloneAndAutoCloseable implements Cloneable, AutoCloseable {
         String name;
 
@@ -335,9 +339,7 @@ public class TestGenericsHellAdventCalendarDemo {
         //new BoundedTypeParameter1<String>("gg");
 
         // 境界型としてinterfaceを使うこともできる。
-        final BoundedTypeParameter2<Serializable> o3 = new BoundedTypeParameter2<>(new Serializable() {
-            private static final long serialVersionUID = 1L;
-        });
+        final BoundedTypeParameter2<Serializable> o3 = new BoundedTypeParameter2<>(SER1);
         assertThat(o3.ser instanceof Serializable).isTrue();
 
         final BoundedTypeParameter2<SomeSerializable> o4 = new BoundedTypeParameter2<>(new SomeSerializable());

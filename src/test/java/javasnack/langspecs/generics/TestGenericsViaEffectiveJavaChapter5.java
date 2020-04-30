@@ -608,9 +608,8 @@ public class TestGenericsViaEffectiveJavaChapter5 {
         case 2:
             return dangerousToArray(b, c);
         default:
-            new AssertionError(); // Can't get here
+            throw new AssertionError(); // Can't get here
         }
-        throw new AssertionError(); // Can't get here
     }
 
     @Test
@@ -671,9 +670,8 @@ public class TestGenericsViaEffectiveJavaChapter5 {
         case 2:
             return List.of(b, c);
         default:
-            new AssertionError(); // Can't get here
+            throw new AssertionError(); // Can't get here
         }
-        throw new AssertionError(); // Can't get here
     }
 
     /* item 33 : タイプセーフな型混在コンテナの実装例
