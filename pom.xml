@@ -303,7 +303,7 @@
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>3.1.12</version>
+          <version>3.1.12.2</version>
           <dependencies>
             <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
             <dependency>
@@ -312,9 +312,9 @@
               <!--
               see: https://spotbugs.readthedocs.io/en/latest/maven.html
               see: https://spotbugs.readthedocs.io/ja/latest/maven.html
-              -> enforce specific version same to what eclipse spotbugs plugin is using at 2019-07.
+              -> enforce specific version same to what eclipse spotbugs plugin is using at 2020-04.
                -->
-              <version>4.0.0-beta1</version>
+              <version>4.0.1</version>
             </dependency>
           </dependencies>
           <!--
