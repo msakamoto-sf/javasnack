@@ -191,6 +191,12 @@ $ cd javasnack/
 
 $ ./mvnw package
 
+if you want to skip test running, but compile test code:
+$ ./mvnw -DskipTests package
+
+if you want to skip test compile and running either:
+$ ./mvnw -Dmaven.test.skip=true package
+
 $ java -jar target/javasnack-(version).jar
 or
 $ ./mvnw exec:java
