@@ -1,0 +1,23 @@
+<configuration debug="true">
+<!--
+marker and OOM demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -Xmx10m -jar xxxx.jar
+-> run LogbackLoopWithMarkerDemo
+
+configuration reference:
+http://www.slf4j.org/apidocs/org/slf4j/Marker.html
+http://www.slf4j.org/apidocs/org/slf4j/MarkerFactory.html
+http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout
+-->
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} [%thread] [%-5level] %logger - %marker#%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
