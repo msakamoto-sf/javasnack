@@ -1,0 +1,27 @@
+<configuration debug="true">
+<!--
+Variable Substitution demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackBasicUsageDemo
+
+configuration reference:
+http://logback.qos.ch/manual/configuration.html#variableSubstitution
+-->
+
+  <!-- classpath から properties ファイルをロードする例 -->
+  <property resource="logback-demo/var-sub-demo.properties" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} [%boldYellow(%thread)] [%highlight(%-5level)] %logger - %msg%n</pattern>
+    </encoder>
+    <!-- これは var-sub-demo.properties で指定があり、コマンドラインからは上書きできない。 -->
+    <withJansi>${useJansi}</withJansi>
+  </appender>
+
+  <!-- コマンドラインからカスタマイズ例 : -DrootLogLevel=INFO -->
+  <root level="${rootLogLevel:-DEBUG}">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
