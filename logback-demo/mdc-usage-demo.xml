@@ -1,0 +1,23 @@
+<configuration debug="true">
+<!--
+MDC(Mapped Diagnostic Context) demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackMdcUsageDemo
+
+configuration reference:
+http://logback.qos.ch/manual/mdc.html
+http://logback.qos.ch/manual/mdc_ja.html
+http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout
+-->
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} [%thread] [%-5level] [%X{key1}] [%mdc{key2:-NO KEY2}] [%mdc] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
