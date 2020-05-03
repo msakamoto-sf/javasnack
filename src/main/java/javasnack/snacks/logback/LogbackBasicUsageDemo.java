@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package javasnack.snacks;
+package javasnack.snacks.logback;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
