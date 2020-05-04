@@ -1,0 +1,30 @@
+<configuration debug="true">
+<!--
+replace to one-line demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackStackDepthDemo
+
+configuration reference:
+https://qiita.com/roundrop@github/items/8989b7f29d70f618e503
+https://stackoverflow.com/questions/47018509/add-something-to-log-if-there-is-an-exception-in-logback
+-->
+
+  <appender name="ONELINE_A" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>A: %d{ISO8601} [%thread] [%-5level] %logger - %replace(%msg){'\n','\\n'}%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="ONELINE_B" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- qiita記事を参考に調整してみたが、行が折り返されて上書きされた状態になる・・・？？ -->
+      <pattern>B: %d{ISO8601} [%thread] [%-5level] %logger - %replace(%msg){'\n','\\n'}\t%replace(%replace(%ex){'\n','\\n'}){'\t','    '}%nopex%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="ONELINE_A" />
+    <appender-ref ref="ONELINE_B" />
+  </root>
+</configuration>

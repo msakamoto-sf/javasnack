@@ -13,14 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks.perfs.list;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfArrayListFinePutGet implements Runnable {
+/**
+ * インデックス 0 - 499 までの {@link ArrayList#add(Object)} と {@link ArrayList#get(int)}
+ * の時間を細かくダンプ表示する。
+ * 
+ * 全体的に一定範囲の処理時間に収まり、計算量は安定している。
+ * add() についてだけ、ある程度エントリーが追加された状態でさらに追加となると、
+ * 内部の配列を拡張するための処理が走るためデータ量が増えるほどその処理時間が増えていく。
+ * 
+ * @author msakamoto
+ */
+public class PerfArrayListFinePutGet implements RunnableSnack {
 
     long adding(ArrayList<String> list, String val) {
         long startTime = System.nanoTime();
@@ -28,16 +41,17 @@ public class PerfArrayListFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
-    long getting(ArrayList<String> list, int index) {
+    ElapsedWith<String> getting(ArrayList<String> list, int index) {
         long startTime = System.nanoTime();
-        list.get(index);
-        return System.nanoTime() - startTime;
+        final String r = list.get(index);
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
 
-    @Override
-    public void run() {
+    static final int MASS = 500;
 
-        int MASS = 500;
+    @Override
+    public void run(final String... args) {
+
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
@@ -45,23 +59,23 @@ public class PerfArrayListFinePutGet implements Runnable {
 
         ArrayList<String> list = new ArrayList<String>(20);
 
-        BigInteger adding_sum = new BigInteger("0");
+        BigInteger sumOfAdding = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = adding(list, keys[i]);
             System.out.println(String.format("add()[%d] = %d nano sec.", i,
                     elapsed));
-            adding_sum = adding_sum.add(BigInteger.valueOf(elapsed));
+            sumOfAdding = sumOfAdding.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = adding_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg1 = sumOfAdding.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(list, i);
+            long elapsed = getting(list, i).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(MASS)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format("add() avg = %d nano (%d milli) sec.",

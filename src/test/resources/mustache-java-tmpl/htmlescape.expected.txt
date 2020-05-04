@@ -1,0 +1,2 @@
+escaped : &lt;&quot;\&#39;&amp;&gt;
+unescaped : <"\'&>

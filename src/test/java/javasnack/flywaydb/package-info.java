@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * flywaydb examples.
- * 
- * @see http://flywaydb.org/
- * @see https://github.com/flyway/flyway
- * @see http://flywaydb.org/documentation/javadoc/
- * @see http://blog.livedoor.jp/ryu22e/archives/65722084.html
- * @see http://siguniang.wordpress.com/2013/11/10/db-schema-migration-made-easy-with-flyway/
  */
 package javasnack.flywaydb;
+/* see:
+ * https://flywaydb.org/
+ * https://github.com/flyway/flyway
+ * https://flywaydb.org/documentation/api/javadoc.html
+ * http://blog.livedoor.jp/ryu22e/archives/65722084.html
+ * http://siguniang.wordpress.com/2013/11/10/db-schema-migration-made-easy-with-flyway/
+ */

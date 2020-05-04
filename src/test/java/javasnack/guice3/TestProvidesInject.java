@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
@@ -28,8 +29,10 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestProvidesInject {
     public static class ProvidesInjecteeArg {
@@ -45,7 +48,7 @@ public class TestProvidesInject {
     }
 
     public interface ProvidesInjecteeInterface {
-        public String greet();
+        String greet();
     }
 
     public static class ProvidesInjectee implements ProvidesInjecteeInterface {
@@ -89,6 +92,6 @@ public class TestProvidesInject {
     public void testSimpleInject() {
         Injector i = Guice.createInjector(new TestProvidesModule());
         ConstructorArgIsProvided c = i.getInstance(ConstructorArgIsProvided.class);
-        assertEquals(c.getResult(), "Hello, Provides Injection.");
+        assertEquals("Hello, Provides Injection.", c.getResult());
     }
 }

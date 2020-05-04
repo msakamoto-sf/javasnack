@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * @see http://stackoverflow.com/questions/5939575/generics-and-class-assubclass
- * @see http://waman.hatenablog.com/entry/20101007/1286440563
+import org.junit.jupiter.api.Test;
+
+/* see:
+ * http://stackoverflow.com/questions/5939575/generics-and-class-assubclass
+ * http://waman.hatenablog.com/entry/20101007/1286440563
  */
 public class TestClassAsSubclass {
 
@@ -63,55 +66,69 @@ public class TestClassAsSubclass {
     @Test
     public void testAsSubclassSuccess() {
         Class<C1C1> inspector = C1C1.class;
-        Assert.assertEquals(inspector.asSubclass(C1C1.class), C1C1.class);
-        Assert.assertEquals(inspector.asSubclass(C1.class), C1C1.class);
-        Assert.assertEquals(inspector.asSubclass(P1.class), C1C1.class);
+        assertThat(inspector.asSubclass(C1C1.class)).isEqualTo(C1C1.class);
+        assertThat(inspector.asSubclass(C1.class)).isEqualTo(C1C1.class);
+        assertThat(inspector.asSubclass(P1.class)).isEqualTo(C1C1.class);
 
         Class<IMPIC1> inspector2 = IMPIC1.class;
-        Assert.assertEquals(inspector2.asSubclass(IMPIC1.class), IMPIC1.class);
-        Assert.assertEquals(inspector2.asSubclass(IC1.class), IMPIC1.class);
-        Assert.assertEquals(inspector2.asSubclass(IP1.class), IMPIC1.class);
+        assertThat(inspector2.asSubclass(IMPIC1.class)).isEqualTo(IMPIC1.class);
+        assertThat(inspector2.asSubclass(IC1.class)).isEqualTo(IMPIC1.class);
+        assertThat(inspector2.asSubclass(IP1.class)).isEqualTo(IMPIC1.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure() {
-        Class<C1C1> inspector = C1C1.class;
-        inspector.asSubclass(C2C1.class);
+        assertThatThrownBy(() -> {
+            Class<C1C1> inspector = C1C1.class;
+            inspector.asSubclass(C2C1.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure2() {
-        Class<C1C1> inspector = C1C1.class;
-        inspector.asSubclass(C2.class);
+        assertThatThrownBy(() -> {
+            Class<C1C1> inspector = C1C1.class;
+            inspector.asSubclass(C2.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure3() {
-        Class<C1C1> inspector = C1C1.class;
-        inspector.asSubclass(P2.class);
+        assertThatThrownBy(() -> {
+            Class<C1C1> inspector = C1C1.class;
+            inspector.asSubclass(P2.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure4() {
-        Class<P1> inspector = P1.class;
-        inspector.asSubclass(C1C1.class);
+        assertThatThrownBy(() -> {
+            Class<P1> inspector = P1.class;
+            inspector.asSubclass(C1C1.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure5() {
-        Class<P1> inspector = P1.class;
-        inspector.asSubclass(C1.class);
+        assertThatThrownBy(() -> {
+            Class<P1> inspector = P1.class;
+            inspector.asSubclass(C1.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure6() {
-        Class<IP1> inspector = IP1.class;
-        inspector.asSubclass(IMPIC1.class);
+        assertThatThrownBy(() -> {
+            Class<IP1> inspector = IP1.class;
+            inspector.asSubclass(IMPIC1.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 
-    @Test(expectedExceptions = { java.lang.ClassCastException.class })
+    @Test
     public void testAsSubclassFailure7() {
-        Class<IP1> inspector = IP1.class;
-        inspector.asSubclass(IC1.class);
+        assertThatThrownBy(() -> {
+            Class<IP1> inspector = IP1.class;
+            inspector.asSubclass(IC1.class);
+        }).isInstanceOf(ClassCastException.class);
     }
 }

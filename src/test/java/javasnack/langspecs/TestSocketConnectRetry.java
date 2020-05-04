@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -27,7 +32,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Testing {@link Socket#connect(SocketAddress, int)} retry logic with TestNG + Mockito.
@@ -40,12 +45,6 @@ public class TestSocketConnectRetry {
      * This method returns excepiton list ocurrered internally whenn retrying.
      * 
      * So, use {@link Socket#isConnected()} to decide connection success or fail.
-     * 
-     * @param socket
-     * @param sa
-     * @param toms
-     * @param retrymax
-     * @return
      */
     List<Exception> connectWithRetry(Socket socket, SocketAddress sa, int toms,
             int retrymax) {
@@ -73,7 +72,7 @@ public class TestSocketConnectRetry {
         List<Exception> exl = connectWithRetry(s, sa, toms, retrymax);
 
         verify(s, times(1)).connect(sa, toms);
-        assertEquals(exl.size(), 0);
+        assertThat(exl).hasSize(0);
     }
 
     @Test
@@ -88,8 +87,8 @@ public class TestSocketConnectRetry {
         List<Exception> exl = connectWithRetry(s, sa, toms, retrymax);
 
         verify(s, times(2)).connect(sa, toms);
-        assertEquals(exl.size(), 1);
-        assertEquals(exl.get(0).getMessage(), "test1");
+        assertThat(exl.size()).isEqualTo(1);
+        assertThat(exl.get(0).getMessage()).isEqualTo("test1");
     }
 
     @Test
@@ -105,9 +104,9 @@ public class TestSocketConnectRetry {
         List<Exception> exl = connectWithRetry(s, sa, toms, retrymax);
 
         verify(s, times(3)).connect(sa, toms);
-        assertEquals(exl.size(), 2);
-        assertEquals(exl.get(0).getMessage(), "test1");
-        assertEquals(exl.get(1).getMessage(), "test2");
+        assertThat(exl).hasSize(2);
+        assertThat(exl.get(0).getMessage()).isEqualTo("test1");
+        assertThat(exl.get(1).getMessage()).isEqualTo("test2");
     }
 
     @Test
@@ -125,9 +124,9 @@ public class TestSocketConnectRetry {
         List<Exception> exl = connectWithRetry(s, sa, toms, retrymax);
 
         verify(s, times(3)).connect(sa, toms);
-        assertEquals(exl.size(), 3);
-        assertEquals(exl.get(0).getMessage(), "test1");
-        assertEquals(exl.get(1).getMessage(), "test2");
-        assertEquals(exl.get(2).getMessage(), "test3");
+        assertThat(exl).hasSize(3);
+        assertThat(exl.get(0).getMessage()).isEqualTo("test1");
+        assertThat(exl.get(1).getMessage()).isEqualTo("test2");
+        assertThat(exl.get(2).getMessage()).isEqualTo("test3");
     }
 }

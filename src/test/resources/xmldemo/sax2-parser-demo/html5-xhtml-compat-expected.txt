@@ -1,0 +1,61 @@
+> Start document
+>> startDTD(name:html, publicId:null, systemId:null)
+<< endDTD
+>> start[local: / qname:html](uri=[])
+>>    attrs[0].getLocalName() =lang
+>>    attrs[0].getQName()     =lang
+>>    attrs[0].getValue()     =ja
+>> characters([
+])
+>>> start[local: / qname:head](uri=[])
+>>> characters([
+  ])
+>>>> start[local: / qname:meta](uri=[])
+>>>>    attrs[0].getLocalName() =charset
+>>>>    attrs[0].getQName()     =charset
+>>>>    attrs[0].getValue()     =UTF-8
+<<<< end[local: / qname:meta](uri=[])
+>>> characters([
+  ])
+>>>> start[local: / qname:title](uri=[])
+>>>> characters([html5demo日本語])
+<<<< end[local: / qname:title](uri=[])
+>>> characters([
+])
+<<< end[local: / qname:head](uri=[])
+>> characters([
+])
+>>> start[local: / qname:body](uri=[])
+>>> characters([
+hello])
+>>>> start[local: / qname:br](uri=[])
+<<<< end[local: / qname:br](uri=[])
+>>> characters([
+])
+>>>> start[local: / qname:p](uri=[])
+>>>> characters([日本語])
+>>>>> start[local: / qname:i](uri=[])
+>>>>> characters([あいうえお])
+<<<<< end[local: / qname:i](uri=[])
+<<<< end[local: / qname:p](uri=[])
+>>> characters([
+])
+>>>> start[local: / qname:p](uri=[])
+>>>> characters([paragraph1.])
+>>>>> start[local: / qname:br](uri=[])
+<<<<< end[local: / qname:br](uri=[])
+<<<< end[local: / qname:p](uri=[])
+>>> characters([
+])
+>>>> start[local: / qname:p](uri=[])
+>>>> characters([paragraph2.])
+>>>>> start[local: / qname:br](uri=[])
+<<<<< end[local: / qname:br](uri=[])
+<<<< end[local: / qname:p](uri=[])
+>>> characters([
+])
+<<< end[local: / qname:body](uri=[])
+>> characters([
+])
+<< end[local: / qname:html](uri=[])
+< End document

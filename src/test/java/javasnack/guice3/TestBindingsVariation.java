@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -29,8 +30,10 @@ import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestBindingsVariation {
     public interface Greeting {
@@ -55,7 +58,7 @@ public class TestBindingsVariation {
     public void testLinkedBindings() {
         Injector i = Guice.createInjector(new TestLinkedBindingModule());
         Greeting g = i.getInstance(Greeting.class);
-        assertEquals(g.greet("jon"), "Good Mornig jon.");
+        assertEquals("Good Mornig jon.", g.greet("jon"));
     }
 
     public static class SingleInstanceA {
@@ -105,8 +108,8 @@ public class TestBindingsVariation {
         Injector i = Guice.createInjector(new TestScopeBindingModule());
         SingleInstanceUser1 u1 = i.getInstance(SingleInstanceUser1.class);
         SingleInstanceUser2 u2 = i.getInstance(SingleInstanceUser2.class);
-        assertEquals(u1.getCount(), 1);
-        assertEquals(u2.getCount(), 2);
+        assertEquals(1, u1.getCount());
+        assertEquals(2, u2.getCount());
     }
 
     public static class TestInstanceBindingModule extends AbstractModule {
@@ -121,8 +124,8 @@ public class TestBindingsVariation {
         Injector i = Guice.createInjector(new TestInstanceBindingModule());
         SingleInstanceUser1 u1 = i.getInstance(SingleInstanceUser1.class);
         SingleInstanceUser2 u2 = i.getInstance(SingleInstanceUser2.class);
-        assertEquals(u1.getCount(), 1);
-        assertEquals(u2.getCount(), 2);
+        assertEquals(1, u1.getCount());
+        assertEquals(2, u2.getCount());
     }
 
     public static class Afternoon implements Greeting {
@@ -162,6 +165,6 @@ public class TestBindingsVariation {
     public void testNamedAnnotationBindings() {
         Injector i = Guice.createInjector(new TestNamedBindingModule());
         NamedBindingUser u = i.getInstance(NamedBindingUser.class);
-        assertEquals(u.greetBoth("bob"), "Good Mornig bob./Good Afternoon bob.");
+        assertEquals("Good Mornig bob./Good Afternoon bob.", u.greetBoth("bob"));
     }
 }

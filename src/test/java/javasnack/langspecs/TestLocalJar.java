@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import testjar1.Greeting;
 
@@ -26,7 +27,7 @@ public class TestLocalJar {
     @Test
     public void useLocalJar() {
         Greeting g = new Greeting();
-        assertEquals(g.afternoon("abc"), "Good Afternoon, abc.");
+        assertThat(g.afternoon("abc")).isEqualTo("Good Afternoon, abc.");
     }
 
 }

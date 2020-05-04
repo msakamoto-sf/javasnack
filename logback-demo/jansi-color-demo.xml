@@ -1,0 +1,25 @@
+<configuration debug="true">
+<!--
+colored logging demo (with Jansi)
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackBasicUsageDemo
+
+configuration reference:
+http://logback.qos.ch/manual/appenders.html#ConsoleAppender
+http://logback.qos.ch/manual/layouts.html#coloring
+https://github.com/fusesource/jansi
+http://fusesource.github.io/jansi/
+-->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} [%boldYellow(%thread)] [%highlight(%-5level)] %logger - %msg%n</pattern>
+    </encoder>
+    <!-- enable Jansi color logging for ConsoleAppender :) -->
+    <withJansi>true</withJansi>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

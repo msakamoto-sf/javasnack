@@ -37,14 +37,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package javasnack.reflection;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestConstructorReflection {
 
@@ -73,42 +76,42 @@ public class TestConstructorReflection {
             IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Class<?> c0 = Demo1.class;
         Constructor<?>[] cntrs = c0.getDeclaredConstructors();
-        Assert.assertEquals(cntrs.length, 3);
+        assertEquals(3, cntrs.length);
         Constructor<?> cntr = cntrs[0];
-        Assert.assertEquals(Modifier.toString(cntr.getModifiers()), "private");
-        Assert.assertEquals(cntr.getParameterTypes(), new Class<?>[] { int.class, int.class, String.class });
+        assertEquals("private", Modifier.toString(cntr.getModifiers()));
+        assertArrayEquals(new Class<?>[] { int.class, int.class, String.class }, cntr.getParameterTypes());
         cntr = cntrs[1];
-        Assert.assertEquals(Modifier.toString(cntr.getModifiers()), "protected");
-        Assert.assertEquals(cntr.getParameterTypes(), new Class<?>[] { int.class, String.class });
+        assertEquals("protected", Modifier.toString(cntr.getModifiers()));
+        assertArrayEquals(new Class<?>[] { int.class, String.class }, cntr.getParameterTypes());
         cntr = cntrs[2];
-        Assert.assertEquals(Modifier.toString(cntr.getModifiers()), "public");
-        Assert.assertEquals(cntr.getParameterTypes(), new Class<?>[] { String.class });
+        assertEquals("public", Modifier.toString(cntr.getModifiers()));
+        assertArrayEquals(new Class<?>[] { String.class }, cntr.getParameterTypes());
 
         // NOTE : we can call private constructor :)
         Constructor<?> cntr1 = c0.getDeclaredConstructor(int.class, int.class, String.class);
         cntr1.setAccessible(true);
         Demo1 o1 = (Demo1) cntr1.newInstance(1, 2, "hello");
-        Assert.assertEquals(o1.val1, 1);
-        Assert.assertEquals(o1.val2, 2);
-        Assert.assertEquals(o1.s1, "hello");
+        assertEquals(1, o1.val1);
+        assertEquals(2, o1.val2);
+        assertEquals("hello", o1.s1);
 
         // NOTE : we can call protected constructor :)
         cntr1 = c0.getDeclaredConstructor(int.class, String.class);
         Demo1 o2 = (Demo1) cntr1.newInstance(3, "abc");
-        Assert.assertEquals(o2.val1, 3);
-        Assert.assertEquals(o2.val2, 10);
-        Assert.assertEquals(o2.s1, "abc");
+        assertEquals(3, o2.val1);
+        assertEquals(10, o2.val2);
+        assertEquals("abc", o2.s1);
 
         cntr1 = c0.getDeclaredConstructor(String.class);
         Demo1 o3 = (Demo1) cntr1.newInstance("def");
-        Assert.assertEquals(o3.val1, 10);
-        Assert.assertEquals(o3.val2, 20);
-        Assert.assertEquals(o3.s1, "def");
+        assertEquals(10, o3.val1);
+        assertEquals(20, o3.val2);
+        assertEquals("def", o3.s1);
     }
 
     /* SPECIAL THANKS:
-     * @see http://d.hatena.ne.jp/Nagise/20131121/1385046248
-     * @see https://stackoverflow.com/questions/75175/create-instance-of-generic-type-in-java
+     * http://d.hatena.ne.jp/Nagise/20131121/1385046248
+     * https://stackoverflow.com/questions/75175/create-instance-of-generic-type-in-java
      */
 
     public static class DemoPojo1 {
@@ -130,9 +133,9 @@ public class TestConstructorReflection {
     public void testPojoCreation() throws NoSuchMethodException, SecurityException, InstantiationException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         DemoPojo1 pojo1 = createPojo(DemoPojo1.class);
-        Assert.assertEquals(pojo1.i0, 100);
+        assertEquals(100, pojo1.i0);
         DemoPojo2 pojo2 = createPojo(DemoPojo2.class);
-        Assert.assertEquals(pojo2.s0, "hello");
+        assertEquals("hello", pojo2.s0);
     }
 
     public static class Demo2 {
@@ -175,17 +178,17 @@ public class TestConstructorReflection {
     public void testDemo3Creation() throws NoSuchMethodException, SecurityException, InstantiationException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Demo3a d3a = createDemo3("abc", Demo3a.class);
-        Assert.assertEquals(d3a.i1, 10);
-        Assert.assertEquals(d3a.s1, "abc");
+        assertEquals(10, d3a.i1);
+        assertEquals("abc", d3a.s1);
         Demo3b d3b = createDemo3("def", Demo3b.class);
-        Assert.assertEquals(d3b.i1, 20);
-        Assert.assertEquals(d3b.s1, "def");
+        assertEquals(20, d3b.i1);
+        assertEquals("def", d3b.s1);
         Demo3c d3c = createDemo3("ghi", Demo3c.class);
-        Assert.assertEquals(d3c.i1, 30);
-        Assert.assertEquals(d3c.s1, "ghi");
+        assertEquals(30, d3c.i1);
+        assertEquals("ghi", d3c.s1);
         Demo2 d2 = createDemo3("jkl", Demo3a.class);
-        Assert.assertEquals(d2.i1, 10);
-        Assert.assertEquals(d2.s1, "jkl");
+        assertEquals(10, d2.i1);
+        assertEquals("jkl", d2.s1);
 
         // createDemo3("xxx", String.class); // compile error :)
     }

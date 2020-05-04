@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -28,8 +29,10 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestAssistedInject {
     public static class InjectedArgument {
@@ -39,7 +42,7 @@ public class TestAssistedInject {
     }
 
     public interface SomeInterface {
-        public String getResult();
+        String getResult();
     }
 
     public static class SomeImpl implements SomeInterface {
@@ -59,19 +62,19 @@ public class TestAssistedInject {
     }
 
     public interface SomeInterfaceFactory {
-        public SomeInterface create(int number);
+        SomeInterface create(int number);
     }
 
     public static class SomeInterfaceUser {
-        final SomeInterfaceFactory f;
+        final SomeInterfaceFactory factory;
 
         @Inject
         public SomeInterfaceUser(SomeInterfaceFactory factory) {
-            this.f = factory;
+            this.factory = factory;
         }
 
         public String getResult() {
-            SomeInterface i = this.f.create(100);
+            SomeInterface i = this.factory.create(100);
             return i.getResult();
         }
     }
@@ -88,6 +91,6 @@ public class TestAssistedInject {
     public void testAssistedInject() {
         Injector i = Guice.createInjector(new TestAssistedModule());
         SomeInterfaceUser u = i.getInstance(SomeInterfaceUser.class);
-        assertEquals(u.getResult(), "Hello, Assisted Injection.[100]");
+        assertEquals("Hello, Assisted Injection.[100]", u.getResult());
     }
 }

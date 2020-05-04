@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.net;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestCookieManager1 {
 
@@ -35,10 +40,16 @@ public class TestCookieManager1 {
     public void testTypicalUsecase1() throws URISyntaxException, IOException {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
-        responseHeaders.put("Set-Cookie",
-                Arrays.asList("Set-Cookie: c1=v1", "Set-Cookie: c2=v2; path=/aaa", "Set-Cookie: c3=v3; path=/aaa/bbb",
-                        "Set-Cookie: c4=v4; path=/xxx", "Set-Cookie: c5=v5; path=/aaa; secure",
-                        "Set-Cookie: c6=v6; path=/aaa/bbb; secure", "Set-Cookie: c7=v7; path=/xxx; secure",
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1",
+                        "Set-Cookie: c2=v2; path=/aaa",
+                        "Set-Cookie: c3=v3; path=/aaa/bbb",
+                        "Set-Cookie: c4=v4; path=/xxx",
+                        "Set-Cookie: c5=v5; path=/aaa; secure",
+                        "Set-Cookie: c6=v6; path=/aaa/bbb; secure",
+                        "Set-Cookie: c7=v7; path=/xxx; secure",
                         "Set-Cookie: c8=v8; httpOnly"));
         URI srcUri = new URI("https://www.example.com/aaa/bbb/ccc.html");
         ch.put(srcUri, responseHeaders);
@@ -46,36 +57,36 @@ public class TestCookieManager1 {
         URI dstUri = new URI("http://www.example.com/aaa/bbb/ccc.html");
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 4);
-        assertEquals(retCookieStrings.get(0), "c1=v1");
-        assertEquals(retCookieStrings.get(1), "c2=v2");
-        assertEquals(retCookieStrings.get(2), "c3=v3");
-        assertEquals(retCookieStrings.get(3), "c8=v8");
+        assertThat(retCookieStrings).hasSize(4);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v1");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c3=v3");
+        assertThat(retCookieStrings.get(3)).isEqualTo("c8=v8");
 
         dstUri = new URI("https://www.example.com/aaa/bbb/ccc/ddd.html");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 6);
-        assertEquals(retCookieStrings.get(0), "c1=v1");
-        assertEquals(retCookieStrings.get(1), "c2=v2");
-        assertEquals(retCookieStrings.get(2), "c3=v3");
-        assertEquals(retCookieStrings.get(3), "c5=v5");
-        assertEquals(retCookieStrings.get(4), "c6=v6");
-        assertEquals(retCookieStrings.get(5), "c8=v8");
+        assertThat(retCookieStrings).hasSize(6);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v1");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c3=v3");
+        assertThat(retCookieStrings.get(3)).isEqualTo("c5=v5");
+        assertThat(retCookieStrings.get(4)).isEqualTo("c6=v6");
+        assertThat(retCookieStrings.get(5)).isEqualTo("c8=v8");
 
         dstUri = new URI("https://www.example.com/aaa/bbb.html");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 4);
-        assertEquals(retCookieStrings.get(0), "c2=v2");
-        assertEquals(retCookieStrings.get(1), "c3=v3");
-        assertEquals(retCookieStrings.get(2), "c5=v5");
-        assertEquals(retCookieStrings.get(3), "c6=v6");
+        assertThat(retCookieStrings).hasSize(4);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c2=v2");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c3=v3");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c5=v5");
+        assertThat(retCookieStrings.get(3)).isEqualTo("c6=v6");
 
         dstUri = new URI("https://www.example.com/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 0);
+        assertThat(retCookieStrings).isEmpty();
     }
 
     @Test
@@ -90,44 +101,49 @@ public class TestCookieManager1 {
         URI srcUri2 = new URI("http://www.example.net/");
         ch.put(srcUri2, responseHeaders2);
         Map<String, List<String>> responseHeaders3 = new HashMap<>();
-        responseHeaders3.put("Set-Cookie", Arrays.asList("Set-Cookie: c3=v3", "Set-Cookie: c4=v4; domain=example.net",
-                "Set-Cookie: c5=v5; domain=.example.net", "Set-Cookie: c6=v6; domain=test.example.net"));
+        responseHeaders3.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c3=v3",
+                        "Set-Cookie: c4=v4; domain=example.net",
+                        "Set-Cookie: c5=v5; domain=.example.net",
+                        "Set-Cookie: c6=v6; domain=test.example.net"));
         URI srcUri3 = new URI("https://aaatest.example.net/");
         ch.put(srcUri3, responseHeaders3);
 
         URI dstUri = new URI("http://www.example.com/");
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 1);
-        assertEquals(retCookieStrings.get(0), "c1=v1");
+        assertThat(retCookieStrings).hasSize(1);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v1");
 
         dstUri = new URI("http://example.net/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 1);
-        assertEquals(retCookieStrings.get(0), "c5=v5");
+        assertThat(retCookieStrings).hasSize(1);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c5=v5");
 
         dstUri = new URI("http://www.example.net/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 2);
-        assertEquals(retCookieStrings.get(0), "c5=v5");
-        assertEquals(retCookieStrings.get(1), "c2=v2");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c5=v5");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
 
         dstUri = new URI("http://test.example.net/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 2);
-        assertEquals(retCookieStrings.get(0), "c5=v5");
-        assertEquals(retCookieStrings.get(1), "c6=v6");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c5=v5");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c6=v6");
 
         dstUri = new URI("http://aaatest.example.net/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 3);
-        assertEquals(retCookieStrings.get(0), "c3=v3");
-        assertEquals(retCookieStrings.get(1), "c5=v5");
-        assertEquals(retCookieStrings.get(2), "c6=v6");
+        assertThat(retCookieStrings).hasSize(3);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c3=v3");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c5=v5");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c6=v6");
     }
 
     @Test
@@ -149,20 +165,95 @@ public class TestCookieManager1 {
         URI dstUri = new URI("http://www.example.com/");
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 1);
-        assertEquals(retCookieStrings.get(0), "c1=v3");
+        assertThat(retCookieStrings).hasSize(1);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v3");
 
         dstUri = new URI("https://www.example.com/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 1);
-        assertEquals(retCookieStrings.get(0), "c1=v3");
+        assertThat(retCookieStrings).hasSize(1);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v3");
 
         dstUri = new URI("https://www.example.com:8443/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 1);
-        assertEquals(retCookieStrings.get(0), "c1=v3");
+        assertThat(retCookieStrings).hasSize(1);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v3");
+    }
+
+    @Test
+    public void testExpiresDirective() throws URISyntaxException, IOException {
+        final OffsetDateTime now0 = OffsetDateTime.now(ZoneId.of("GMT"));
+        final OffsetDateTime past0 = now0.minusSeconds(10);
+        final OffsetDateTime future0 = now0.plusSeconds(10);
+
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c3=v3"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c2=v2");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c3=v3");
+    }
+
+    @Test
+    public void testExpiresDirectiveNotGmtOffset() throws URISyntaxException, IOException {
+        final OffsetDateTime now0 = OffsetDateTime.now(ZoneOffset.ofHours(1));
+        final OffsetDateTime past0 = now0.minusSeconds(10);
+        final OffsetDateTime future0 = now0.plusSeconds(10);
+
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                        "Set-Cookie: c3=v3"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(1);
+        // HttpCookie.parse() can only handle "GMT" offset expires.
+        // Other offsets are handled as HttpCookie.hasExpires() = true :(
+        assertThat(retCookieStrings.get(0)).isEqualTo("c3=v3");
+    }
+
+    @Test
+    public void testMaxAgeDirective() throws URISyntaxException, IOException {
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1=v1; max-age=-1",
+                        "Set-Cookie: c2=v2; max-age=0",
+                        "Set-Cookie: c3=v3; max-age=1",
+                        "Set-Cookie: c4=v4"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(4);
+        assertThat(retCookieStrings.get(0)).isEqualTo("$Version=\"1\"");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c3=\"v3\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(3)).isEqualTo("c4=v4");
     }
 
     @Test
@@ -176,33 +267,82 @@ public class TestCookieManager1 {
         URI dstUri = new URI("http://www.example.com/");
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 1);
-        assertEquals(retCookieStrings.get(0), "c1=v2");
+        assertThat(retCookieStrings).hasSize(1);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v2");
     }
 
     @Test
     public void testEncodedSetCookie() throws URISyntaxException, IOException {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
-        responseHeaders.put("Set-Cookie", Arrays.asList("Set-Cookie: c1%20%2A%2B%2F%3D%3Fx=v1%20%2A%2B%2F%3D%3Fx",
-                "Set-Cookie: c2%20%2A%2B%2F%3D%3Fx=v2%20%2A%2B%2F%3D%3Fx"));
+        responseHeaders.put(
+                "Set-Cookie",
+                Arrays.asList(
+                        "Set-Cookie: c1%20%2A%2B%2F%3D%3Fx=v1%20%2A%2B%2F%3D%3Fx",
+                        "Set-Cookie: c2%20%2A%2B%2F%3D%3Fx=v2%20%2A%2B%2F%3D%3Fx"));
         URI srcUri = new URI("http://localhost/");
         ch.put(srcUri, responseHeaders);
 
         URI dstUri = new URI("http://localhost/");
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 2);
-        assertEquals(retCookieStrings.get(0), "c1%20%2A%2B%2F%3D%3Fx=v1%20%2A%2B%2F%3D%3Fx");
-        assertEquals(retCookieStrings.get(1), "c2%20%2A%2B%2F%3D%3Fx=v2%20%2A%2B%2F%3D%3Fx");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("c1%20%2A%2B%2F%3D%3Fx=v1%20%2A%2B%2F%3D%3Fx");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c2%20%2A%2B%2F%3D%3Fx=v2%20%2A%2B%2F%3D%3Fx");
     }
 
-    /**
-     * @see https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie2
-     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie2
-     * 
-     * @throws URISyntaxException
-     * @throws IOException
+    @Test
+    public void testSetCookieWithVersion1() throws URISyntaxException, IOException {
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put("Set-Cookie", Arrays.asList("Set-Cookie: c1=v1; Version=1"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("$Version=\"1\"");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
+    }
+
+    @Test
+    public void testSetCookieWithVersion1AndNonVersion() throws URISyntaxException, IOException {
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put("Set-Cookie", Arrays.asList("Set-Cookie: c1=v1; Version=1", "Set-Cookie: c2=v2"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(3);
+        assertThat(retCookieStrings.get(0)).isEqualTo("$Version=\"1\"");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c2=v2");
+    }
+
+    @Test
+    public void testSetCookie2WithVersion1() throws URISyntaxException, IOException {
+        CookieHandler ch = new CookieManager();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
+        responseHeaders.put("Set-Cookie2", Arrays.asList("Set-Cookie2: c1=v1; Version=1"));
+        URI srcUri = new URI("http://localhost/");
+        ch.put(srcUri, responseHeaders);
+
+        URI dstUri = new URI("http://localhost/");
+        Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
+        List<String> retCookieStrings = retHeaders.get("Cookie");
+        assertThat(retCookieStrings).hasSize(2);
+        assertThat(retCookieStrings.get(0)).isEqualTo("$Version=\"1\"");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
+    }
+
+    /* see:
+     * https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Set-Cookie2
+     * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cookie2
      */
     @Test
     public void testSetCookie2() throws URISyntaxException, IOException {
@@ -215,13 +355,13 @@ public class TestCookieManager1 {
         URI dstUri = new URI("http://localhost/");
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
-        assertEquals(retCookieStrings.size(), 5);
-        assertEquals(retCookieStrings.get(0), "$Version=\"1\"");
-        assertEquals(retCookieStrings.get(1), "c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
-        assertEquals(retCookieStrings.get(2), "c2=\"v2\";$Path=\"/\";$Domain=\"localhost.local\"");
-        assertEquals(retCookieStrings.get(3), "c3=\"v3\";$Path=\"/\";$Domain=\"localhost.local\"");
-        assertEquals(retCookieStrings.get(4), "c4=\"v4\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings).hasSize(5);
+        assertThat(retCookieStrings.get(0)).isEqualTo("$Version=\"1\"");
+        assertThat(retCookieStrings.get(1)).isEqualTo("c1=\"v1\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(2)).isEqualTo("c2=\"v2\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(3)).isEqualTo("c3=\"v3\";$Path=\"/\";$Domain=\"localhost.local\"");
+        assertThat(retCookieStrings.get(4)).isEqualTo("c4=\"v4\";$Path=\"/\";$Domain=\"localhost.local\"");
         retCookieStrings = retHeaders.get("Cookie2");
-        assertEquals(retCookieStrings, null);
+        assertThat(retCookieStrings).isNull();
     }
 }

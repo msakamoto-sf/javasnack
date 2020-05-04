@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<ruleset name="javasnack custom PMD ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <!--
+    copied from:
+    https://gitbox.apache.org/repos/asf?p=maven-pmd-plugin.git;a=blob_plain;f=src/main/resources/rulesets/java/maven-pmd-plugin-default.xml;hb=HEAD
+    at 2019-07-24
+    see also: https://maven.apache.org/plugins/maven-pmd-plugin/examples/usingRuleSets.html
+    -->
+
+    <description>
+    javasnack custom PMD ruleset
+    </description>
+
+    <exclude-pattern>.*/make/findbugs/angry/.*</exclude-pattern>
+    <!-- なぜかわからないが "target/" から始めると eclipse pmd plugin 側で認識されず、 ".*/" で始めると認識された。 -->
+    <exclude-pattern>.*/target/generated-.*</exclude-pattern>
+
+    <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
+    <rule ref="category/java/bestpractices.xml/CheckResultSet" />
+    <rule ref="category/java/bestpractices.xml/UnusedImports" />
+    <rule ref="category/java/bestpractices.xml/UnusedFormalParameter" />
+    <rule ref="category/java/bestpractices.xml/UnusedLocalVariable" />
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateField" />
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod" />
+
+    <rule ref="category/java/codestyle.xml/DontImportJavaLang" />
+    <rule ref="category/java/codestyle.xml/DuplicateImports" />
+    <rule ref="category/java/codestyle.xml/ExtendsObject" />
+    <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop" />
+
+    <!--
+    mockitoなど使うと、どうしても import static を大量に使うことになる。
+    mockitoのデモ用テストコードを最大の基準として、それを超える明らかに過剰なものだけに絞り、
+    最大値を30として暫定採用でカスタマイズしている。
+    see: https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#toomanystaticimports
+    -->
+    <rule ref="category/java/codestyle.xml/TooManyStaticImports">
+        <properties>
+            <property name="maximumStaticImports" value="30" />
+        </properties>
+    </rule>
+
+    <!--
+    TODO : PMD 6.18.0 になり、どうも UnnecessaryFullyQualifiedName が過剰検出になってしまってる。
+    https://github.com/pmd/pmd/issues/1951 : これの修正の影響と思われる。
+    一旦PMDからは外しておく。
+    <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
+    -->
+    <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
+
+    <!--
+    無駄な括弧を指摘してくれるので勉強にはなるが、
+    読みやすさ・わかり易さのために明示的に使っているところが多数あり、
+    区別も難しいためルール全体を無効化しておく。
+    see: https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#uselessparentheses
+    <rule ref="category/java/codestyle.xml/UselessParentheses" />
+    -->
+
+    <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
+
+    <rule ref="category/java/design.xml/CollapsibleIfStatements" />
+    <rule ref="category/java/design.xml/SimplifiedTernary" />
+    <rule ref="category/java/design.xml/UselessOverridingMethod" />
+
+    <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
+    <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
+    <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
+    <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues" />
+    <rule ref="category/java/errorprone.xml/BrokenNullCheck" />
+    <rule ref="category/java/errorprone.xml/CheckSkipResult" />
+    <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray" />
+    <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
+
+    <!--
+    checkstyle 側で同等のチェックがあるため、PMD側では省略
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
+    -->
+
+    <rule ref="category/java/errorprone.xml/EmptyFinallyBlock" />
+    <rule ref="category/java/errorprone.xml/EmptyIfStmt" />
+    <rule ref="category/java/errorprone.xml/EmptyInitializer" />
+    <rule ref="category/java/errorprone.xml/EmptyStatementBlock" />
+    <rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
+    <rule ref="category/java/errorprone.xml/EmptySwitchStatements" />
+    <rule ref="category/java/errorprone.xml/EmptySynchronizedBlock" />
+    <rule ref="category/java/errorprone.xml/EmptyTryBlock" />
+    <rule ref="category/java/errorprone.xml/EmptyWhileStmt" />
+    <rule ref="category/java/errorprone.xml/ImportFromSamePackage" />
+    <rule ref="category/java/errorprone.xml/JumbledIncrementer" />
+    <rule ref="category/java/errorprone.xml/MisplacedNullCheck" />
+    <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
+    <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
+    <rule ref="category/java/errorprone.xml/UnconditionalIfStatement" />
+    <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
+    <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
+    <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
+
+    <rule ref="category/java/multithreading.xml/AvoidThreadGroup" />
+    <rule ref="category/java/multithreading.xml/DontCallThreadRun" />
+    <rule ref="category/java/multithreading.xml/DoubleCheckedLocking" />
+
+    <rule ref="category/java/performance.xml/BigIntegerInstantiation" />
+    <rule ref="category/java/performance.xml/BooleanInstantiation" />
+
+</ruleset>

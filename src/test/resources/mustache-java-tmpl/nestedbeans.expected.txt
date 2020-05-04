@@ -1,0 +1,4 @@
+beans:
+bean1:attr1
+bean2:attr2
+bean3:attr3

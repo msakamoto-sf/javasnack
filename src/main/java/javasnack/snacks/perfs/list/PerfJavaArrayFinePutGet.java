@@ -13,13 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks.perfs.list;
 
 import java.math.BigInteger;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfJavaArrayFinePutGet implements Runnable {
+/**
+ * インデックス 0 - 499 までのJava配列における代入と値取得の時間を細かくダンプ表示する。
+ * 
+ * 全体的に一定範囲の処理時間に収まり、計算量は安定している。
+ * リスト系のset/getでは最も高速に処理できている。
+ * 
+ * @author msakamoto
+ */
+public class PerfJavaArrayFinePutGet implements RunnableSnack {
 
     long setting(String[] arr, int index, String val) {
         long startTime = System.nanoTime();
@@ -27,36 +38,36 @@ public class PerfJavaArrayFinePutGet implements Runnable {
         return System.nanoTime() - startTime;
     }
 
-    long getting(String[] arr, int index) {
-        String r = null;
+    ElapsedWith<String> getting(String[] arr, int index) {
         long startTime = System.nanoTime();
-        r = arr[index];
-        return System.nanoTime() - startTime;
+        final String r = arr[index];
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
 
-    @Override
-    public void run() {
+    static final int MASS = 500;
 
-        int MASS = 500;
+    @Override
+    public void run(final String... args) {
+
         String[] arr = new String[MASS];
 
-        BigInteger setting_sum = new BigInteger("0");
+        BigInteger sumOfSetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
             long elapsed = setting(arr, i, RandomString.get(10, 30));
             System.out.println(String.format("arr[%d] = %d nano sec.", i,
                     elapsed));
-            setting_sum = setting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfSetting = sumOfSetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = setting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg1 = sumOfSetting.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(arr, i);
+            long elapsed = getting(arr, i).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(MASS)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format("arr() avg = %d nano (%d milli) sec.",

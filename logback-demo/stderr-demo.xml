@@ -1,0 +1,29 @@
+<configuration debug="true">
+<!--
+output to stderr demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackBasicUsageDemo
+
+configuration reference:
+http://logback.qos.ch/manual/appenders.html#ConsoleAppender
+-->
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>&lt;stdout&gt; %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
+    <encoder>
+      <pattern>&lt;stderr&gt; %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="STDERR" />
+  </root>
+</configuration>

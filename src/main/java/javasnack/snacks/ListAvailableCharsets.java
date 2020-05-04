@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ListAvailableCharsets implements Runnable {
+import javasnack.RunnableSnack;
 
+public class ListAvailableCharsets implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         Charset csDefault = Charset.defaultCharset();
         String csDefaultCanonicalName = csDefault.name();
         Map<String, Charset> acs = Charset.availableCharsets();
@@ -43,5 +45,4 @@ public class ListAvailableCharsets implements Runnable {
             }
         }
     }
-
 }

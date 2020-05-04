@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks;
 
 import java.io.InputStream;
-
-import myapi.GreetingImpl;
-import myapi.GreetingInterface;
 
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 import org.xeustechnologies.jcl.JclUtils;
 
+import javasnack.RunnableSnack;
+import myapi.GreetingImpl;
+import myapi.GreetingInterface;
+
 /**
  * Tiny Demonstration for https://github.com/kamranzafar/JCL
  * 
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
  */
-public class JCLDemo implements Runnable {
+public class JCLDemo implements RunnableSnack {
 
     void sandbox(String jarResourceName) {
         try {
@@ -41,8 +43,8 @@ public class JCLDemo implements Runnable {
 
             // call constructor with arguments.
             Object obj = factory.create(jcl, "myapi.GreetingImpl",
-                    new String[] { "Firstname", "Lastname" }, new Class[] {
-                            String.class, String.class });
+                    new String[] { "Firstname", "Lastname" },
+                    new Class[] { String.class, String.class });
 
             GreetingInterface gi = JclUtils.cast(obj, GreetingInterface.class);
             System.out.println(gi.morning("Darjeeling"));
@@ -53,7 +55,7 @@ public class JCLDemo implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         System.out.println("===== Default GreetingImpl:");
         GreetingImpl gi = new GreetingImpl("Firstname", "Lastname");
         System.out.println(gi.morning("Java"));
@@ -65,5 +67,4 @@ public class JCLDemo implements Runnable {
         sandbox("JCLDemo/myapi-impl2.jar");
         System.out.println("(END)");
     }
-
 }

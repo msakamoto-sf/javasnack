@@ -37,7 +37,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package javasnack.reflection;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -45,8 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestFieldReflection {
     public static class Base {
@@ -71,224 +75,244 @@ public class TestFieldReflection {
     @Test
     public void testPublicFieldReadWrite() throws IllegalArgumentException, IllegalAccessException {
         Class<?> c0 = Base.class;
-        Base o0 = new Base();
+        final Base o0 = new Base();
         Field[] fields = c0.getFields();
-        Assert.assertEquals(fields.length, 2);
+        assertEquals(2, fields.length);
         Field f0 = fields[0];
-        Assert.assertEquals(f0.getName(), "publicLongField");
-        Assert.assertEquals(f0.getType().getName(), "long");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "long");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public");
-        Assert.assertEquals(f0.getLong(o0), 4L);
+        assertEquals("publicLongField", f0.getName());
+        assertEquals("long", f0.getType().getName());
+        assertEquals("long", f0.getGenericType().getTypeName());
+        assertEquals("public", Modifier.toString(f0.getModifiers()));
+        assertEquals(4L, f0.getLong(o0));
         f0.setLong(o0, 5L);
-        Assert.assertEquals(f0.getLong(o0), 5L);
+        assertEquals(5L, f0.getLong(o0));
         f0 = fields[1];
-        Assert.assertEquals(f0.getName(), "PUBLIC_FINAL_STR");
-        Assert.assertEquals(f0.getType().getName(), "java.lang.String");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "java.lang.String");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public static final");
-        Assert.assertEquals(f0.get(o0), Base.PUBLIC_FINAL_STR); // from instance object
-        Assert.assertEquals(f0.get(c0), Base.PUBLIC_FINAL_STR); // from class object
+        assertEquals("PUBLIC_FINAL_STR", f0.getName());
+        assertEquals("java.lang.String", f0.getType().getName());
+        assertEquals("java.lang.String", f0.getGenericType().getTypeName());
+        assertEquals("public static final", Modifier.toString(f0.getModifiers()));
+        assertEquals(Base.PUBLIC_FINAL_STR, f0.get(o0)); // from instance object
+        assertEquals(Base.PUBLIC_FINAL_STR, f0.get(c0)); // from class object
 
         c0 = Ext.class;
-        Ext o1 = new Ext();
+        final Ext o1 = new Ext();
         fields = c0.getFields();
-        Assert.assertEquals(fields.length, 4);
+        assertEquals(4, fields.length);
         f0 = fields[0];
-        Assert.assertEquals(f0.getName(), "publicCharField");
-        Assert.assertEquals(f0.getType().getName(), "char");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "char");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public");
-        Assert.assertEquals(f0.getChar(o1), 'x');
+        assertEquals("publicCharField", f0.getName());
+        assertEquals("char", f0.getType().getName());
+        assertEquals("char", f0.getGenericType().getTypeName());
+        assertEquals("public", Modifier.toString(f0.getModifiers()));
+        assertEquals('x', f0.getChar(o1));
         f0.setChar(o1, 'y');
-        Assert.assertEquals(f0.getLong(o1), 'y');
+        assertEquals('y', f0.getLong(o1));
         f0 = fields[1];
-        Assert.assertEquals(f0.getName(), "staticFloatField");
-        Assert.assertEquals(f0.getType().getName(), "float");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "float");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public static");
-        Assert.assertEquals(f0.getFloat(o1), 1.0f); // from instance object
-        Assert.assertEquals(f0.getFloat(c0), 1.0f); // from class object
+        assertEquals("staticFloatField", f0.getName());
+        assertEquals("float", f0.getType().getName());
+        assertEquals("float", f0.getGenericType().getTypeName());
+        assertEquals("public static", Modifier.toString(f0.getModifiers()));
+        assertEquals(1.0f, f0.getFloat(o1)); // from instance object
+        assertEquals(1.0f, f0.getFloat(c0)); // from class object
         f0.setFloat(c0, 2.0f);
-        Assert.assertEquals(f0.getFloat(c0), 2.0f);
+        assertEquals(2.0f, f0.getFloat(c0));
         f0.setFloat(c0, 1.0f);
-        Assert.assertEquals(f0.getFloat(c0), 1.0f); // from class object
+        assertEquals(1.0f, f0.getFloat(c0)); // from class object
         f0 = fields[2];
         // NOTE : getFields() can access superclass' public fields.
-        Assert.assertEquals(f0.getName(), "publicLongField");
-        Assert.assertEquals(f0.getType().getName(), "long");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "long");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public");
-        Assert.assertEquals(f0.getLong(o1), 4L);
+        assertEquals("publicLongField", f0.getName());
+        assertEquals("long", f0.getType().getName());
+        assertEquals("long", f0.getGenericType().getTypeName());
+        assertEquals("public", Modifier.toString(f0.getModifiers()));
+        assertEquals(4L, f0.getLong(o1));
         f0.setLong(o0, 5L);
-        Assert.assertEquals(f0.getLong(o0), 5L);
+        assertEquals(5L, f0.getLong(o0));
         f0 = fields[3];
-        Assert.assertEquals(f0.getName(), "PUBLIC_FINAL_STR");
-        Assert.assertEquals(f0.getType().getName(), "java.lang.String");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "java.lang.String");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public static final");
-        Assert.assertEquals(f0.get(o1), Base.PUBLIC_FINAL_STR); // from instance object
-        Assert.assertEquals(f0.get(c0), Base.PUBLIC_FINAL_STR); // from class object
+        assertEquals("PUBLIC_FINAL_STR", f0.getName());
+        assertEquals("java.lang.String", f0.getType().getName());
+        assertEquals("java.lang.String", f0.getGenericType().getTypeName());
+        assertEquals("public static final", Modifier.toString(f0.getModifiers()));
+        assertEquals(Base.PUBLIC_FINAL_STR, f0.get(o1)); // from instance object
+        assertEquals(Base.PUBLIC_FINAL_STR, f0.get(c0)); // from class object
     }
 
-    @Test(expectedExceptions = NoSuchFieldException.class)
+    @Test
     public void testUnknownFiledName() throws NoSuchFieldException, SecurityException {
         Class<?> c0 = Base.class;
-        c0.getField("xxxxx");
-        Assert.fail();
+        assertThrows(NoSuchFieldException.class, () -> {
+            c0.getField("xxxxx");
+        });
     }
 
-    @Test(expectedExceptions = NoSuchFieldException.class)
+    @Test
     public void testNonPublicFiled() throws NoSuchFieldException, SecurityException {
         Class<?> c0 = Base.class;
-        c0.getField("protectedIntField");
-        Assert.fail();
+        assertThrows(NoSuchFieldException.class, () -> {
+            c0.getField("protectedIntField");
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testFiledGetTypeMismatch()
             throws IllegalArgumentException, NoSuchFieldException, SecurityException, IllegalAccessException {
         Class<?> c0 = Base.class;
         Base b0 = new Base();
         Field f0 = c0.getField("publicLongField");
-        Assert.assertEquals(f0.getBoolean(b0), 1L);
+        assertThrows(IllegalArgumentException.class, () -> {
+            f0.getBoolean(b0);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testReadInstanceFieldFromClass()
             throws IllegalArgumentException, NoSuchFieldException, SecurityException, IllegalAccessException {
         Class<?> c0 = Base.class;
         Field f0 = c0.getField("publicLongField");
-        Assert.assertEquals(f0.getLong(c0), 1L);
+        assertThrows(IllegalArgumentException.class, () -> {
+            f0.getLong(c0);
+        });
     }
 
-    @Test(expectedExceptions = IllegalAccessException.class)
-    public void testReadNonPublicFieldValue()
+    @Test
+    public void testReadNonPublicFieldValueFromStaticInnerClass()
             throws IllegalArgumentException, NoSuchFieldException, SecurityException, IllegalAccessException {
         Class<?> c0 = Base.class;
         Base b0 = new Base();
         Field f0 = c0.getDeclaredField("privateShortField");
-        f0.getShort(b0);
+        // In Java11(may be 9 or 10 ??), no exception thrown when accessing private field in static inner class
+        assertEquals(2, f0.getShort(b0));
     }
 
-    @Test(expectedExceptions = IllegalAccessException.class)
+    @Test
+    public void testReadNonPublicFieldValueFromOuterClass()
+            throws IllegalArgumentException, NoSuchFieldException, SecurityException, IllegalAccessException {
+        Class<?> c0 = SomeConcreteIndependentClass.class;
+        SomeConcreteIndependentClass b0 = new SomeConcreteIndependentClass();
+        Field f0 = c0.getDeclaredField("privateShortField");
+        assertThrows(IllegalAccessException.class, () -> {
+            f0.getShort(b0);
+        });
+    }
+
+    @Test
     public void testWriteToFinalField()
             throws IllegalArgumentException, NoSuchFieldException, SecurityException, IllegalAccessException {
         Class<?> c0 = Base.class;
         Base b0 = new Base();
         Field f0 = c0.getDeclaredField("finalStringField");
-        f0.set(b0, "aaa");
+        assertThrows(IllegalAccessException.class, () -> {
+            f0.set(b0, "aaa");
+        });
     }
 
     @Test
     public void testNonPublicFieldReadWrite() throws IllegalArgumentException, IllegalAccessException {
         Class<?> c0 = Base.class;
-        Base o0 = new Base();
+        final Base o0 = new Base();
         Field[] fields = c0.getDeclaredFields();
-        Assert.assertEquals(fields.length, 7);
+        assertEquals(7, fields.length);
 
         Field f0 = fields[0];
-        Assert.assertEquals(f0.getName(), "packagedByteField");
-        Assert.assertEquals(f0.getType().getName(), "byte");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "byte");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "");
-        Assert.assertEquals(f0.getByte(o0), 1);
+        assertEquals("packagedByteField", f0.getName());
+        assertEquals("byte", f0.getType().getName());
+        assertEquals("byte", f0.getGenericType().getTypeName());
+        assertEquals("", Modifier.toString(f0.getModifiers()));
+        assertEquals(1, f0.getByte(o0));
         f0.setByte(o0, (byte) 2);
-        Assert.assertEquals(f0.getByte(o0), 2);
+        assertEquals(2, f0.getByte(o0));
         f0 = fields[1];
-        Assert.assertEquals(f0.getName(), "privateShortField");
-        Assert.assertEquals(f0.getType().getName(), "short");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "short");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "private");
+        assertEquals("privateShortField", f0.getName());
+        assertEquals("short", f0.getType().getName());
+        assertEquals("short", f0.getGenericType().getTypeName());
+        assertEquals("private", Modifier.toString(f0.getModifiers()));
         f0.setAccessible(true);
-        Assert.assertEquals(f0.getShort(o0), 2);
+        assertEquals(2, f0.getShort(o0));
         f0.setShort(o0, (short) 20);
-        Assert.assertEquals(f0.getShort(o0), 20);
+        assertEquals(20, f0.getShort(o0));
         f0 = fields[2];
-        Assert.assertEquals(f0.getName(), "protectedIntField");
-        Assert.assertEquals(f0.getType().getName(), "int");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "int");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "protected");
+        assertEquals("protectedIntField", f0.getName());
+        assertEquals("int", f0.getType().getName());
+        assertEquals("int", f0.getGenericType().getTypeName());
+        assertEquals("protected", Modifier.toString(f0.getModifiers()));
         f0.setAccessible(true);
-        Assert.assertEquals(f0.getInt(o0), 3);
+        assertEquals(3, f0.getInt(o0));
         f0.setInt(o0, 30);
-        Assert.assertEquals(f0.getInt(o0), 30);
+        assertEquals(30, f0.getInt(o0));
         f0 = fields[3];
-        Assert.assertEquals(f0.getName(), "publicLongField");
-        Assert.assertEquals(f0.getType().getName(), "long");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "long");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public");
-        Assert.assertEquals(f0.getLong(o0), 4L);
+        assertEquals("publicLongField", f0.getName());
+        assertEquals("long", f0.getType().getName());
+        assertEquals("long", f0.getGenericType().getTypeName());
+        assertEquals("public", Modifier.toString(f0.getModifiers()));
+        assertEquals(4L, f0.getLong(o0));
         f0.setLong(o0, 5L);
-        Assert.assertEquals(f0.getLong(o0), 5L);
+        assertEquals(5L, f0.getLong(o0));
         f0 = fields[4];
-        Assert.assertEquals(f0.getName(), "volatileBooleanField");
-        Assert.assertEquals(f0.getType().getName(), "boolean");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "boolean");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "volatile");
-        Assert.assertEquals(f0.getBoolean(o0), true);
+        assertEquals("volatileBooleanField", f0.getName());
+        assertEquals("boolean", f0.getType().getName());
+        assertEquals("boolean", f0.getGenericType().getTypeName());
+        assertEquals("volatile", Modifier.toString(f0.getModifiers()));
+        assertEquals(true, f0.getBoolean(o0));
         f0.setBoolean(o0, false);
-        Assert.assertEquals(f0.getBoolean(o0), false);
+        assertEquals(false, f0.getBoolean(o0));
         f0 = fields[5];
-        Assert.assertEquals(f0.getName(), "finalStringField");
-        Assert.assertEquals(f0.getType().getName(), "java.lang.String");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "java.lang.String");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "final");
-        Assert.assertEquals(f0.get(o0), "abc");
+        assertEquals("finalStringField", f0.getName());
+        assertEquals("java.lang.String", f0.getType().getName());
+        assertEquals("java.lang.String", f0.getGenericType().getTypeName());
+        assertEquals("final", Modifier.toString(f0.getModifiers()));
+        assertEquals("abc", f0.get(o0));
         f0 = fields[6];
-        Assert.assertEquals(f0.getName(), "PUBLIC_FINAL_STR");
-        Assert.assertEquals(f0.getType().getName(), "java.lang.String");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "java.lang.String");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public static final");
-        Assert.assertEquals(f0.get(o0), Base.PUBLIC_FINAL_STR); // from instance object
-        Assert.assertEquals(f0.get(c0), Base.PUBLIC_FINAL_STR); // from class object
+        assertEquals("PUBLIC_FINAL_STR", f0.getName());
+        assertEquals("java.lang.String", f0.getType().getName());
+        assertEquals("java.lang.String", f0.getGenericType().getTypeName());
+        assertEquals("public static final", Modifier.toString(f0.getModifiers()));
+        assertEquals(Base.PUBLIC_FINAL_STR, f0.get(o0)); // from instance object
+        assertEquals(Base.PUBLIC_FINAL_STR, f0.get(c0)); // from class object
 
         c0 = Ext.class;
-        Ext o1 = new Ext();
+        final Ext o1 = new Ext();
         fields = c0.getDeclaredFields();
-        Assert.assertEquals(fields.length, 4);
+        assertEquals(4, fields.length);
 
         // NOTE : getDeclaredFields() can ONLY access class itself's fields.
         // opposite to getFields(), can NOT access superclass' fields
         f0 = fields[0];
-        Assert.assertEquals(f0.getName(), "publicCharField");
-        Assert.assertEquals(f0.getType().getName(), "char");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "char");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public");
-        Assert.assertEquals(f0.getChar(o1), 'x');
+        assertEquals("publicCharField", f0.getName());
+        assertEquals("char", f0.getType().getName());
+        assertEquals("char", f0.getGenericType().getTypeName());
+        assertEquals("public", Modifier.toString(f0.getModifiers()));
+        assertEquals('x', f0.getChar(o1));
         f0.setChar(o1, 'y');
-        Assert.assertEquals(f0.getLong(o1), 'y');
+        assertEquals('y', f0.getLong(o1));
         f0 = fields[1];
-        Assert.assertEquals(f0.getName(), "staticFloatField");
-        Assert.assertEquals(f0.getType().getName(), "float");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "float");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "public static");
-        Assert.assertEquals(f0.getFloat(o1), 1.0f); // from instance object
-        Assert.assertEquals(f0.getFloat(c0), 1.0f); // from class object
+        assertEquals("staticFloatField", f0.getName());
+        assertEquals("float", f0.getType().getName());
+        assertEquals("float", f0.getGenericType().getTypeName());
+        assertEquals("public static", Modifier.toString(f0.getModifiers()));
+        assertEquals(1.0f, f0.getFloat(o1)); // from instance object
+        assertEquals(1.0f, f0.getFloat(c0)); // from class object
         f0.setFloat(c0, 2.0f);
-        Assert.assertEquals(f0.getFloat(c0), 2.0f);
+        assertEquals(2.0f, f0.getFloat(c0));
         f0.setFloat(c0, 1.0f);
-        Assert.assertEquals(f0.getFloat(c0), 1.0f); // from class object
+        assertEquals(1.0f, f0.getFloat(c0)); // from class object
         f0 = fields[2];
-        Assert.assertEquals(f0.getName(), "PRIVATE_FINAL_DOUBLE");
-        Assert.assertEquals(f0.getType().getName(), "double");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "double");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "private static");
+        assertEquals("PRIVATE_FINAL_DOUBLE", f0.getName());
+        assertEquals("double", f0.getType().getName());
+        assertEquals("double", f0.getGenericType().getTypeName());
+        assertEquals("private static", Modifier.toString(f0.getModifiers()));
         f0.setAccessible(true);
-        Assert.assertEquals(f0.getDouble(o1), 0.1); // from instance object
-        Assert.assertEquals(f0.getDouble(c0), 0.1); // from class object
+        assertEquals(0.1, f0.getDouble(o1)); // from instance object
+        assertEquals(0.1, f0.getDouble(c0)); // from class object
         f0.setDouble(c0, 0.2);
-        Assert.assertEquals(f0.getDouble(c0), 0.2);
+        assertEquals(0.2, f0.getDouble(c0));
         f0 = fields[3];
-        Assert.assertEquals(f0.getName(), "stringlist");
-        Assert.assertEquals(f0.getType().getName(), "java.util.List");
-        Assert.assertEquals(f0.getGenericType().getTypeName(), "java.util.List<java.lang.String>");
-        Assert.assertEquals(Modifier.toString(f0.getModifiers()), "");
-        Assert.assertNull(f0.get(o1));
+        assertEquals("stringlist", f0.getName());
+        assertEquals("java.util.List", f0.getType().getName());
+        assertEquals("java.util.List<java.lang.String>", f0.getGenericType().getTypeName());
+        assertEquals("", Modifier.toString(f0.getModifiers()));
+        assertNull(f0.get(o1));
         f0.set(o1, new ArrayList<>(Arrays.asList("abc", "def")));
         @SuppressWarnings("unchecked")
         List<String> r = (List<String>) f0.get(o1);
-        Assert.assertEquals(r.get(0), "abc");
-        Assert.assertEquals(r.get(1), "def");
+        assertEquals("abc", r.get(0));
+        assertEquals("def", r.get(1));
     }
 }

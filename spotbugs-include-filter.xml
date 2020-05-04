@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter
+  xmlns="https://github.com/spotbugs/filter/3.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+  <Match>
+    <!--
+    for eclipse plugin bug category:
+    BAD_PRACTICE : "Bad practice"
+    MALICIOUS_CODE : "Malicious code vulnerability"
+    CORRECTNESS : "Correctness"
+    PERFORMANCE : "Performance"
+    SECURITY : "Security"
+    STYLE : "Dodgy code"
+    EXPERIMENTAL : "Experimental"
+    MT_CORRECTNESS : "Multithreaded correctness"
+    I18N : "Internationalization"
+    
+    see: https://spotbugs.readthedocs.io/en/latest/filter.html
+    see: https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html
+    see: https://spotbugs.readthedocs.io/ja/latest/filter.html
+    see: https://spotbugs.readthedocs.io/ja/latest/bugDescriptions.html
+     -->
+    <Bug category="BAD_PRACTICE,MALICIOUS_CODE,CORRECTNESS,PERFORMANCE,SECURITY,STYLE,MT_CORRECTNESS,I18N" />
+  </Match>
+
+</FindBugsFilter>

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks.jsch;
 
 import java.io.BufferedInputStream;
@@ -25,16 +26,17 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
+import javasnack.RunnableSnack;
 import javasnack.tool.ConsoleUtil;
 
-/**
- * @see https://qiita.com/tool-taro/items/ab68353970ee792163c6
- * @see https://dev.classmethod.jp/server-side/java/exec_remote_program/
- * @see http://www.jcraft.com/jsch/examples/Exec.java.html
+/* see:
+ * https://qiita.com/tool-taro/items/ab68353970ee792163c6
+ * https://dev.classmethod.jp/server-side/java/exec_remote_program/
+ * http://www.jcraft.com/jsch/examples/Exec.java.html
  */
-public class JSchRemoeExecPasswdAuthDemo implements Runnable {
+public class JSchRemoeExecPasswdAuthDemo implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         final String hostname = ConsoleUtil.readLine("hostname:");
         final int port = Integer.parseInt(ConsoleUtil.readLine("port num:"));
         final String username = ConsoleUtil.readLine("username:");

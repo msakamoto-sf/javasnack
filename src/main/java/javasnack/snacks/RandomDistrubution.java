@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks;
 
 import java.util.ArrayList;
@@ -21,9 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class RandomDistrubution implements Runnable {
+import javasnack.RunnableSnack;
+
+public class RandomDistrubution implements RunnableSnack {
     @Override
-    public void run() {
+    public void run(final String... args) {
         Map<String, Integer> seeds = new LinkedHashMap<String, Integer>();
         seeds.put("abc", 1);
         seeds.put("def", 2);
@@ -46,5 +49,4 @@ public class RandomDistrubution implements Runnable {
             System.out.println(distlist.get(randp));
         }
     }
-
 }

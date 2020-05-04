@@ -13,33 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks.perfs.map;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfLinkedHashMapFinePutGet implements Runnable {
+/**
+ * {@link LinkedHashMap#put(Object, Object)} と {@link LinkedHashMap#get(Object)} の処理時間を細かくダンプするサンプル。
+ * 対象のLinkedHashMapはバケット数16, スレッショルド 0.75 に設定している。
+ * put()/get()については全体的に HashMap 版と同様、全体的にコンスタントな傾向が確認できる。
+ * リンクリストの操作がある分、HashMap 版よりは時間がかかっている。TreeMap版よりは早い。
+ * 
+ * @author msakamoto
+ */
+public class PerfLinkedHashMapFinePutGet implements RunnableSnack {
 
-    static String DUMMY_FILLING = "";
-
-    long putting(LinkedHashMap<String, String> m, String key) {
+    long putting(LinkedHashMap<String, String> m, String key, final String filling) {
         long startTime = System.nanoTime();
-        m.put(key, DUMMY_FILLING);
+        m.put(key, filling);
         return System.nanoTime() - startTime;
     }
 
-    long getting(LinkedHashMap<String, String> m, String key) {
+    ElapsedWith<String> getting(LinkedHashMap<String, String> m, String key) {
         long startTime = System.nanoTime();
-        m.get(key);
-        return System.nanoTime() - startTime;
+        final String r = m.get(key);
+        return ElapsedWith.of(r, System.nanoTime() - startTime);
     }
+
+    static final int MASS = 500;
 
     @Override
-    public void run() {
+    public void run(final String... args) {
 
-        int MASS = 500;
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
@@ -48,23 +58,23 @@ public class PerfLinkedHashMapFinePutGet implements Runnable {
         LinkedHashMap<String, String> m = new LinkedHashMap<String, String>(16,
                 0.75f);
 
-        BigInteger putting_sum = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = putting(m, keys[i]);
+            long elapsed = putting(m, keys[i], RandomString.get(10, 30));
             System.out.println(String.format("put()[%d] = %d nano sec.", i,
                     elapsed));
-            putting_sum = putting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = putting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg1 = sumOfPutting.divide(BigInteger.valueOf(MASS)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < MASS; i++) {
-            long elapsed = getting(m, keys[i]);
+            long elapsed = getting(m, keys[i]).elapsed;
             System.out.println(String.format("get()[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(MASS)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(MASS)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format("put() avg = %d nano (%d milli) sec.",

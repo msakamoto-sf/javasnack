@@ -37,14 +37,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package javasnack.myutils;
 
 import java.util.Objects;
 
 /**
- * works > JDK 1.5 :)
- * 
  * @author sakamoto.gsyc.3s@gmail.com
+ */
+/* works > JDK 1.5 :)
  */
 public class HexDumper {
 

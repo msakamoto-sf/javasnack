@@ -1,0 +1,20 @@
+<configuration>
+<!--
+動作確認用の最低限度の設定ファイル。
+様々な設定デモを盛り込んだ例については logback-demo/ 以下の XML ファイルを参照。
+
+NOTE:
+java起動時のコマンドラインオプション -Dlogback.configurationFile=/path/to/config.xml で設定ファイルを指定できる。
+see: http://logback.qos.ch/manual/configuration.html#configFileProperty
+-->
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

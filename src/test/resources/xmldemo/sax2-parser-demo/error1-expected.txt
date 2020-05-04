@@ -1,0 +1,7 @@
+> Start document
+>> start[local: / qname:this](uri=[])
+>>    attrs[0].getLocalName() =xml
+>>    attrs[0].getQName()     =xml
+>>    attrs[0].getValue()     =is
+>> characters([
+])

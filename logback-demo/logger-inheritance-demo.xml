@@ -1,0 +1,43 @@
+<configuration debug="true" scan="true" scanPeriod="5 seconds" >
+<!--
+logger parent/child inheritance demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackLoggerInheritanceDemo
+
+configuration reference:
+http://logback.qos.ch/manual/configuration.html
+-->
+
+  <appender name="STDOUT1" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>stdout1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="STDOUT2" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>stdout2: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--
+  親のlogger設定を引き継ぐ。
+  -> DEBUG 以上が STDOUT1, STDOUT2 の両方に出力される。
+  -->
+  <logger name="logback.inheritance.demo.child1" level="DEBUG">
+    <appender-ref ref="STDOUT2" />
+  </logger>
+
+  <!--
+  additivity = false なので、親のlogger設定を引き継がない。
+  -> INFO以上が STDOUT2 にのみ出力される。
+  -->
+  <logger name="logback.inheritance.demo.child2" level="INFO" additivity="false">
+    <appender-ref ref="STDOUT2" />
+  </logger>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT1" />
+  </root>
+</configuration>

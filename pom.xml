@@ -4,15 +4,61 @@
 
   <groupId>javasnack</groupId>
   <artifactId>javasnack</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-java11-SNAPSHOT</version>
   <packaging>jar</packaging>
-
   <name>javasnack</name>
-  <url>http://maven.apache.org</url>
+  <description>Tinny Java (and other libraries) example, demo, excersise sample code.</description>
+  <url>https://github.com/msakamoto-sf/javasnack/</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/msakamoto-sf/javasnack/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:https://github.com/msakamoto-sf/javasnack.git</connection>
+    <developerConnection>scm:git:git@github.com:msakamoto-sf/javasnack</developerConnection>
+    <url>scm:git:git@github.com:msakamoto-sf/javasnack.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
+    <!-- see : https://maven.apache.org/general.html#encoding-warning  -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
+
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version.source>11</java.version.source>
+    <java.version.target>11</java.version.target>
+    <java.compiler.debug>true</java.compiler.debug>
+    <exec.mainClass>javasnack.Main</exec.mainClass>
+
+    <jmh.version>1.23</jmh.version>
+    <junit5.version>5.5.2</junit5.version>
+    <surefire.version>3.0.0-M3</surefire.version>
+
+    <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+    <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.28_custom.xml</checkstyle.config.location>
+    <!--
+    see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html
+    -> enforce specific version same to what eclipse checkstyle plugin is using at 2020-04.
+    -->
+    <maven-checkstyle-engine.version>8.31</maven-checkstyle-engine.version>
+
+    <!--
+    see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html
+    see: https://pmd.github.io/latest/pmd_userdocs_tools_maven.html#upgrading-the-pmd-version-at-runtime
+    -> Eclipse PMD Plugin 4.12.0.v20200424-1006 が使用しているバージョンに揃えた。
+    -->
+    <maven-pmd-engine.version>6.23.0</maven-pmd-engine.version>
+
   </properties>
 
   <repositories>
@@ -23,11 +69,32 @@
   </repositories>
 
   <dependencies>
+    <!-- provided -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.8</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- from org.openjdk.jmh:jmh-java-benchmark-archetype -->
+    <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${jmh.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${jmh.version}</version>
+        <scope>provided</scope>
+    </dependency>
+
     <!-- compile and runtime -->
     <dependency>
       <groupId>com.jcraft</groupId>
       <artifactId>jsch</artifactId>
-      <version>0.1.54</version>
+      <version>0.1.55</version>
     </dependency>
     <dependency>
       <groupId>subprojects</groupId>
@@ -37,194 +104,552 @@
     <dependency>
       <groupId>org.xeustechnologies</groupId>
       <artifactId>jcl-core</artifactId>
-      <version>2.4</version>
+      <version>2.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.1</version>
+      <version>3.9</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.4</version>
+      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.5</version>
+      <version>1.7.26</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.0.13</version>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.fusesource.jansi</groupId>
+      <artifactId>jansi</artifactId>
+      <version>1.18</version>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
-      <version>2.4.9</version>
+      <version>2.6.0</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.3.168</version>
+      <version>1.4.199</version>
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
-      <version>10.11.1.1</version>
+      <!--
+      2019-06-29: downgrade to 10.14.2.0
+      see: https://obataka.com/derby-inmemory-introduction/
+      -->
+      <version>10.14.2.0</version>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.flyway</groupId>
+      <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>2.3.1</version>
+      <version>5.2.4</version>
     </dependency>
     <dependency>
       <groupId>commons-dbutils</groupId>
       <artifactId>commons-dbutils</artifactId>
-      <version>1.5</version>
+      <version>1.7</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
-      <version>1.8.9</version>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.11.0</version>
+      <artifactId>groovy-json</artifactId>
+      <version>2.5.7</version>
     </dependency>
     <dependency>
       <groupId>net.arnx</groupId>
       <artifactId>jsonic</artifactId>
-      <version>1.3.3</version>
+      <version>1.3.10</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.3.3</version>
+      <version>2.9.10.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.2.4</version>
+      <version>2.8.5</version>
     </dependency>
     <dependency>
       <groupId>com.github.spullara.mustache.java</groupId>
       <artifactId>compiler</artifactId>
-      <version>0.8.14</version>
+      <version>0.9.6</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
-      <version>3.0</version>
+      <version>4.2.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject.extensions</groupId>
       <artifactId>guice-assistedinject</artifactId>
-      <version>3.0</version>
+      <version>4.2.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>17.0</version>
+      <version>27.1-jre</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
+      <version>5.4.0.201906121030-r</version>
+      <!--
+      テキストdiffのデモでは使用しないが、他と衝突する可能性のある依存性を除外しておく。
+      -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcpg-jdk15on</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcpkix-jdk15on</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.8</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.java-diff-utils</groupId>
+      <artifactId>java-diff-utils</artifactId>
+      <version>4.0</version>
+    </dependency>
+    <dependency>
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>4.8.62</version>
+    </dependency>
+
     <!-- test -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <!--
+      個別にJUnit5のパッケージを指定していたが、2019-09 の Eclipse/STSアップデート後
+      "no tests found with test runner junit 5" となりEclipseから動かなくなった。
+      またコンソールには "java.lang.NoClassDefFoundError: org/junit/platform/commons/PreconditionViolationException"
+      の例外が出力されていた。
+      ググったところ同様の症状が2019-09更新後に多発している。
+      - https://bugs.eclipse.org/bugs/show_bug.cgi?id=551298
+      - https://github.com/spring-projects/sts4/issues/371
+      以下を参考に aggregate パッケージにリプレースしたところ、解決した。
+      - https://stackoverflow.com/questions/57040675/java-lang-noclassdeffounderror-org-junit-platform-commons-preconditionviolation
+      - https://github.com/junit-team/junit5/issues/1773
+      -->
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit5.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.7</version>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.12.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-     <groupId>org.hamcrest</groupId>
-     <artifactId>hamcrest-all</artifactId>
-     <version>1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-testng</artifactId>
-      <version>1.4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-module-junit4</artifactId>
-      <version>1.4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
-      <version>1.4.12</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
+
     <pluginManagement>
       <plugins>
+
+        <!--
+        mvn checkstyle:checkstyle (<build>設定) と mvn site (<reporting>設定) で checkstyle の動作を揃えるため、
+        <build>の<pluginManagement>側で設定を調整する。
+        -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${maven-checkstyle-engine.version}</version>
+            </dependency>
+          </dependencies>
           <configuration>
-            <debug>true</debug>
-            <encoding>${project.build.sourceEncoding}</encoding>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <propertyExpansion>samedir=${project.basedir}/checkstyle-settings</propertyExpansion>
           </configuration>
         </plugin>
+
+        <!--
+        mvn spotbugs:check (<build>設定) と mvn site (<reporting>設定) で spotbugs の動作を揃えるため、
+        <build>の<pluginManagement>側で設定を調整する。
+        -->
         <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>3.1.12.2</version>
+          <dependencies>
+            <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+            <dependency>
+              <groupId>com.github.spotbugs</groupId>
+              <artifactId>spotbugs</artifactId>
+              <!--
+              see: https://spotbugs.readthedocs.io/en/latest/maven.html
+              see: https://spotbugs.readthedocs.io/ja/latest/maven.html
+              -> enforce specific version same to what eclipse spotbugs plugin is using at 2020-04.
+               -->
+              <version>4.0.1</version>
+            </dependency>
+          </dependencies>
           <!--
-          see:
-          1) http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi
-          2) http://confluence.highsource.org/display/~lexi/How+to+run+both+JUnit+and+TestNG+with+maven-surefire-plugin
-          3) http://jira.codehaus.org/browse/SUREFIRE-377
-          ... Christophe Furmaniak's solution seems smart in 1), Oct 29'11 at 17:26 post.
-          -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
+          see: https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html
+          see: https://spotbugs.github.io/spotbugs-maven-plugin/spotbugs-mojo.html
+           -->
           <configuration>
-            <reportsDirectory>${project.build.directory}/surefire-reports/junit</reportsDirectory>
-            <testNGArtifactName>none:none</testNGArtifactName>
+            <!--
+            see: https://spotbugs.readthedocs.io/ja/latest/filter.html
+            see: https://spotbugs.readthedocs.io/en/latest/filter.html
+            see: https://spotbugs.github.io/spotbugs-maven-plugin/usage.html
+             -->
+            <excludeFilterFile>${project.basedir}/spotbugs-exclude-filter.xml</excludeFilterFile>
+            <includeFilterFile>${project.basedir}/spotbugs-include-filter.xml</includeFilterFile>
+            <!--
+            maven plugin ではテストコードがデフォルトでは対象外なので、明示的に対象に含める。
+            (eclipse plugin ではデフォルトで対象に含めてくれる。)
+            -->
+            <includeTests>true</includeTests>
+            <!--
+            NOTE: 以下の設定値については maven plugin のドキュメントには特に説明が無い。
+            see: https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html
+            -> 以下のコメントにある値例については、コマンドライン実行時の説明 /
+            eclipse plugin 上で実際に選べる選択肢 / 実際にそれぞれの設定値で 
+            maven plugin の正常動作確認して検出結果を eclipse plugin 上での
+            各選択肢の結果と比較などして検証した結果となっている。
+            see: https://spotbugs.readthedocs.io/ja/latest/running.html
+            see: https://spotbugs.readthedocs.io/en/latest/running.html 
+             -->
+            <!--
+            "分析力"(eclipse plugin 上の表記)[Min/Less/Default/More/Max] を明示的に指定する。
+            "Default" = "More" と思われる。
+            eclipse plugin 上は [最小/デフォルト/最大] 表記となっていて、明記はないものの 最小=Min, 最大=Maxと思われる。
+            したがって eclipse plugin 上からは "Less" が選べないものと思われる。
+            eclipse plugin のデフォルトが Default で、特にそれで支障は無さそうなので、それに明示的に揃える。
+            see: https://spotbugs.readthedocs.io/en/latest/effort.html
+            see: https://spotbugs.readthedocs.io/ja/latest/effort.html
+             -->
+            <effort>Default</effort>
+            <!--
+            "報告する最小ランク"(eclipse plugin 上の表記)[1 - 20] を明示的に指定する。
+            maven plugin の場合のデフォルト値が不明だが、eclipse plugin のデフォルトが 15 で、
+            実際の検出内容も支障無さそうなので、それに明示的に揃える。
+            16以上にするとかなり細かい指摘も増えてくるが、役立つものもありそうなので、実プロダクトでは多少試行錯誤してみると良さそう。
+             -->
+            <maxRank>15</maxRank>
+            <!--
+            "レポートする最低の信頼度"(eclipse plugin 上の表記)[Low/Medium(=Default)/High] を明示的に指定する。
+            maven plugin の場合のデフォルト値は "Default" で eclipse plugin 側のデフォルト値 "Medium" と同等だが、
+            明示的に Medium として eclipse plugin 側の表記に揃える。
+             -->
+            <threshold>Medium</threshold>
+          </configuration>
+        </plugin>
+
+        <!--
+        see: https://pmd.github.io/
+        see: https://maven.apache.org/plugins/maven-pmd-plugin/
+        -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.13.0</version>
+          <configuration>
+            <rulesets>
+              <ruleset>${project.basedir}/javasnack-custom-pmd-rule.xml</ruleset>
+            </rulesets>
+            <!--
+            maven plugin ではテストコードがデフォルトでは対象外なので、明示的に対象に含める。
+            (eclipse plugin ではデフォルトで対象に含めてくれる。)
+            -->
+            <includeTests>true</includeTests>
+            <failOnViolation>true</failOnViolation>
+            <printFailingErrors>true</printFailingErrors>
+            <targetJdk>${java.version.target}</targetJdk>
           </configuration>
           <executions>
             <execution>
-              <phase>test</phase>
+              <!--
+              see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/violationChecking.html
+              see: https://pmd.github.io/latest/pmd_userdocs_tools_maven.html#integrated-into-the-build-process
+              -> run in verify phase
+              -->
               <goals>
-                <goal>test</goal>
+                <goal>check</goal>
+                <goal>cpd-check</goal>
               </goals>
-              <configuration>
-                <reportsDirectory>${project.build.directory}/surefire-reports/testng</reportsDirectory>
-                <junitArtifactName>none:none</junitArtifactName>
-                <testNGArtifactName>org.testng:testng</testNGArtifactName>
-              </configuration>
             </execution>
           </executions>
+          <dependencies>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-java</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-javascript</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-jsp</artifactId>
+              <version>${maven-pmd-engine.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.4.0</version>
-          <!-- DON'T SETUP DEFAULT CONFIGURATION -->
-          <!--
-          <configuration>
-            <mainClass>javasnack.cli.CliDemo1</mainClass>
-            <classpathScope>test</classpathScope>
-          </configuration>
-          -->
-          <!--  DON'T BIND exec:xxxx TO ANY PHASES. -->
-        </plugin>
+
       </plugins>
     </pluginManagement>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${java.version.source}</source>
+          <target>${java.version.target}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <debug>${java.compiler.debug}</debug>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <!--
+          see: https://junit.org/junit5/docs/current/user-guide/#writing-tests-tagging-and-filtering
+          see: https://junit.org/junit5/docs/current/user-guide/#running-tests-tag-expressions
+          see: https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-filter-tags
+          see: http://nowokay.hatenablog.com/entry/20171012/1507769090
+          see: https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html 
+          -->
+          <excludedGroups>junit5-tag-filter-2 | my-junit5-meta-annotation-2</excludedGroups>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <includes>
+            <!--
+            match to normal surefire test case filename patterns.
+            (separate by junit5 tag annotation)
+            -->
+            <include>**/Test*.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+          <groups>junit5-tag-filter-2 | my-junit5-meta-annotation-2</groups>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>${exec.mainClass}</Main-Class>
+                    <X-Compile-Source-JDK>${java.version.source}</X-Compile-Source-JDK>
+                    <X-Compile-Target-JDK>${java.version.target}</X-Compile-Target-JDK>
+                    <Specification-Title>${project.name}</Specification-Title>
+                    <Specification-Version>${project.version}</Specification-Version>
+                    <!-- don't use
+                    <Jenkins-Build-Tag>${BUILD_TAG}</Jenkins-Build-Tag>
+                    <Jenkins-Build-Id>${BUILD_ID}</Jenkins-Build-Id>
+                    <Git-Commit>${GIT_COMMIT}</Git-Commit>
+                    <Git-Branch>${GIT_BRANCH}</Git-Branch>
+                     -->
+                  </manifestEntries>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+              </transformers>
+              <filters>
+                <filter>
+                  <!-- NOTE : Bouncy Castle jar file contains META-INF/BCKEY.(DSA|SF) files, which cause
+                  'A JNI error has occurred, please check your installation and try again' +
+                  'Exception in thread "main" java.lang.SecurityException: Invalid signature file digest for Manifest main attributes'
+                  errors.
+                  -> filter-out these files, then works fine. (But is this good way in security perspective ... ?? )
+                  ref:
+                  https://stackoverflow.com/questions/22566191/exception-in-thread-main-java-lang-securityexception-invalid-signature-file-d
+                  https://stackoverflow.com/questions/30199035/how-can-i-tell-which-signed-jar-is-causing-maven-shade-plugin-to-fail
+                  https://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar
+                  https://stackoverflow.com/questions/43201230/create-dependency-folder-with-dependent-jars-with-maven-shade-plugin
+                  https://gist.github.com/leewin12/6505726
+                  # ooooooooops... lot of "SO" threads ... X(
+                  -->
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <!--
+          ${exec.mainClass} is mainClass property, so we need skip this configuration :)
+        <configuration>
+            <mainClass>${exec.mainClass}</mainClass>
+        </configuration>
+        -->
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>1.20</version>
+        <executions>
+          <execution>
+            <id>add-third-party</id>
+            <goals>
+              <goal>add-third-party</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+      see: https://stackoverflow.com/questions/51091539/maven-site-plugins-3-3-java-lang-classnotfoundexception-org-apache-maven-doxia
+      see: https://www.mkyong.com/maven/mvn-site-java-lang-classnotfoundexception-org-apache-maven-doxia-siterenderer-documentcontent/
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+
   </build>
+
+  <reporting>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.0.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <!-- see: https://maven.apache.org/jxr/maven-jxr-plugin/examples/linkjavadoc.html -->
+          <linkJavadoc>true</linkJavadoc>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${surefire.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </reporting>
 
 </project>

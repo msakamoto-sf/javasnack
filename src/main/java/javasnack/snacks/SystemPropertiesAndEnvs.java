@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks;
 
 import java.util.Map;
@@ -20,10 +21,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class SystemPropertiesAndEnvs implements Runnable {
+import javasnack.RunnableSnack;
+
+public class SystemPropertiesAndEnvs implements RunnableSnack {
 
     @Override
-    public void run() {
+    public void run(final String... args) {
         System.out.println("System.getenv():");
         Map<String, String> envs = System.getenv();
         for (Map.Entry<String, String> env : envs.entrySet()) {

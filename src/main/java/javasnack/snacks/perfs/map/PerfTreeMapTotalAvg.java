@@ -13,67 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.snacks.perfs.map;
 
 import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 
+import javasnack.RunnableSnack;
+import javasnack.snacks.perfs.ElapsedWith;
 import javasnack.tool.RandomString;
 
-public class PerfTreeMapTotalAvg implements Runnable {
+/**
+ * {@link TreeMap#put(Object, Object)} と {@link TreeMap#get(Object)} を大量に呼び出して処理時間の平均値を見るサンプル。
+ * 
+ * 平均値で見ると、処理時間が短い順で HashMap, LinkedHashMap(HashMapより若干増), TreeMap(HashMapの2倍以上増) の順になる。
+ *  
+ * @author msakamoto
+ */
+public class PerfTreeMapTotalAvg implements RunnableSnack {
 
-    static String DUMMY_FILLING = "";
-
-    long putting(TreeMap<String, String> m, String[] seeds, int mass) {
+    long putting(TreeMap<String, String> m, String[] seeds, int mass, final String filling) {
         long startTime = System.nanoTime();
         for (int i = 0; i < mass; i++) {
-            m.put(seeds[i], DUMMY_FILLING);
+            m.put(seeds[i], filling);
         }
         return System.nanoTime() - startTime;
     }
 
-    long getting(TreeMap<String, String> m, String[] keys, int mass) {
+    ElapsedWith<List<String>> getting(TreeMap<String, String> m, String[] keys, int mass) {
+        // put() のコストが一定範囲に収まるようにして、影響を平準化する。
+        final List<String> drop = new LinkedList<>();
         long startTime = System.nanoTime();
         for (int i = 0; i < mass; i++) {
-            m.get(keys[i]);
+            drop.add(m.get(keys[i]));
         }
-        return System.nanoTime() - startTime;
+        return ElapsedWith.of(drop, System.nanoTime() - startTime);
     }
+
+    static final int MASS = 500000;
+    static final int ITER = 50;
 
     @Override
-    public void run() {
+    public void run(final String... args) {
 
-        int MASS = 500000;
         String[] keys = new String[MASS];
         for (int i = 0; i < MASS; i++) {
             keys[i] = RandomString.get(10, 30);
         }
 
-        int ITER = 50;
-
         @SuppressWarnings("unchecked")
         TreeMap<String, String>[] maps = new TreeMap[ITER];
 
-        BigInteger putting_sum = new BigInteger("0");
+        BigInteger sumOfPutting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             TreeMap<String, String> m = new TreeMap<String, String>();
-            long elapsed = putting(m, keys, MASS);
+            long elapsed = putting(m, keys, MASS, RandomString.get(10, 30));
             maps[i] = m;
             System.out.println(String.format("puttings[%d] = %d nano sec.", i,
                     elapsed));
-            putting_sum = putting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfPutting = sumOfPutting.add(BigInteger.valueOf(elapsed));
         }
-        long avg1 = putting_sum.divide(BigInteger.valueOf(ITER)).longValue();
+        long avg1 = sumOfPutting.divide(BigInteger.valueOf(ITER)).longValue();
 
-        BigInteger getting_sum = new BigInteger("0");
+        BigInteger sumOfGetting = BigInteger.ZERO;
         for (int i = 0; i < ITER; i++) {
             TreeMap<String, String> m = maps[i];
-            long elapsed = getting(m, keys, MASS);
+            long elapsed = getting(m, keys, MASS).elapsed;
             System.out.println(String.format("gettings[%d] = %d nano sec.", i,
                     elapsed));
-            getting_sum = getting_sum.add(BigInteger.valueOf(elapsed));
+            sumOfGetting = sumOfGetting.add(BigInteger.valueOf(elapsed));
         }
-        long avg2 = getting_sum.divide(BigInteger.valueOf(ITER)).longValue();
+        long avg2 = sumOfGetting.divide(BigInteger.valueOf(ITER)).longValue();
 
         System.out.println("-----------------------------------------");
         System.out.println(String.format(

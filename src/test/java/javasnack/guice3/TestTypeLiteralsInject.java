@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.guice3;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
@@ -28,12 +29,14 @@ import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 
 /**
- * @see http://d.hatena.ne.jp/nodchip/20130126/1359161946
- * @author "Masahiko Sakamoto" <sakamoto.gsyc.3s@gmail.com>
+ * @author "Masahiko Sakamoto"(msakamoto-sf, sakamoto.gsyc.3s@gmail.com)
+ */
+/* see:
+ * http://d.hatena.ne.jp/nodchip/20130126/1359161946
  */
 public class TestTypeLiteralsInject {
     public interface AcceptGenericTypeInterface<T> {
-        public String getType(T t);
+        String getType(T t);
     }
 
     public static class AcceptGenericTypeImpl<T> implements
@@ -70,6 +73,6 @@ public class TestTypeLiteralsInject {
     public void testTypeLiteralsInject() {
         Injector i = Guice.createInjector(new TestGenericTypeModule());
         GenericTypeInjectee g = i.getInstance(GenericTypeInjectee.class);
-        assertEquals(g.getResult(100), "type = java.lang.Integer");
+        assertEquals("type = java.lang.Integer", g.getResult(100));
     }
 }

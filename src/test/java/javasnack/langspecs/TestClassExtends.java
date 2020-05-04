@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package javasnack.langspecs;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 public class TestClassExtends {
 
@@ -35,14 +37,14 @@ public class TestClassExtends {
     @Test
     public void testWhoAmI() {
         P1 p1 = new P1();
-        Assert.assertEquals(p1.whoami(), "P1");
+        assertThat(p1.whoami()).isEqualTo("P1");
         C1 c1 = new C1();
-        Assert.assertEquals(c1.whoami(), "C1");
+        assertThat(c1.whoami()).isEqualTo("C1");
         C2 c2 = new C2();
-        Assert.assertEquals(c2.whoami(), "C2");
+        assertThat(c2.whoami()).isEqualTo("C2");
 
         p1 = c1;
-        Assert.assertEquals(p1.whoami(), "C1");
+        assertThat(p1.whoami()).isEqualTo("C1");
     }
 
 }

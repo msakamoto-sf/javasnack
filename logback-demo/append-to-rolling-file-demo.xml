@@ -1,0 +1,84 @@
+<configuration debug="true">
+<!--
+RollingFileAppender demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackLoopDemo
+
+configuration reference:
+http://logback.qos.ch/manual/appenders.html#RollingFileAppender
+-->
+
+  <timestamp key="bySecond" datePattern="yyyyMMdd'_'HHmmss"/>
+  <timestamp key="byTime" datePattern="yyyyMMdd'_'HH"/>
+
+  <appender name="TIMEBASED1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- RollingFileAppender 自身の <file> は省略できる。 -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!--
+      複数の%dを使って year/month でディレクトリを分ける例。ディレクトリ部分には aux を指定する。
+      さらにその中で、ファイル名は分単位でrotateさせる。
+      -->
+      <fileNamePattern>logback-demo/append-to-rolling-file-demo/%d{yyyy/MM, aux}/timebased1.%d{yyyyMMdd_HHmm}.log</fileNamePattern>
+
+      <!--
+      maxHistory がログファイルの保持数、totalSizeCapが全ログファイルのサイズ合計のmaxリミット。
+      適用順は maxHistory が優先してチェックされ、次に totalSizeCap の順。
+      LogbackLoopDemo だと1分間に40KBほど出力するので、この例では totalSizeCap 500KB に到達するまで12.5分かかる。
+      maxHistory が 6 なので、6分経ったら先にそちらが発動し古いログが消される。
+      -> よって totalSizeCap によるリミット発動は発生しない。
+      (maxHistory を 13 以上にすれば、多分先に totalSizeCap のリミットが発動するはず)
+      -->
+      <maxHistory>6</maxHistory>
+      <totalSizeCap>500KB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+      <pattern>timebased1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="SIZE_AND_TIMEBASED1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!--
+      1時間でのrolling中に maxFileSize に到達したら %i でロールさせる例
+      + ファイル拡張子を .gz にすることでrolling時に圧縮させる例
+      -->
+      <fileNamePattern>logback-demo/append-to-rolling-file-demo/size-and-timebased1.%d{yyyyMMdd_HH}.%i.log.gz</fileNamePattern>
+
+      <!--
+      LogbackLoopDemo だと1分間に40KBほど出力するので、
+      この例では 5分ほどで maxFileSize に到達し、 %i によるrollingが発動するはず。
+      (maxHistory と totalSizeCap は適当)
+      -->
+      <maxFileSize>200KB</maxFileSize>
+      <maxHistory>6</maxHistory>
+      <totalSizeCap>500KB</totalSizeCap>
+    </rollingPolicy>
+    <encoder>
+      <pattern>size-and-timebased1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FIXED_WINDOWED1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- FixedWindowRollingPolicy では <file> 指定必須 -->
+    <file>logback-demo/append-to-rolling-file-demo/fixed-windowed1.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <fileNamePattern>logback-demo/append-to-rolling-file-demo/fixed-windowed1-%i.log.zip</fileNamePattern>
+      <minIndex>1</minIndex>
+      <maxIndex>3</maxIndex>
+    </rollingPolicy>
+    <!-- TriggeringPolicy が別途必要 -->
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <maxFileSize>100KB</maxFileSize>
+    </triggeringPolicy>
+    <encoder>
+      <pattern>fixed-windowed1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="TIMEBASED1" />
+    <appender-ref ref="SIZE_AND_TIMEBASED1" />
+    <appender-ref ref="FIXED_WINDOWED1" />
+  </root>
+</configuration>

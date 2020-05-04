@@ -1,0 +1,38 @@
+<configuration debug="true" scan="true" scanPeriod="5 seconds" >
+<!--
+filter and configuration file scanning demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackLoopDemo
+
+configuration reference:
+http://logback.qos.ch/manual/filters.html
+http://logback.qos.ch/manual/configuration_ja.html#autoScan
+-->
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+
+    <!--
+    無限ループで3秒おきにログ出力するsnackを使い、
+    Filter設定の動作をカスタムしてみて挙動変更を確認する。
+    via: scan="true" scanPeriod="5 seconds" なので、設定ファイル修正が5秒間隔で反映される。
+    -->
+    <!--
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>INFO</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+    -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>WARN</level>
+    </filter>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

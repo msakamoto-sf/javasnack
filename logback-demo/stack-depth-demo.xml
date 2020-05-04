@@ -1,0 +1,42 @@
+<configuration debug="true">
+<!--
+Stack Depth demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackStackDepthDemo
+
+configuration reference:
+http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout
+-->
+
+  <appender name="DEPTH1" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>\%ex: %d{ISO8601} [%thread] [%-5level] %logger - %msg%ex%nopex%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="DEPTH2" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>\%ex{short}: %d{ISO8601} [%thread] [%-5level] %logger - %msg%ex{short}%nopex%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="DEPTH3" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>\%ex{3}: %d{ISO8601} [%thread] [%-5level] %logger - %msg%ex{3}%nopex%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="DEPTH4" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>\%ex{full}: %d{ISO8601} [%thread] [%-5level] %logger - %msg%ex{full}%nopex%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="DEPTH1" />
+    <appender-ref ref="DEPTH2" />
+    <appender-ref ref="DEPTH3" />
+    <appender-ref ref="DEPTH4" />
+  </root>
+</configuration>
