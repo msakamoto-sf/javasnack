@@ -5,6 +5,9 @@ JavaDoc リファレンス:
 - https://docs.oracle.com/javase/jp/8/docs/api/java/util/regex/Pattern.html
 - https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html
 
+正規表現全般:
+
+- https://www.regular-expressions.info/
 
 ## 正規表現のテスト・可視化ツール
 

@@ -28,9 +28,9 @@ import lombok.Value;
 public class TestQuantifiersDemo {
     /* English - Japanese keyword translation map:
      * quantifier - 数量子/指定子
-     * greedy quantifier - 最長一致数量子/最大量指定子
-     * reluctant quantifier - 最短一致数量子/最小量指定子
-     * possessive quantifier - 強欲な数量子 / 絶対最大量指定子
+     * greedy quantifier - 最長一致数量子/最大量指定子 : ?, *, +
+     * reluctant (or lazy) quantifier - 最短一致数量子/最小量指定子 : ??, *?, +?
+     * possessive quantifier - 強欲な数量子 / 絶対最大量指定子 : ?+, *+, ++
      */
 
     @Value(staticConstructor = "of")
