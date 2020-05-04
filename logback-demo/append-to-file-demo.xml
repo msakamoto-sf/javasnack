@@ -1,0 +1,39 @@
+<configuration debug="true">
+<!--
+basic FileAppender demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackLoopDemo
+
+configuration reference:
+http://logback.qos.ch/manual/appenders.html#FileAppender
+-->
+
+  <!--
+  タイムスタンプ文字列を生成する例
+  via: http://logback.qos.ch/manual/appenders.html#uniquelyNamed
+  -->
+  <timestamp key="bySecond" datePattern="yyyyMMdd'_'HHmmss"/>
+  <timestamp key="byTime" datePattern="yyyyMMdd'_'HH"/>
+
+  <appender name="FILE1" class="ch.qos.logback.core.FileAppender">
+    <file>logback-demo/append-to-file1-${bySecond}.log</file>
+    <encoder>
+      <pattern>file1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE2" class="ch.qos.logback.core.FileAppender">
+    <file>logback-demo/append-to-file2-${byTime}.log</file>
+    <!-- 追加ではなく、常に先頭から上書きしていくデモ(未指定時のデフォルトはtrue) -->
+    <append>false</append>
+    <encoder>
+      <pattern>file2: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="FILE1" />
+    <appender-ref ref="FILE2" />
+  </root>
+</configuration>
