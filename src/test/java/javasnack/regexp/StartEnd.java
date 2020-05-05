@@ -27,19 +27,27 @@ public class StartEnd {
     public final int groupIndex;
     public final String groupText;
 
-    static StartEnd se(final int start, final int end, final int groupIndex, final String groupText) {
+    public static StartEnd se(final int start, final int end, final int groupIndex, final String groupText) {
         return StartEnd.of(start, end, groupIndex, groupText);
     }
 
-    static StartEnd se(final int start, final int end) {
+    public static StartEnd se(final int start, final int end) {
         return StartEnd.of(start, end, -1, "");
     }
 
-    static StartEnd se(final Matcher m) {
+    public static StartEnd se(final Matcher m) {
         return StartEnd.of(m.start(), m.end(), -1, "");
     }
 
-    static StartEnd se(final Matcher m, final int groupIndex) {
+    public static StartEnd se(final Matcher m, final int groupIndex) {
+        return StartEnd.of(m.start(groupIndex), m.end(groupIndex), groupIndex, m.group(groupIndex));
+    }
+
+    public static StartEnd se(final com.google.re2j.Matcher m) {
+        return StartEnd.of(m.start(), m.end(), -1, "");
+    }
+
+    public static StartEnd se(final com.google.re2j.Matcher m, final int groupIndex) {
         return StartEnd.of(m.start(groupIndex), m.end(groupIndex), groupIndex, m.group(groupIndex));
     }
 }
