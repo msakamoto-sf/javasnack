@@ -1,7 +1,5 @@
 ## TODO
 
-- Google re2j 検証
-  - https://github.com/google/re2j
 - jsoup 触ってみる。
   - https://jsoup.org/
   - https://qiita.com/opengl-8080/items/d4864bbc335d1e99a2d7
