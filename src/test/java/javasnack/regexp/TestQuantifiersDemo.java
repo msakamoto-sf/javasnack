@@ -16,14 +16,13 @@
 
 package javasnack.regexp;
 
+import static javasnack.regexp.StartEnd.se;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
-
-import lombok.Value;
 
 public class TestQuantifiersDemo {
     /* English - Japanese keyword translation map:
@@ -32,30 +31,6 @@ public class TestQuantifiersDemo {
      * reluctant (or lazy) quantifier - 最短一致数量子/最小量指定子 : ??, *?, +?
      * possessive quantifier - 強欲な数量子 / 絶対最大量指定子 : ?+, *+, ++
      */
-
-    @Value(staticConstructor = "of")
-    static class StartEnd {
-        private final int start;
-        private final int end;
-        private final int groupIndex;
-        private final String groupText;
-    }
-
-    static StartEnd se(final int start, final int end, final int groupIndex, final String groupText) {
-        return StartEnd.of(start, end, groupIndex, groupText);
-    }
-
-    static StartEnd se(final int start, final int end) {
-        return StartEnd.of(start, end, -1, "");
-    }
-
-    static StartEnd se(final Matcher m) {
-        return StartEnd.of(m.start(), m.end(), -1, "");
-    }
-
-    static StartEnd se(final Matcher m, final int groupIndex) {
-        return StartEnd.of(m.start(groupIndex), m.end(groupIndex), groupIndex, m.group(groupIndex));
-    }
 
     @Test
     public void testZeroOrMoreTimesDemo() {
