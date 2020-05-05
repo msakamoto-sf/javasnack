@@ -30,6 +30,9 @@ public class TestAtomicGroupDemo {
      * ref[2]: https://www.logicbig.com/tutorials/core-java-tutorial/java-regular-expressions/atomic-groups.html
      * ref[3]: https://www.regular-expressions.info/atomic.html
      * ref[4]: https://stackoverflow.com/questions/18292247/difference-between-possessive-quantifier-and-once-only-subpatterns
+     * ref[5]: https://www.javaworld.com/article/2077757/optimizing-regular-expressions-in-java.html
+     * 
+     * NOTE: ref[5] では "independent group" という表記も使われている。
      */
 
     @Test
