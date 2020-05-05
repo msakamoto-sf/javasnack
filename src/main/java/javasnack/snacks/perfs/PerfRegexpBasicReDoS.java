@@ -54,55 +54,55 @@ public class PerfRegexpBasicReDoS implements RunnableSnack {
     public void run(final String... args) throws IOException {
         final OutputStream nullstream = OutputStream.nullOutputStream();
         final int avgnum10 = 10;
-        final int thresholdSeconds = 20;
 
         // 文字列終端で数回のバックトラックが発生するものの、線形増加する正規表現の例
         benchmark(Pattern.compile(".*ab.*cd"), 10, (num) -> {
             return "xxabyycd".repeat(num * 1000);
-        }, nullstream, avgnum10, thresholdSeconds);
+        }, nullstream, avgnum10);
 
         /* バックトラックにより O(2^n) の指数関数的にマッチ時間が増大する例
-         * ・・・のハズだが、java11で実行してみると瞬時に終わってしまい、指数関数的な増加傾向は確認できない。
+         * ・・・のハズだが、java11で実行してみると指数関数的な増加傾向は確認できない。
+         * micro-seconds単位では緩やかな線形増加の傾向が見られる。
          * 以下の記事によると java9 でredos対策で regexp が改良されたらしく、その影響と思われる。
          * https://stackoverflow.com/questions/53048859/is-java-redos-vulnerable
          */
         benchmark(Pattern.compile("(a+)+"), 100, (num) -> {
             // repeat数を100倍にしてもすぐ終わってしまう。(java11)
             return "a".repeat(num * 100) + "b";
-        }, nullstream, avgnum10, thresholdSeconds);
+        }, nullstream, avgnum10);
 
         // これも瞬時に終わる。micro-seconds単位では線形増加の傾向が見られる。
         benchmark(Pattern.compile("(a*)*"), 100, (num) -> {
             // repeat数を100倍にしてもすぐ終わってしまう。(java11)
             return "a".repeat(num * 100) + "b";
-        }, nullstream, avgnum10, thresholdSeconds);
+        }, nullstream, avgnum10);
 
         // これも瞬時に終わる。micro-seconds単位では線形増加の傾向が見られる。
         benchmark(Pattern.compile("([a-zA-Z]+)*"), 100, (num) -> {
             // repeat数を100倍にしてもすぐ終わってしまう。(java11)
             return "a".repeat(num * 100) + "b";
-        }, nullstream, avgnum10, thresholdSeconds);
+        }, nullstream, avgnum10);
 
-        /* これも指数関数的に増加する例のはずだが、java11ではすぐに終わるパターン。
+        /* これも指数関数的に増加する例のはずだが、java11では線形増加傾向になるパターン。
          * 代わりに repeat 数を20以上になってまもなく StackOverflowError が発生する。
          */
         benchmark(Pattern.compile("(a|aa)+"), 100, (num) -> {
             // repeat数を100倍にしてもすぐ終わってしまう。(java11)
             return "a".repeat(num * 100) + "b";
-        }, nullstream, avgnum10, thresholdSeconds);
+        }, nullstream, avgnum10);
     }
 
     void benchmark(final Pattern pattern, final int numOfRepeat, final Function<Integer, String> gen,
-            final OutputStream outputstream, final int avgnum, final int threasholdSeconds) throws IOException {
+            final OutputStream outputstream, final int avgnum) throws IOException {
         try {
-            benchmark0(pattern, numOfRepeat, gen, outputstream, avgnum, threasholdSeconds);
+            benchmark0(pattern, numOfRepeat, gen, outputstream, avgnum);
         } catch (Throwable t) {
             System.err.print("caught " + t.getClass() + ":" + t.getMessage());
         }
     }
 
     void benchmark0(final Pattern pattern, final int numOfRepeat, final Function<Integer, String> gen,
-            final OutputStream outputstream, final int avgnum, final int threasholdSeconds) throws IOException {
+            final OutputStream outputstream, final int avgnum) throws IOException {
         System.out.println("pattern=[" + pattern.pattern() + "]");
         for (int i = 1; i <= numOfRepeat; i++) {
             final String s = gen.apply(i);
@@ -117,9 +117,6 @@ public class PerfRegexpBasicReDoS implements RunnableSnack {
                 outputstream.write(m.find() ? (byte) 1 : (byte) 0);
                 final long elapsed = (System.nanoTime() - started);
                 sumOfElapsed += elapsed;
-                if (elapsed > (threasholdSeconds * 1_000_000_000)) {
-                    break;
-                }
             }
             long avg = sumOfElapsed / (avgnum * 1000);
             System.out.println(String.format("avg[%,10d us] repeat#%02d", avg, i));
