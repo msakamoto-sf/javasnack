@@ -341,7 +341,9 @@ public class TestClassNames {
      * 
      * 実のところ {@link ClassLoader#loadClass(String)} の javadoc では binary name と明記
      * されているので、バイナリ名が正と思われる。
-     *  
+     * 
+     * @param getName {@link Class#forName(String)} に渡す文字列
+     * @param expectedClass 期待される Class
      * @throws ClassNotFoundException class not found
      */
     @ParameterizedTest
