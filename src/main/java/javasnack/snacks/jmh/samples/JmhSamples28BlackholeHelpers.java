@@ -26,7 +26,7 @@ import org.openjdk.jmh.infra.Blackhole;
 @Fork(1)
 @State(Scope.Thread)
 public class JmhSamples28BlackholeHelpers {
-    /**
+    /*
      * Sometimes you need the black hole not in @Benchmark method, but in
      * helper methods, because you want to pass it through to the concrete
      * implementation which is instantiated in helper methods. In this case,
