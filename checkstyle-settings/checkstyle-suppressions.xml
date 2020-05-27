@@ -2,6 +2,18 @@
 <!DOCTYPE suppressions PUBLIC
   "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
   "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<!--
+WARNING: checkstyleのsuppression filter では、filesはOSごとのファイルシステムにおけるファイルパスへの正規表現を指定する。
+そのため directory separator に "/" や "\\" だけを使ってしまうと unix でのみ / Windows でのみ suppression filter が動き、
+別のOSでは動かないという現象が発生する。
+解決策として directory separator には [/\\] を使うこと。
+see:
+https://github.com/checkstyle/checkstyle/issues/3744
+https://github.com/checkstyle/checkstyle/pull/7210
+https://rolf-engelhard.de/2012/11/using-checkstyles-suppression-filters-on-windows-and-linux/
+https://stackoverflow.com/questions/58236549/maven-on-windows-checkstyle-plug-in-does-not-apply-suppression-filter
+(割と昔からあるトリビアらしい上に checkstyle へのissueについてもpullreq作成後放置されたためか取り込まれずcloseしてしまってる)
+-->
 
 <suppressions>
   <suppress checks="LineLengthCheck" files="TestUnicodeNormalize1.java" lines="140-160" />
