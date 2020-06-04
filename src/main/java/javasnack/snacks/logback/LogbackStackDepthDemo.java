@@ -45,16 +45,16 @@ public class LogbackStackDepthDemo implements RunnableSnack {
 
     void stack5() {
         final Logger logger = LoggerFactory.getLogger(this.getClass());
-        logger.trace("basic \n demo");
-        logger.debug("basic \n demo");
-        logger.info("basic \n demo");
-        logger.warn("basic \n demo");
-        logger.error("basic \n demo");
+        logger.trace("basic \n demo (日本語)");
+        logger.debug("basic \n demo (日本語)");
+        logger.info("basic \n demo (日本語)");
+        logger.warn("basic \n demo (日本語)");
+        logger.error("basic \n demo (日本語)");
 
-        logger.trace("basic \n demo (exception)", new RuntimeException("trace-level"));
-        logger.debug("basic \n demo (exception)", new RuntimeException("debug-level"));
-        logger.info("basic \n demo (exception)", new RuntimeException("info-level"));
-        logger.warn("basic \n demo (exception)", new RuntimeException("warn-level"));
-        logger.error("basic \n demo (exception)", new RuntimeException("error-level"));
+        logger.trace("basic \n demo (日本語) (exception)", new RuntimeException("trace-level"));
+        logger.debug("basic \n demo (日本語) (exception)", new RuntimeException("debug-level"));
+        logger.info("basic \n demo (日本語) (exception)", new RuntimeException("info-level"));
+        logger.warn("basic \n demo (日本語) (exception)", new RuntimeException("warn-level"));
+        logger.error("basic \n demo (日本語) (exception)", new RuntimeException("error-level"));
     }
 }

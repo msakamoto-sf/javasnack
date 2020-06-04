@@ -55,11 +55,11 @@ public class LogbackLoopWithMarkerDemo implements RunnableSnack {
         final Logger logger = LoggerFactory.getLogger(this.getClass());
         while (true) {
             final Marker m = MarkerFactory.getMarker(RandomString.get(20));
-            logger.trace(m, "basic demo");
-            logger.debug(m, "basic demo");
-            logger.info(m, "basic demo");
-            logger.warn(m, "basic demo");
-            logger.error(m, "basic demo");
+            logger.trace(m, "basic demo (日本語)");
+            logger.debug(m, "basic demo (日本語)");
+            logger.info(m, "basic demo (日本語)");
+            logger.warn(m, "basic demo (日本語)");
+            logger.error(m, "basic demo (日本語)");
         }
     }
 }

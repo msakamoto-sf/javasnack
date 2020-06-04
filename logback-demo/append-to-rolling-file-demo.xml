@@ -33,6 +33,7 @@ http://logback.qos.ch/manual/appenders.html#RollingFileAppender
       <totalSizeCap>500KB</totalSizeCap>
     </rollingPolicy>
     <encoder>
+      <charset>UTF-8</charset>
       <pattern>timebased1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
     </encoder>
   </appender>
@@ -55,6 +56,7 @@ http://logback.qos.ch/manual/appenders.html#RollingFileAppender
       <totalSizeCap>500KB</totalSizeCap>
     </rollingPolicy>
     <encoder>
+      <charset>UTF-8</charset>
       <pattern>size-and-timebased1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
     </encoder>
   </appender>
@@ -72,6 +74,7 @@ http://logback.qos.ch/manual/appenders.html#RollingFileAppender
       <maxFileSize>100KB</maxFileSize>
     </triggeringPolicy>
     <encoder>
+      <charset>UTF-8</charset>
       <pattern>fixed-windowed1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
     </encoder>
   </appender>

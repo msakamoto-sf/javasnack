@@ -28,17 +28,17 @@ public class LogbackLoopDemo implements RunnableSnack {
         final Logger logger = LoggerFactory.getLogger(this.getClass());
         System.out.println("infinite log leep (sleep 3sec), Ctrl-C to exit.");
         while (true) {
-            logger.trace("basic demo");
-            logger.debug("basic demo");
-            logger.info("basic demo");
-            logger.warn("basic demo");
-            logger.error("basic demo");
+            logger.trace("basic demo(日本語)");
+            logger.debug("basic demo(日本語)");
+            logger.info("basic demo(日本語)");
+            logger.warn("basic demo(日本語)");
+            logger.error("basic demo(日本語)");
 
-            logger.trace("basic demo (exception)", new RuntimeException("trace-level"));
-            logger.debug("basic demo (exception)", new RuntimeException("debug-level"));
-            logger.info("basic demo (exception)", new RuntimeException("info-level"));
-            logger.warn("basic demo (exception)", new RuntimeException("warn-level"));
-            logger.error("basic demo (exception)", new RuntimeException("error-level"));
+            logger.trace("basic demo(日本語) (exception)", new RuntimeException("trace-level"));
+            logger.debug("basic demo(日本語) (exception)", new RuntimeException("debug-level"));
+            logger.info("basic demo(日本語) (exception)", new RuntimeException("info-level"));
+            logger.warn("basic demo(日本語) (exception)", new RuntimeException("warn-level"));
+            logger.error("basic demo(日本語) (exception)", new RuntimeException("error-level"));
             Sleep.seconds(3);
         }
     }

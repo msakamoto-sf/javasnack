@@ -25,31 +25,31 @@ public class LogbackLoggerInheritanceDemo implements RunnableSnack {
     @Override
     public void run(final String... args) {
         final Logger logger0 = LoggerFactory.getLogger(this.getClass());
-        logger0.trace("logger0 demo");
-        logger0.debug("logger0 demo");
-        logger0.info("logger0 demo");
-        logger0.warn("logger0 demo");
-        logger0.error("logger0 demo");
+        logger0.trace("logger0 demo(日本語)");
+        logger0.debug("logger0 demo(日本語)");
+        logger0.info("logger0 demo(日本語)");
+        logger0.warn("logger0 demo(日本語)");
+        logger0.error("logger0 demo(日本語)");
 
         final Logger logger = LoggerFactory.getLogger("logback.inheritance.demo");
-        logger.trace("logger demo");
-        logger.debug("logger demo");
-        logger.info("logger demo");
-        logger.warn("logger demo");
-        logger.error("logger demo");
+        logger.trace("logger demo(日本語)");
+        logger.debug("logger demo(日本語)");
+        logger.info("logger demo(日本語)");
+        logger.warn("logger demo(日本語)");
+        logger.error("logger demo(日本語)");
 
         final Logger logger1 = LoggerFactory.getLogger("logback.inheritance.demo.child1");
-        logger1.trace("logger1 demo");
-        logger1.debug("logger1 demo");
-        logger1.info("logger1 demo");
-        logger1.warn("logger1 demo");
-        logger1.error("logger1 demo");
+        logger1.trace("logger1 demo(日本語)");
+        logger1.debug("logger1 demo(日本語)");
+        logger1.info("logger1 demo(日本語)");
+        logger1.warn("logger1 demo(日本語)");
+        logger1.error("logger1 demo(日本語)");
 
         final Logger logger2 = LoggerFactory.getLogger("logback.inheritance.demo.child2");
-        logger2.trace("logger2 demo");
-        logger2.debug("logger2 demo");
-        logger2.info("logger2 demo");
-        logger2.warn("logger2 demo");
-        logger2.error("logger2 demo");
+        logger2.trace("logger2 demo(日本語)");
+        logger2.debug("logger2 demo(日本語)");
+        logger2.info("logger2 demo(日本語)");
+        logger2.warn("logger2 demo(日本語)");
+        logger2.error("logger2 demo(日本語)");
     }
 }

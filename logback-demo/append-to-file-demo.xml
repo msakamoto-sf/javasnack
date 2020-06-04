@@ -19,6 +19,7 @@ http://logback.qos.ch/manual/appenders.html#FileAppender
   <appender name="FILE1" class="ch.qos.logback.core.FileAppender">
     <file>logback-demo/append-to-file1-${bySecond}.log</file>
     <encoder>
+      <charset>UTF-8</charset>
       <pattern>file1: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
     </encoder>
   </appender>
@@ -28,6 +29,7 @@ http://logback.qos.ch/manual/appenders.html#FileAppender
     <!-- 追加ではなく、常に先頭から上書きしていくデモ(未指定時のデフォルトはtrue) -->
     <append>false</append>
     <encoder>
+      <charset>UTF-8</charset>
       <pattern>file2: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
     </encoder>
   </appender>
