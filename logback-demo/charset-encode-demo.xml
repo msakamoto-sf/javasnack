@@ -1,0 +1,41 @@
+<configuration debug="true">
+<!--
+charset encode
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackBasicUsageDemo
+
+configuration reference:
+http://logback.qos.ch/manual/encoders.html#PatternLayoutEncoder
+-->
+
+  <appender name="FILE1" class="ch.qos.logback.core.FileAppender">
+    <file>logback-demo/charset-encode-utf8.log</file>
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>utf8: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE2" class="ch.qos.logback.core.FileAppender">
+    <file>logback-demo/charset-encode-sjis.log</file>
+    <encoder>
+      <charset>Shift_JIS</charset>
+      <pattern>sjis: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="FILE3" class="ch.qos.logback.core.FileAppender">
+    <file>logback-demo/charset-encode-eucjp.log</file>
+    <encoder>
+      <charset>EUC-JP</charset>
+      <pattern>eucjp: %d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="FILE1" />
+    <appender-ref ref="FILE2" />
+    <appender-ref ref="FILE3" />
+  </root>
+</configuration>
