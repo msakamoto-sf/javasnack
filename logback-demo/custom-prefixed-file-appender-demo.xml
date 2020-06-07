@@ -1,0 +1,24 @@
+<configuration debug="true">
+<!--
+custom appender demo
+
+how to demo : java -Dlogback.configurationFile=(this file path) -jar xxxx.jar
+-> run LogbackBasicUsageDemo
+
+configuration reference:
+http://logback.qos.ch/manual/appenders.html#FileAppender
+-->
+
+  <appender name="CUSTOM" class="javasnack.snacks.logback.CustomPrefixedFileAppender">
+    <filename>logback-demo/custom-prefixed-file-appender-demo.log</filename>
+    <prefix>日本語hello:</prefix>
+    <encoder>
+      <charset>UTF-8</charset>
+      <pattern>%d{ISO8601} [%thread] [%-5level] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="TRACE">
+    <appender-ref ref="CUSTOM" />
+  </root>
+</configuration>
