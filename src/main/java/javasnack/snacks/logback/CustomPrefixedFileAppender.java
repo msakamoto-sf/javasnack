@@ -27,6 +27,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 public class CustomPrefixedFileAppender extends AppenderBase<ILoggingEvent> {
+    /* see:
+     * - http://logback.qos.ch/manual/appenders.html#WriteYourOwnAppender
+     * - https://www.baeldung.com/custom-logback-appender
+     */
 
     private String filename = null;
 
