@@ -89,6 +89,9 @@ public class Test04StringOps {
         sb1a = new StringBuilder("abc");
         assertThat(sb1a.length()).isEqualTo(3);
 
+        // StringBuilder は length() で長さを取る。size() は無い。
+        //sb1a.size();
+
         StringBuilder sb1b = new StringBuilder("abc");
         // >#>POINT<#< StringBuilder#equals() は中身まではチェックしない。
         assertThat(sb1a.equals(sb1b)).isFalse();
@@ -102,6 +105,7 @@ public class Test04StringOps {
         /* >#>POINT<#<
          * StringBuilder は mutable で、文字列を編集する操作では元のデータを変更する。
          * 以下は戻り値で元の StringBuilder 参照を返すので、method-chainを使える。
+         * - insert()
          * - append()
          * - reverse()
          * - replace()
@@ -152,5 +156,34 @@ public class Test04StringOps {
         assertThat(sb4.substring(2, 5)).isEqualTo("WcB");
         // substring については元データ変更は無し。
         assertThat(sb4.toString()).isEqualTo("aZWcBCD");
+
+        // StringBuilder には以下のメソッドは存在しない。
+        /*
+        sb4.concat();
+        sb4.delete();
+        sb4.deleteAll();
+        sb4.remove();
+        sb4.removeAll();
+        */
+    }
+
+    @Test
+    public void testStringBuilderInsertion() {
+        final StringBuilder sb1 = new StringBuilder("abcdef");
+        sb1.insert(0, "xy");
+        assertThat(sb1.toString()).isEqualTo("xyabcdef");
+        sb1.insert(7, "XX");
+        assertThat(sb1.toString()).isEqualTo("xyabcdeXXf");
+        sb1.insert(10, "YY"); // sb1.length()
+        assertThat(sb1.toString()).isEqualTo("xyabcdeXXfYY");
+        String s1 = null;
+        sb1.insert(0, s1);
+        assertThat(sb1.toString()).isEqualTo("nullxyabcdeXXfYY");
+        sb1.append(s1);
+        assertThat(sb1.toString()).isEqualTo("nullxyabcdeXXfYYnull");
+        sb1.insert(1, new char[] { 'A', 'B', 'C', 'D', 'E' }, 1, 3);
+        assertThat(sb1.toString()).isEqualTo("nBCDullxyabcdeXXfYYnull");
+        sb1.insert(2, "helloworld", 3, 8);
+        assertThat(sb1.toString()).isEqualTo("nBloworCDullxyabcdeXXfYYnull");
     }
 }
