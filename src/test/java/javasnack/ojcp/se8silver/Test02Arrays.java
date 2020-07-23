@@ -49,6 +49,10 @@ public class Test02Arrays {
         // bracketが無かったり、型名の前にbracketがあるのはさすがに compile error
         //int ar4 = new int[] { 1, 2, 3 };
         //[]int ar5 = new int[] { 1, 2, 3 };
+
+        // >#>POINT<#< : 配列は参照型として扱われるので、nullを代入できる。
+        ar3 = null;
+        assertThat(ar3).isNull();
     }
 
     @Test
