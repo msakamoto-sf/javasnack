@@ -45,4 +45,7 @@ https://stackoverflow.com/questions/58236549/maven-on-windows-checkstyle-plug-in
   <!-- JMHサンプルの都合上、読みやすさを考えるとどうしても機械的なcheckstyleチェックを破らざるを得なかった。 -->
   <suppress checks=".*" files="JmhSamples22FalseSharing.java" />
 
+  <!-- OJCP 関連は意図的に不自然なサンプルコードを含むことがあるので、全体的に除外する。 -->
+  <suppress checks=".*" files="test[/\\]javasnack[/\\]ojcp[/\\]" />
+
 </suppressions>
