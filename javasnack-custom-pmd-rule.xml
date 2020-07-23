@@ -16,6 +16,7 @@
     </description>
 
     <exclude-pattern>.*/make/findbugs/angry/.*</exclude-pattern>
+    <exclude-pattern>.*/javasnack/ojcp/.*</exclude-pattern>
     <!-- なぜかわからないが "target/" から始めると eclipse pmd plugin 側で認識されず、 ".*/" で始めると認識された。 -->
     <exclude-pattern>.*/target/generated-.*</exclude-pattern>
 
