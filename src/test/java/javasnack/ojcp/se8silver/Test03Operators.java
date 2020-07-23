@@ -127,6 +127,11 @@ public class Test03Operators {
         assertThat(a++ != ++b).isTrue(); // 17 != 18
         assertThat(a).isEqualTo(18);
         assertThat(b).isEqualTo(18);
+
+        // >#>POINT<#< : 左辺の評価と演算が終わってから右辺の評価と演算に進む。
+        // -> 左辺の a++ で評価値は 18, その後++により19になったのが右辺の評価値になる。
+        assertThat(a++ == a++).isFalse(); // 18 == 19 -> false
+        assertThat(a).isEqualTo(20);
     }
 
     @Test
