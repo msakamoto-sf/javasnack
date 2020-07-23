@@ -46,6 +46,6 @@ https://stackoverflow.com/questions/58236549/maven-on-windows-checkstyle-plug-in
   <suppress checks=".*" files="JmhSamples22FalseSharing.java" />
 
   <!-- OJCP 関連は意図的に不自然なサンプルコードを含むことがあるので、全体的に除外する。 -->
-  <suppress checks=".*" files="test[/\\]javasnack[/\\]ojcp[/\\]" />
+  <suppress checks=".*" files="javasnack[/\\]ojcp[/\\]" />
 
 </suppressions>
