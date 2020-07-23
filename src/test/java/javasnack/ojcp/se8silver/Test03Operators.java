@@ -1,6 +1,8 @@
 package javasnack.ojcp.se8silver;
 
 import static javasnack.ojcp.OjcpTools.assertLines;
+import static javasnack.ojcp.OjcpTools.returnFalse;
+import static javasnack.ojcp.OjcpTools.returnTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.assertj.core.data.Offset;
@@ -125,16 +127,6 @@ public class Test03Operators {
         assertThat(a++ != ++b).isTrue(); // 17 != 18
         assertThat(a).isEqualTo(18);
         assertThat(b).isEqualTo(18);
-    }
-
-    boolean returnTrue(final StringWriterPrinter swp, final String msg) {
-        swp.out.println(msg);
-        return true;
-    }
-
-    boolean returnFalse(final StringWriterPrinter swp, final String msg) {
-        swp.out.println(msg);
-        return false;
     }
 
     @Test
