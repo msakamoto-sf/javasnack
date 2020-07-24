@@ -26,6 +26,14 @@ public class Test08Objects {
     boolean iboolean;
     String iString;
 
+    // instance/static で同じフィールド名/メソッド名は使えない。
+    //static byte ibyte;
+    void instanceMethod() {
+    }
+
+    //static void instanceMethod() {
+    //}
+
     static byte sibyte;
     static short sishort;
     static int siint;
