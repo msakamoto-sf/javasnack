@@ -213,6 +213,10 @@ public class Test08Objects {
     public void testMethodOverloadDemo() {
         MethodOverloadDemo o1 = new MethodOverloadDemo();
         assertThat(o1.m1()).isEqualTo("hello");
+        /* >#>POINT<#<:
+         * overload されたメソッドを呼び出す優先順位:
+         * 完全一致 > implicit type cast > auto boxing > varargs
+         */
         assertThat(o1.m1(10)).isEqualTo("int:10");
         long longv1 = 1_000_000_000_000L;
         assertThat(o1.m1(longv1)).isEqualTo("long:1000000000000");
