@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import javasnack.tool.StringWriterPrinter;
 
+@SuppressWarnings("unused")
 public class Test06SwitchDemos {
 
     @Test
