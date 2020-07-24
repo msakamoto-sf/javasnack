@@ -156,6 +156,10 @@ public class Test11TypeCastsAndAutoBoxings {
             final C3 o3z = (C3) o2;
         }).isInstanceOf(ClassCastException.class);
 
+        // instanceof の右辺がインスタンスは compile error
+        //assertThat(o1 instanceof o1).isTrue();
+        // instanceof の左辺がクラスは compiile error
+        //assertThat(C1 instanceof C1).isTrue();
         assertThat(o1 instanceof C1).isTrue();
         assertThat(o1 instanceof C2).isFalse();
         assertThat(o1 instanceof C3).isFalse();
