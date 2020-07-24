@@ -136,6 +136,10 @@ public class Test08Objects {
             return "int:" + i;
         }
 
+        public String m1(long i) {
+            return "long:" + i;
+        }
+
         // >#>POINT<#<: 戻り値の型 + 引数セットが異なれば overload 可能
         public void m1(StringBuilder modify) {
             modify.append("aaa");
@@ -210,6 +214,8 @@ public class Test08Objects {
         MethodOverloadDemo o1 = new MethodOverloadDemo();
         assertThat(o1.m1()).isEqualTo("hello");
         assertThat(o1.m1(10)).isEqualTo("int:10");
+        long longv1 = 1_000_000_000_000L;
+        assertThat(o1.m1(longv1)).isEqualTo("long:1000000000000");
         StringBuilder sb = new StringBuilder("xxx");
         o1.m1(sb);
         assertThat(sb.toString()).isEqualTo("xxxaaa");
