@@ -3,6 +3,8 @@ package javasnack.ojcp.se8silver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 public class Test11TypeCastsAndAutoBoxings {
@@ -126,6 +128,9 @@ public class Test11TypeCastsAndAutoBoxings {
     static class D4 {
     }
 
+    static abstract class D5 {
+    }
+
     @Test
     public void testReferencialTypeAndInstanceOfDemo() {
         final Object o0 = new Object();
@@ -160,8 +165,11 @@ public class Test11TypeCastsAndAutoBoxings {
         assertThat(o3 instanceof C1).isTrue();
         assertThat(o3 instanceof C2).isTrue();
         assertThat(o3 instanceof C3).isTrue();
-        // >#>POINT<#< : 継承関係の無いクラスを指定すると compile error
-        //assertThat(o3 instanceof D4).isTrue();
+        // >#>POINT<#< : 継承関係の無いクラス(abstract含む)を指定すると compile error
+        //assertThat(o3 instanceof D4).isFalse();
+        //assertThat(o3 instanceof D5).isFalse();
+        // >#>POINT<#< : "interface" は継承関係が無くても compile ok
+        assertThat(o3 instanceof List).isFalse();
     }
 
     String m1(int i) {
