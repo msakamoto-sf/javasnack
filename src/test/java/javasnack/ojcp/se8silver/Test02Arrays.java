@@ -40,6 +40,8 @@ public class Test02Arrays {
 
         // bracketは変数名の後ろに置いても compile ok.
         int ar3[] = { 1, 2, 3 };
+        // bracketを変数名の後ろに置く場合でもbracke中のサイズ指定は compile error
+        //int ar3b[2] = {1, 2};
         // 宣言時のbracketの中にサイズ指定すると compile error
         //int ar3[3] = { 1, 2, 3 };
         assertThat(ar3[0]).isEqualTo(1);
