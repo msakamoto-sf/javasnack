@@ -80,6 +80,11 @@ public class Test04StringOps {
         assertThat(s10.equals("null")).isTrue();
         assertThat(s10.equals(null)).isFalse();
 
+        assertThat(" ".isEmpty()).isFalse();
+        assertThat("".isEmpty()).isTrue();
+        assertThat(" ".isBlank()).isTrue();
+        assertThat("".isBlank()).isTrue();
+
         // コンストラクタが曖昧なため compile error
         //String s11 = new String(null);
     }
@@ -108,6 +113,9 @@ public class Test04StringOps {
 
         // 両方を toString() することで、文字列として比較できる。
         assertThat(sb1a.toString().equals(sb1b.toString())).isTrue();
+
+        // String と文字列結合すれば toString() される。
+        assertThat("" + sb1b).isEqualTo("abc");
 
         /* >#>POINT<#<
          * StringBuilder は mutable で、文字列を編集する操作では元のデータを変更する。

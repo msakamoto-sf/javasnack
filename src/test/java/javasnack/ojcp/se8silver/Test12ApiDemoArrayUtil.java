@@ -38,6 +38,14 @@ public class Test12ApiDemoArrayUtil {
             System.arraycopy(ints, 0, intd1, 5, 3);
         }).isInstanceOf(ArrayIndexOutOfBoundsException.class);
 
+        // >#>POINT<#<: System.arraycopyでは src と dst が同じ配列でもOK.
+        System.arraycopy(intd1, 1, intd1, 2, 2);
+        assertThat(intd1[0]).isEqualTo(0);
+        assertThat(intd1[1]).isEqualTo(30);
+        assertThat(intd1[2]).isEqualTo(30);
+        assertThat(intd1[3]).isEqualTo(40);
+        assertThat(intd1[4]).isEqualTo(0);
+
         assertThat(ints.getClass().isArray()).isTrue();
         assertThat(Integer.class.isArray()).isFalse();
 

@@ -33,6 +33,11 @@ public class Test12ApiDemoObject {
         assertThat(sb1.equals(sb2)).isFalse();
         // -> toString() すれば中身を比較できる。
         assertThat(sb1.toString().equals(sb2.toString())).isTrue();
+        // String#equals() も、単にオブジェクトとして比較するのでfalse
+        assertThat("hello".equals(sb1)).isFalse();
+        assertThat(sb1.equals("hello")).isFalse();
+        // toString() しないと比較→一致にならない。
+        assertThat("hello".equals(sb1.toString())).isTrue();
 
         /* >#>POINT<#<:
          * Auto Boxing は valueOf() を使う。
