@@ -204,5 +204,18 @@ public class Test11TypeCastsAndAutoBoxings {
         final Long longv2 = 20L;
         final Float floatv2 = 3.14f;
         final Double doublev1 = 40.0;
+
+        // auto boxing によりprimitive型とラッパークラスとで数値演算が可能。
+        final Integer intv5 = Integer.valueOf(200);
+        final Integer intv6 = intv5 + 1;
+        assertThat(intv6).isEqualTo(201);
+        final int intv7 = 1 + intv6;
+        assertThat(intv7).isEqualTo(202);
+        // nullが入ったラッパークラス参照で数値演算するとNPE
+        final Integer intv8 = null;
+        assertThatThrownBy(() -> {
+            @SuppressWarnings("null")
+            final int x = intv8 + 1;
+        }).isInstanceOf(NullPointerException.class);
     }
 }
