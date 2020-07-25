@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("unused")
 public class Test11TypeCastsAndAutoBoxings {
     @Test
     public void testPrimitiveTypesCastingDemos() {

@@ -175,6 +175,7 @@ public class Test08ClassBasics {
         //}
 
         // overload ではアクセス修飾子を変更できる。
+        @SuppressWarnings("unused")
         private void m2(int i) {
         }
 
@@ -266,6 +267,7 @@ public class Test08ClassBasics {
         // >#>POINT<#< : 元が protected.
         // そのまま override すると継承元の finalize() が呼ばれないので、
         // super.finalize() で明示的に呼ぶ必要がある。
+        @SuppressWarnings("deprecation")
         protected void finalize() throws Throwable {
             super.finalize();
         }

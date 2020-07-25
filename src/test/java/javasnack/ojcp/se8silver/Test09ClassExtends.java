@@ -73,6 +73,7 @@ class Test09_Base1 {
     }
 }
 
+@SuppressWarnings("unused")
 class Test09_Ext1 extends Test09_Base1 {
     // >#>POINT<#<: フィールドメンバはoverrideできない。
     // 実際、以下に @Override アノテーションを付けると compile error

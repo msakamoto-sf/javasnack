@@ -1,5 +1,6 @@
 package javasnack.ojcp.se8silver.test08sub;
 
+@SuppressWarnings("unused")
 public class AccessScopeDemo {
     public String mPublic() {
         return "public scope method";
@@ -26,6 +27,7 @@ public class AccessScopeDemo {
     }
 }
 
+@SuppressWarnings("unused")
 class AccessScopeDemoNonScoped {
     public String mPublic2() {
         return "public scope method2";
