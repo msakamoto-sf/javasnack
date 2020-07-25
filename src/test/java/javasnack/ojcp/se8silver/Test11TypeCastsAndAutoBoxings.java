@@ -218,4 +218,77 @@ public class Test11TypeCastsAndAutoBoxings {
             final int x = intv8 + 1;
         }).isInstanceOf(NullPointerException.class);
     }
+
+    @Test
+    public void testWrapperClassParseDemo() {
+        // >#>POINT<#< : Boolean の parse は大文字小文字気にしなくてOK.
+        boolean bool1 = Boolean.parseBoolean("true");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.parseBoolean("True");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.parseBoolean("TRUE");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.parseBoolean("tRuE");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.parseBoolean("false");
+        assertThat(bool1).isFalse();
+        bool1 = Boolean.parseBoolean("False");
+        assertThat(bool1).isFalse();
+        bool1 = Boolean.parseBoolean("FALSE");
+        assertThat(bool1).isFalse();
+        bool1 = Boolean.parseBoolean("fAlSe");
+        assertThat(bool1).isFalse();
+        // valueOf() も同様
+        bool1 = Boolean.valueOf("true");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.valueOf("True");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.valueOf("TRUE");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.valueOf("tRuE");
+        assertThat(bool1).isTrue();
+        bool1 = Boolean.valueOf("false");
+        assertThat(bool1).isFalse();
+        bool1 = Boolean.valueOf("False");
+        assertThat(bool1).isFalse();
+        bool1 = Boolean.valueOf("FALSE");
+        assertThat(bool1).isFalse();
+        bool1 = Boolean.valueOf("fAlSe");
+        assertThat(bool1).isFalse();
+
+        byte byte1 = Byte.parseByte("127");
+        assertThat(byte1).isEqualTo((byte) 127);
+        byte1 = Byte.valueOf("127");
+        assertThat(byte1).isEqualTo((byte) 127);
+        assertThatThrownBy(() -> {
+            Byte.parseByte("128");
+        }).isInstanceOf(NumberFormatException.class);
+        assertThatThrownBy(() -> {
+            Byte.valueOf("128");
+        }).isInstanceOf(NumberFormatException.class);
+        assertThatThrownBy(() -> {
+            Byte.parseByte("127.0");
+        }).isInstanceOf(NumberFormatException.class);
+        assertThatThrownBy(() -> {
+            Byte.valueOf("127.0");
+        }).isInstanceOf(NumberFormatException.class);
+
+        int int1 = Integer.parseInt("128");
+        assertThat(int1).isEqualTo(128);
+        int1 = Integer.valueOf("128");
+        assertThat(int1).isEqualTo(128);
+        assertThatThrownBy(() -> {
+            Integer.parseInt("0xFF");
+        }).isInstanceOf(NumberFormatException.class);
+        assertThatThrownBy(() -> {
+            Integer.valueOf("0xFF");
+        }).isInstanceOf(NumberFormatException.class);
+        assertThatThrownBy(() -> {
+            Integer.parseInt("3.14");
+        }).isInstanceOf(NumberFormatException.class);
+        assertThatThrownBy(() -> {
+            Integer.valueOf("3.14");
+        }).isInstanceOf(NumberFormatException.class);
+
+    }
 }

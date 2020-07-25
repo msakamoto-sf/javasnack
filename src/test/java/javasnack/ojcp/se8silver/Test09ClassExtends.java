@@ -343,6 +343,9 @@ public class Test09ClassExtends {
             //this.sb.append(s2);
             //this.sb.append(",ext2b");
             super(s);
+            // >#>POINT<#< : this() も先頭に置く必要がある。
+            // -> super() と this() の同時呼び出しは compile error
+            //this(s); 
             this.sb.append(s2);
             this.sb.append(",ext2b");
         }

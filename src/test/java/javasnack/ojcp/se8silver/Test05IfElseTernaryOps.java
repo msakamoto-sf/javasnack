@@ -91,5 +91,23 @@ public class Test05IfElseTernaryOps {
                 : returnFalse(swp, "eee");
         assertThat(b4).isFalse();
         assertLines(swp, "aaa", "bbb", "ddd");
+
+        /* >#>POINT<#<: 三項演算子を多段でネストする際、
+         * それぞれの評価式の型は異なっていてもよい。
+         * 全体としての評価式の型は Object 型になり、
+         * 各条件判断に応じて、実際に最後に評価された式の型で返される。
+         */
+        boolean b5a = true; // -> b5b が評価値になる。
+        boolean b5b = true;
+        boolean b5c = true;
+        int i5a = 100;
+        int i5b = 200;
+        Object x = b5a ? b5b : b5c ? i5a : i5b;
+        assertThat(x instanceof Boolean).isTrue();
+        assertThat(x).isEqualTo(Boolean.TRUE);
+        b5a = false; // -> b5c 以降が評価される。
+        Object y = b5a ? b5b : b5c ? i5a : i5b;
+        assertThat(y instanceof Integer).isTrue();
+        assertThat(y).isEqualTo(100);
     }
 }

@@ -138,6 +138,12 @@ public class Test07Loops {
         }
         assertThat(i).isEqualTo(6);
         assertThat(sb1.toString()).isEqualTo("012345");
+        // for の第一項は宣言済みの変数への代入だけでもよい。
+        for (i = 0; i < 5; i++) {
+            sb1.append(i);
+        }
+        assertThat(i).isEqualTo(5);
+        assertThat(sb1.toString()).isEqualTo("01234501234");
 
         // >#>POINT<#< : for の先頭は変数宣言の statement(文) でもよい。
         // -> 変数宣言なので "," で連結できる。
@@ -237,6 +243,11 @@ public class Test07Loops {
             s += e;
         }
         assertThat(s).isEqualTo("aabbcc");
+
+        String s2 = "";
+        // >#>POINT<#< : 拡張for文は変数宣言が必須、省略すると compile error
+        //for (s2 : strings) {
+        //}
     }
 
     @Test
