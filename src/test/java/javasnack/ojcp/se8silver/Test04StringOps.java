@@ -75,6 +75,13 @@ public class Test04StringOps {
         assertThat(s9.substring(0)).isEqualTo(s9);
         assertThat(s9.substring(2)).isEqualTo("llo, world");
         assertThat(s9.substring(2, 8)).isEqualTo("llo, w"); // end(8) の一つ前まで
+
+        final String s10 = new String("null");
+        assertThat(s10.equals("null")).isTrue();
+        assertThat(s10.equals(null)).isFalse();
+
+        // コンストラクタが曖昧なため compile error
+        //String s11 = new String(null);
     }
 
     @SuppressWarnings("unlikely-arg-type")
