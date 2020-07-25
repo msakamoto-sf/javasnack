@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import javasnack.ojcp.se8silver.test08sub.AccessScopeDemo;
 
-public class Test08Objects {
+public class Test08ClassBasics {
     // OOP関連は一般的な入門書で一通りは解説されているため、
     // 普段使わなかったり気にしたことの無かったコーナーケース・エッジケースを主に試す。
 
