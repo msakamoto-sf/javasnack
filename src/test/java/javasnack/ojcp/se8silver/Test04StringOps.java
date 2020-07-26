@@ -6,6 +6,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 
 public class Test04StringOps {
+    static {
+        System.out.println("System.out.println() no args demo (1)");
+        System.out.println();
+        System.out.println("System.out.println() no args demo (2)");
+    }
+
     /* >#>POINT<#< : 位置を2つ取るメソッドはほとんどが(start, end).
      * start は開始位置のインデックスそのものだが、
      * end は「end位置の一つ前まで」で統一されている。

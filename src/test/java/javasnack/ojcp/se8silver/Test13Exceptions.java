@@ -29,6 +29,14 @@ public class Test13Exceptions {
         return x / y;
     }
 
+    void callDiv() {
+        /* >#>POINT<#< : 
+         * 非チェック例外をthrowsしているメソッドを呼ぶ場合は、
+         * try-catch で囲む必要は無い。(= catch は任意)
+         */
+        System.out.println(div(1, 0));
+    }
+
     // チェック例外を投げる場合は、throws 必須
     //void throwEx(int x) {
     void throwEx(int x) throws Exception {
@@ -125,6 +133,99 @@ public class Test13Exceptions {
      * - スーパークラスのメソッドに throws があっても、
      *   throws を指定しなくてもよい。
      * (from オラクル認定資格教科書 Javaプログラマ Silver SE 8)
+     * 
+     * メソッドを利用する観点で整理してみる。
+     * 1. unchecked 例外を投げる可能性のあるメソッド m1, m2 があるとする。
+     * class C1 {
+     *   void m1() { throw new NullPointerException(); }
+     *   void m2() throws NullPointerException {
+     *     throw new NullPointerException();
+     *   }
+     * }
+     * メソッドm1, m2を利用する側では、try-catchを使わなくて良い。
+     * つまり以下のような利用が考えられる。
+     * void useC1methods(C1 obj1) {
+     *   obj1.m1();
+     *   obj1.m2();
+     * }
+     * 
+     * ここで、 useC1methods() に C1 を継承したC2インスタンスを渡すケースを考える。
+     * class C2 extends C1 {
+     *   @Override
+     *   void m1() ...
+     *   @Override
+     *   void m2() ...
+     * }
+     * 
+     * C1 obj2 = new C2();
+     * useC1methods(obj2);
+     * -> 例えば自分が外部ライブラリC1を使っていて、それをカスタマイズしようとして
+     * C2を作ることを想像してみる。
+     * すでに他にも C1 の利用者は多く、 useC1methods() のようなコードが広まっている。
+     * そのような中で、C2 を使ってもらうときに m1, m2 の override はどうなると良いか？
+     * -> 非チェック例外はcatchが任意であるため、m1, m2 を override するときも同様に適用されるのがベスト。
+     * つまり C2 を自分が作るときに、m1 に NPE の throws を増やしたり m2 の throws を削除しても、
+     * すでに C1 の m1/m2 を catch なしで利用しているコードがコンパイルエラーにならないのが良い。
+     * ということで、実際にそうなっていると考えられる。
+     * 
+     * 2. 同様のシチュエーションで m1, m2 が以下のようだったとする。
+     * class C1 {
+     *   void m1() {}
+     *   void m2() throws IOException {}
+     * }
+     * C1を利用する以下のようなコードが考えられる。
+     * void useC1methods(C1 obj1) {
+     *   m1();
+     *   try { m2(); } catch (IO Exception e) {}
+     * }
+     * 
+     * ここで 1. と同様にC1の利用コードに影響を与えず、継承先の C2 側で m1,m2 を override するには
+     * どのようなルールがベストか、想像してみる。
+     * 
+     * ケース1: throws なしの m1 を、throws checked 例外ありで override できるとする。
+     * class C2 extends C1 {
+     *   @Override
+     *   void m1() throws SQLException {}
+     * }
+     * -> このルールが許されてしまうと、
+     * C1 obj2 = new C2();
+     * useC1methods(obj2);
+     * したときに、try-catch で囲っていない useC1methods() の m1() 呼び出しをどう扱えばよいか悩ましい。
+     * 
+     * ケース2: checked例外を throws している m2 を、throws なしで override できるとする。
+     * class C2 extends C1 {
+     *   @Override
+     *   void m2() {}
+     * }
+     * -> このルールが許されるとしても、useC1methods() に C2 を渡しても m2() 呼び出しはすでに
+     * C1 用に try-catch で囲まれている。そうなれば単に C2#m2() が呼ばれても checked 例外が
+     * throw されなくなるだけなので、useC1methods() がコンパイルエラーになることはなく、
+     * 単純に考えても不整合が起きるとは考えられない。
+     * 実際、このルールは許されている。
+     * 
+     * ケース3: checked例外を throws している m2 を、その例外のsuper classのthrowsで override できるとする。
+     * class C2 extends C1 {
+     *   @Override
+     *   void m2() throws Exception {}
+     * }
+     * -> このルールが許されてしまうと、useC1Methods() では m2() を元のIOExceptionでcatchしているため、
+     * そちらとの不整合が発生することになる。
+     * 
+     * ケース4: ケース3とは逆にサブクラスのchecked例外をthrowsでoverrideできるとする。
+     * class C2 extends C1 {
+     *   @Override
+     *   void m2() throws FileNotFoundException {}
+     * }
+     * -> この場合、useC1Methods() では元のIOExceptionでcatchしているので
+     * サブクラスもそれでcatchできると考えられる。
+     * よって useC1meethodsがコンパイルエラーになることはなく、
+     * 単純に考えても不整合が起きるとは考えられない。
+     * 
+     * ケース3, 4をまとめると、実際のルールが不整合が起きない状態となっていることが理解できる。
+     * 
+     * 以上のように、例外の throws に関する override ルールはそのメソッドを利用するコードを考え、
+     * 将来クラスの継承が発生しても元のメソッドを想定した以前のコードがコンパイルエラーや
+     * 直感的な不整合が起きないようなルールになっていると考えれば、理解の一助になりそう。
      */
 
     static class C1 {
