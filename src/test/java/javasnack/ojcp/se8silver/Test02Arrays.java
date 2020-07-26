@@ -28,8 +28,8 @@ public class Test02Arrays {
         assertThat(ar1[1]).isEqualTo(2);
         assertThat(ar1[2]).isEqualTo(3);
 
-        // 確保時のサイズと初期化データのサイズが違うと compile error
-        //ar1 = new int[5] { 1, 2 };
+        // 配列初期化時に[]に要素数を入れると compile error
+        //ar1 = new int[2] { 1, 2 };
 
         // 変数宣言時のみ、{...} による初期化も可能。
         int[] ar2 = { 1, 2, 3 };

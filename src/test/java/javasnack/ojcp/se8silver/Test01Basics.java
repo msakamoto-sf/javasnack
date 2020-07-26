@@ -23,6 +23,7 @@ import javasnack.tool.StringWriterPrinter;
  *        (異なる場合はコンパイルエラー)
  */
 // public でない class 宣言を複数含めることができる。
+// -> .java での class 宣言では public か無印(= 実質 package scope)のみ指定可能
 class Test01BasicsSub0 {
 }
 

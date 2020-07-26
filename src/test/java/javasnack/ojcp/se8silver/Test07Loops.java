@@ -203,7 +203,7 @@ public class Test07Loops {
              * [a]
              * while ( [b] ) {
              *   ...
-             *   [c]
+             *   [c] // 途中で continue しても必ず実行されるのが for 文の特徴
              * }
              */
             sb1.append("[" + i4 + "|" + j4 + "|" + k4 + "],");
