@@ -258,6 +258,9 @@ public class Test07Loops {
             s += n1;
             if (n1 % 2 == 0) {
                 continue;
+                // >#>POINT<#<: continueの後ろにコードを置くと
+                // unreachable code で compile error 
+                //n1++;
             }
             s += "*";
             if (n1 > 10) {
