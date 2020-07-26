@@ -86,6 +86,19 @@ public class Test01Basics {
          * 「リテラルの先頭と末尾、記号の前後は "_" 使用不可(compile error)」
          * (あくまでも「記号」の前後なので、octet表記のための0の直後はOK)
          */
+
+        int x12 = -1;
+        //int x13 = --1; // compile error
+        int x13 = -(-1);
+        int x14 = -x12;
+        int x15 = --x12; // これは単なるdecrement演算子
+        //x15 = ---x12; // compile error
+        int x16 = +1;
+        //int x17 = ++1; // compile error
+        int x17 = +(+1);
+        int x18 = +x17;
+        int x19 = ++x18; // これは単なるincrement演算子
+        //x19 = +++x18; // compile error
     }
 
     @Test
