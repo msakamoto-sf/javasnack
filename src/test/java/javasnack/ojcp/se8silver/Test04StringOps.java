@@ -95,9 +95,11 @@ public class Test04StringOps {
         // 初期容量は16だが、中身の文字列長はまだ空なので0
         StringBuilder sb1a = new StringBuilder();
         assertThat(sb1a.length()).isEqualTo(0);
+        assertThat(sb1a.toString()).isEqualTo(""); // 空文字列扱い
         // 初期容量を指定しても、中身の文字列長はまだ空なので0
         sb1a = new StringBuilder(256);
         assertThat(sb1a.length()).isEqualTo(0);
+        assertThat(sb1a.toString()).isEqualTo(""); // 空文字列扱い
         sb1a = new StringBuilder("abc");
         assertThat(sb1a.length()).isEqualTo(3);
 
@@ -137,6 +139,10 @@ public class Test04StringOps {
         assertThat(sb1a == sb2).isTrue(); // 同じ参照を返す。
         assertThat(sb1a.toString()).isEqualTo("abcdef"); // 元のデータも変更される。
         assertThat(sb2.toString()).isEqualTo("abcdef");
+        // append() には start-end を取るものもある。
+        final StringBuilder sb2b = new StringBuilder(sb2.toString());
+        sb2b.append("0123456789", 3, 7);
+        assertThat(sb2b.toString()).isEqualTo("abcdef3456");
 
         final StringBuilder sb3 = sb1a.reverse();
         assertThat(sb1a == sb3).isTrue(); // 同じ参照を返す。
