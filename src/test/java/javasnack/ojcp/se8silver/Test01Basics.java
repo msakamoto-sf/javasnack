@@ -57,6 +57,7 @@ public class Test01Basics {
         StringWriterPrinter swp = new StringWriterPrinter();
         swp.out.println(11);
         swp.out.println(0b11); // 3
+        //swp.out.println(0b12); // compile error
         swp.out.println(011); // 9
         swp.out.println(0x11); // 17
         swp.out.println(0X12); // 18
@@ -82,9 +83,9 @@ public class Test01Basics {
         //int x8 = 0_x12; // compile error
         //int x9 = 0x_12; // compile error
         int x10 = 0x1_2; // ok
-        int x11 = 0_11; // ok (octet)
+        int x11 = 0_11; // ok (octet:leading zero)
         /* >#>POINT<#<: 
-         * 「リテラルの先頭と末尾、記号の前後は "_" 使用不可(compile error)」
+         * 「リテラルの先頭と末尾、記号(小数点含む)の前後は "_" 使用不可(compile error)」
          * (あくまでも「記号」の前後なので、octet表記のための0の直後はOK)
          */
 

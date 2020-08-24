@@ -70,7 +70,12 @@ public class Test06SwitchDemos {
         case 56:
             swp.out.println("int2=56");
         }
-        assertLines(swp, "byte2=12", "short2=34", "int2=56");
+        Character char2 = Character.valueOf('A');
+        switch (char2) {
+        case 'A':
+            swp.out.println("char2=A");
+        }
+        assertLines(swp, "byte2=12", "short2=34", "int2=56", "char2=A");
     }
 
     @Test

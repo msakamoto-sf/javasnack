@@ -8,6 +8,10 @@ Oracle Certified Java Programmer (OJCP) 取得の勉強用サンプルコード�
   - https://www.amazon.co.jp/dp/4798142735/
 - 徹底攻略 Java SE 8 Silver 問題集
   - https://www.amazon.co.jp/dp/4844339931/
+- オラクル認定資格教科書 Javaプログラマ Gold SE 8
+  - https://www.amazon.co.jp/dp/479814682X/
+- 徹底攻略 Java SE 8 Gold 問題集
+  - https://www.amazon.co.jp/dp/4295000035/
 
 注意:
 
