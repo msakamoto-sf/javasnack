@@ -13,6 +13,7 @@ public class Test11TypeCastsAndAutoBoxings {
     public void testPrimitiveTypesCastingDemos() {
         // implicit type cast
         byte bytev = 10;
+        // byte bytevx = 129; // 暗黙的な型変換の範囲外だと compile error
         short shortv = bytev;
         int intv = shortv;
         long longv = intv;

@@ -121,6 +121,8 @@ class Test09_Ext1 extends Test09_Base1 {
     // static であるので override できない。
     // @Overrideをコメントアウトすればエラーは消えるが、
     // override できたわけではなく、単にそのクラス自身の static メソッドとなる。
+    // >#>POINT<#<: staticメンバのサブクラスでの再定義は override ではなく隠蔽(hiding) と呼ばれる。
+    // ref: https://docs.oracle.com/javase/tutorial/java/IandI/override.html
 
     //@Override
     static String packageStaticMethod(String x, String y) {
@@ -202,6 +204,7 @@ final class Test09_Ext2b extends Test09_Base2 {
 //}
 
 public class Test09ClassExtends {
+    @SuppressWarnings("static-access")
     @Test
     public void testOverrideDemos1_Basics() {
         Test09_Ext1 o1 = new Test09_Ext1();
@@ -233,7 +236,41 @@ public class Test09ClassExtends {
         assertThat(Test09_Ext1.packageStaticMethod("xx", "yy")).isEqualTo("xxyystatic2");
         assertThat(Test09_Ext1.protectedStaticMethod(10)).isEqualTo(40);
         assertThat(Test09_Ext1.publicStaticMethod("aa", 10)).isEqualTo("aa10static2");
-    }
+
+        // >#>POINT<#<:
+        // インスタンス経由で static field/method を参照すると、継承先で再定義したものを参照する。
+        assertThat(o1.packageStaticField).isEqualTo(220);
+        assertThat(o1.protectedStaticField).isEqualTo(330);
+        assertThat(o1.publicStaticField).isEqualTo(440);
+        assertThat(o1.packageStaticMethod("xx", "yy")).isEqualTo("xxyystatic2");
+        assertThat(o1.protectedStaticMethod(10)).isEqualTo(40);
+        assertThat(o1.publicStaticMethod("aa", 10)).isEqualTo("aa10static2");
+
+        Test09_Base1 b1 = o1;
+        // >#>POINT<#<:
+        // 親クラスとして参照すると、instance field は親クラスの定義を参照する。
+        assertThat(b1.packageField).isEqualTo(20);
+        assertThat(b1.protectedField).isEqualTo(30);
+        assertThat(b1.publicField).isEqualTo(40);
+        // >#>POINT<#<:
+        // 親クラスとして参照しても、instance method は本来の継承先クラスの定義を参照する。
+        // (instance field とは動きが異なる)
+        assertThat(b1.packageMethod("xx", "yy")).isEqualTo("xxyypackage2");
+        assertThat(b1.protectedMethod(10)).isEqualTo(30);
+        assertThat(b1.publicMethod("aa", 10)).isEqualTo("aa10public2");
+        // この辺も継承先クラスの定義と同じ動きになる。
+        assertThat(b1.usePrivateMembers(10, 20)).isEqualTo(40);
+        assertThat(b1.usePublicMembers("hello", 30)).isEqualTo("hello30public240");
+
+        // >#>POINT<#<:
+        // 親クラスとして参照すると、static field/method は親クラスの定義を参照する。
+        assertThat(b1.packageStaticField).isEqualTo(22);
+        assertThat(b1.protectedStaticField).isEqualTo(33);
+        assertThat(b1.publicStaticField).isEqualTo(44);
+        assertThat(b1.packageStaticMethod("xx", "yy")).isEqualTo("xxyystatic");
+        assertThat(b1.protectedStaticMethod(10)).isEqualTo(30);
+        assertThat(b1.publicStaticMethod("aa", 10)).isEqualTo("aa10static");
+}
 
     @Test
     public void testOverrideDemos2_AccessScope() {
