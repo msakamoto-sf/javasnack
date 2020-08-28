@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
@@ -208,8 +209,12 @@ public class Test03SomeGenericsDemos {
         //l0.add(new SomeParent());
         //l0.add(new SomeChild());
         //l0.add(new SomeGrandChild());
+        l0.add(null); // nullは追加OK.
         StringBuilder sb = new StringBuilder();
         for (SomeChild x : l0) {
+            if (Objects.isNull(x)) {
+                continue;
+            }
             sb.append(x.toString());
         }
         return sb.toString();
@@ -230,6 +235,7 @@ public class Test03SomeGenericsDemos {
         //l0.add(new SomeParent());
         l0.add(new SomeChild());
         l0.add(new SomeGrandChild());
+        l0.add(null); // nullは追加OK.
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < l0.size(); i++) {
             /* l0 の中身が List<Object> や List<SomeParent> あるいは他の途中の親クラスとなるため、
@@ -237,7 +243,11 @@ public class Test03SomeGenericsDemos {
              * このため、<? super X> を戻り値とするメソッドで参照を取得することができない。(compile error)
              */
             //SomeChild x = l0.get(i);
-            sb.append(l0.get(i).toString());
+            Object x = l0.get(i); // Object としては参照できる。
+            if (Objects.isNull(x)) {
+                continue;
+            }
+            sb.append(x.toString());
         }
         return sb.toString();
     }
