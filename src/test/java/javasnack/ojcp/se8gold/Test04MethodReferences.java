@@ -2,6 +2,7 @@ package javasnack.ojcp.se8gold;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -92,10 +93,66 @@ public class Test04MethodReferences {
 
         // NG : 1つめが Integer なので、 String.charAt(int index) の呼び出し元になれない。
         //BiFunction<Integer, String, Character> f7 = String::charAt; // compile error
+
+        // static method と instance method で同じ名前がある場合は、メソッド参照できない。
+        //Function<Double, Integer> f1 = Double::hashCode; // compile error
     }
 
-    // TODO static / instance method confliction
+    static class SomeClass0 {
+        int a = 10;
+    }
 
-    // TODO new reference
+    static class SomeClass1 {
+        final int a;
 
+        SomeClass1(final int a) {
+            this.a = a;
+        }
+    }
+
+    static class SomeClass2 {
+        final int a;
+
+        SomeClass2(final int x, final int y) {
+            this.a = x + y;
+        }
+    }
+
+    @Test
+    public void testConstructorMethodReferenceDemo() {
+        // 引数なしの constructor reference
+        Supplier<SomeClass0> s1 = () -> new SomeClass0();
+        SomeClass0 o0 = s1.get();
+        assertThat(o0.a).isEqualTo(10);
+        Supplier<SomeClass0> s2 = SomeClass0::new;
+        o0 = s2.get();
+        assertThat(o0.a).isEqualTo(10);
+
+        // 引数1つの constructor reference
+        Function<Integer, SomeClass1> f1 = i -> new SomeClass1(i);
+        assertThat(f1.apply(25).a).isEqualTo(25);
+        Function<Integer, SomeClass1> f2 = SomeClass1::new;
+        assertThat(f2.apply(30).a).isEqualByComparingTo(30);
+
+        // 引数2つの constructor reference
+        BiFunction<Integer, Integer, SomeClass2> f3 = (i, j) -> new SomeClass2(i, j);
+        assertThat(f3.apply(1, 2).a).isEqualTo(3);
+        BiFunction<Integer, Integer, SomeClass2> f4 = SomeClass2::new;
+        assertThat(f4.apply(3, 4).a).isEqualTo(7);
+
+        // List<E> を生成する constructor reference
+        Supplier<List<SomeClass0>> s3 = () -> new ArrayList<>();
+        List<SomeClass0> l0 = s3.get();
+        assertThat(l0.size()).isEqualTo(0);
+        //Supplier<List<SomeClass0>> s4 = ArrayList<>::new; // compile error
+        Supplier<List<SomeClass0>> s4 = ArrayList<SomeClass0>::new;
+        l0 = s4.get();
+        assertThat(l0.size()).isEqualTo(0);
+
+        // String[] を生成する constructor reference : 長さを使うため Function で参照する。
+        Function<Integer, String[]> f5 = len -> new String[len];
+        assertThat(f5.apply(5).length).isEqualTo(5);
+        Function<Integer, String[]> f6 = String[]::new;
+        assertThat(f6.apply(6).length).isEqualTo(6);
+    }
 }
