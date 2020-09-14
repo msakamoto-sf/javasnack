@@ -135,6 +135,7 @@ public class Test03MajorCollectionInterfaces {
          * V get​(Object key)
          * boolean isEmpty()
          * Set<K>  keySet()
+         * V merge(K key, V value, BiFunction<V, V, V> remappingFunction)
          * V put​(K key, V value)
          * void putAll​(Map<? extends K,​? extends V> m)
          * V remove​(Object key)
@@ -187,6 +188,25 @@ public class Test03MajorCollectionInterfaces {
         m1.clear();
         assertThat(m1.isEmpty()).isTrue();
         assertThat(m1.size()).isEqualTo(0);
+
+        m1.put("k1", 100);
+        m1.put("k2", null);
+        m1.put("k3", 300);
+        // merge to not null(old) -> return not null value
+        m1.merge("k1", 10, (oldV, newV) -> oldV + newV);
+        assertThat(m1.get("k1")).isEqualTo(110);
+        // merge to null(old) -> return not null value
+        m1.merge("k2", 200, (oldV, newV) -> oldV + newV);
+        assertThat(m1.get("k2")).isEqualTo(200);
+        // merge null value -> NPE
+        assertThatThrownBy(() -> {
+            m1.merge("k3", null, (oldV, newV) -> newV);
+        }).isInstanceOf(NullPointerException.class);
+        assertThat(m1.get("k3")).isEqualTo(300);
+        // merge -> remapping results to null
+        m1.merge("k3", 330, (oldV, newV) -> null);
+        assertThat(m1.containsKey("k3")).isFalse(); // key was removed.
+        assertThat(m1.get("k3")).isNull();
     }
 
     @Test

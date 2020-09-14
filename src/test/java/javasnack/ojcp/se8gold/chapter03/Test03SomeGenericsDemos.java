@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,6 +201,11 @@ public class Test03SomeGenericsDemos {
 
     // <? extends X> : X自身か、Xを継承した型を受け入れる。
     static String l2stra(List<? extends SomeChild> l0) {
+        // NOTE: argument で使える以上、ローカル変数でのassignにも使える。
+        @SuppressWarnings("unused")
+        List<? extends SomeChild> lx = l0;
+        @SuppressWarnings("unused")
+        List<? super SomeChild> ly = Collections.emptyList();
         /* l0 の中身は List<SomeChild> または List<SomeGrandChild> となる。
          * List<SomeChild> に SomeChild / SomeGrandChild いずれかを add() できても問題ないが、
          * List<SomeGrandChild> に SomeChild を add() すると、あとで SomeGrandChild を想定した
