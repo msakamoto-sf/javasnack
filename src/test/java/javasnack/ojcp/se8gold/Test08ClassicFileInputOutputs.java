@@ -162,6 +162,7 @@ public class Test08ClassicFileInputOutputs {
         // list(), listFiles() demo
         f0 = new File(tempDir.toString() + "/demo1.txt");
         assertThat(f0.createNewFile()).isTrue();
+        assertThat(f0.listFiles()).isNull(); // regular file に対して listFiles() を呼ぶとnull
         f0 = new File(tempDir.toString() + "/demo2.txt");
         assertThat(f0.createNewFile()).isTrue();
         f0 = new File(tempDir.toString() + "/dir1/dir1a/dir1b");
@@ -183,6 +184,10 @@ public class Test08ClassicFileInputOutputs {
         assertThat(files.contains(new File(tempDir.toString() + "/demo2.txt"))).isTrue();
         assertThat(files.contains(new File(tempDir.toString() + "/dir1"))).isTrue();
         assertThat(files.contains(new File(tempDir.toString() + "/dir2"))).isTrue();
+
+        // 存在しない file に対して listFiles() を呼ぶとnull
+        f0 = new File(tempDir.toString() + "/xxxx.txt");
+        assertThat(f0.listFiles()).isNull();
 
         f0 = new File(tempDir.toString() + "/demo1.txt");
         // execute/read/write の権限更新については OSとfilesystemによってサポートが変わる。

@@ -50,6 +50,14 @@ public class ConsoleIoDemo implements RunnableSnack {
         password = console.readPassword("enter dummy password(%d)>", 2);
         console.printf("Input Password(2) = [%s]%n", new String(password));
 
+        // NOTE: System.console() は singleton であり、常に同じキャッシュを返す。
+        Console console2 = System.console();
+        if (console == console2) {
+            System.out.println("System.console() is singleton.");
+        } else {
+            throw new RuntimeException("System.console() is NOT singleton, may be JVM/JDK bug.");
+        }
+
         System.out.println("(END)");
     }
 }
