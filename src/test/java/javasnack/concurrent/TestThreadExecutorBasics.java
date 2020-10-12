@@ -178,40 +178,45 @@ public class TestThreadExecutorBasics {
         done.await();
         // -> all task is done
 
-        assertTrue(es.awaitTermination(60, TimeUnit.MILLISECONDS));
+        assertTrue(es.awaitTermination(10, TimeUnit.SECONDS));
         assertTrue(es.isTerminated());
     }
 
     class ShutdownNowDemoTask implements Runnable {
         final AtomicInteger counts;
-        final CountDownLatch latch;
+        final CountDownLatch startLatch;
+        final CountDownLatch endLatch;
 
-        public ShutdownNowDemoTask(AtomicInteger counts, CountDownLatch latch) {
+        public ShutdownNowDemoTask(final AtomicInteger counts, final CountDownLatch startLatch,
+                final CountDownLatch endLatch) {
             this.counts = counts;
-            this.latch = latch;
+            this.startLatch = startLatch;
+            this.endLatch = endLatch;
         }
 
         @Override
         public void run() {
             try {
+                this.startLatch.countDown();
                 Thread.sleep(50);
                 this.counts.addAndGet(1);
             } catch (InterruptedException expected) {
             }
-            this.latch.countDown();
+            this.endLatch.countDown();
         }
     }
 
     @Test
     void testShutdownNow() throws InterruptedException {
         ExecutorService es = Executors.newSingleThreadExecutor();
-        CountDownLatch latch = new CountDownLatch(2);
+        CountDownLatch startLatch = new CountDownLatch(3);
+        CountDownLatch endLatch = new CountDownLatch(2);
         AtomicInteger counts = new AtomicInteger(0);
         for (int i = 0; i < 5; i++) {
-            es.submit(new ShutdownNowDemoTask(counts, latch));
+            es.submit(new ShutdownNowDemoTask(counts, startLatch, endLatch));
         }
-        latch.await(); // 2 * 50 = wait 100 msec.
-        Thread.sleep(10); // no.3 task has begun.
+        endLatch.await(); // 2 * 50 = wait 100 msec.
+        startLatch.await(); // no.3 task has begun.
         List<Runnable> remains = es.shutdownNow(); // no.3 task has begun...
         // shutdownNow() cancels waiting tasks AND current running task.
 
