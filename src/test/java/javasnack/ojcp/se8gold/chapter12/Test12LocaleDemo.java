@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
-public class Test11LocaleDemo {
+public class Test12LocaleDemo {
     @Test
     public void testSystemDefaultLocale() {
         System.out.println("--- see console log ---");

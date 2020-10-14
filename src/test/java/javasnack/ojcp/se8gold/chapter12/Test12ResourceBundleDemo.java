@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 import org.junit.jupiter.api.Test;
 
-public class Test11ResourceBundleDemo {
+public class Test12ResourceBundleDemo {
     @Test
     public void testListResourceBundleDemo() {
         final String myres = "javasnack.ojcp.se8gold.chapter12.MyResources";
