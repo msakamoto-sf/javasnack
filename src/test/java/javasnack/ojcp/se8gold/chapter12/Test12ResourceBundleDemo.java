@@ -115,6 +115,12 @@ public class Test12ResourceBundleDemo {
         // default locale fallback & property file base
         rb0 = ResourceBundle.getBundle(myres2, new Locale("z4", "ZX"));
         assertThat(rb0.getString("kx")).isEqualTo("zz-prop");
+
+        final String myres3 = "javasnack.ojcp.se8gold.chapter12.MyResources5";
+        // 指定した Locale にピッタリ一致するものが無く、fallback 対象も存在しない場合
+        assertThatThrownBy(() -> {
+            ResourceBundle.getBundle(myres3, new Locale("zx", "ZX"));
+        }).isInstanceOf(MissingResourceException.class);
     }
 
 }
