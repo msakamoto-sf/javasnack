@@ -44,6 +44,10 @@ public class Test07DateTimeApis {
         // 月が0始まりなのでoctet(8進数)扱いになる
         ld1 = LocalDate.of(2010, 010, 24);
         assertThat(ld1.toString()).isEqualTo("2010-08-24");
+        ld1 = LocalDate.of(2010, 07, 07);
+        assertThat(ld1.toString()).isEqualTo("2010-07-07");
+        //ld1 = LocalDate.of(2010, 08, 08); // octet lieral の out of range compile error
+        //ld1 = LocalDate.of(2010, 09, 09); // octet lieral の out of range compile error
 
         assertThat(Month.JANUARY.getValue()).isEqualTo(1);
         assertThat(Month.DECEMBER.getValue()).isEqualTo(12);
