@@ -218,6 +218,14 @@ public class Test11TypeCastsAndAutoBoxings {
             @SuppressWarnings("null")
             final int x = intv8 + 1;
         }).isInstanceOf(NullPointerException.class);
+
+        // auto boxing により increment/decrement 演算子が利用できる。
+        Integer intv9 = Integer.valueOf(300);
+        intv9++;
+        intv9 += 3;
+        intv9--;
+        intv9 -= 2;
+        assertThat(intv9.intValue()).isEqualTo(301);
     }
 
     @Test

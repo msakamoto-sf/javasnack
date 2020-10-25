@@ -596,6 +596,11 @@ public class Test07DateTimeApis {
         ZonedDateTime zdt3 = ZonedDateTime.of(ld1, LocalTime.of(3, 0), zi1);
         assertThat(zdt3.toString()).isEqualTo("2016-03-13T03:00-07:00[America/Los_Angeles]");
         assertThat(zdt2.equals(zdt3)).isTrue();
+        // between -> 2020-03-13T01:00:00 <> (..)T02:00:00/(...)T03:00:00 は1時間の差となる。
+        assertThat(ChronoUnit.HOURS.between(zdt1, zdt2)).isEqualTo(1);
+        assertThat(ChronoUnit.HOURS.between(zdt1, zdt3)).isEqualTo(1);
+        // between -> 2020-03-13T02:00:00 と 2020-03-13T03:00:00 は等しくなる。
+        assertThat(ChronoUnit.HOURS.between(zdt2, zdt3)).isEqualTo(0);
 
         ld1 = LocalDate.of(2016, Month.NOVEMBER, 6);
         lt1 = LocalTime.of(1, 00); // 切り替え中
@@ -822,6 +827,11 @@ public class Test07DateTimeApis {
         assertDuration(Duration.ofNanos(123_456_789), "PT0.123456789S", 0, 0, 0, 0, 123_456_789);
         // Duration.of(amount, unit) demo
         assertDuration(Duration.of(1, ChronoUnit.SECONDS), "PT1S", 0, 0, 0, 1, 0);
+        // 60s -> "PT1M" に自動的に繰り上がる。
+        assertDuration(Duration.of(60, ChronoUnit.SECONDS), "PT1M", 0, 0, 1, 60, 0);
+        assertDuration(Duration.of(1, ChronoUnit.MINUTES), "PT1M", 0, 0, 1, 60, 0);
+        // 中身も同じくなる。
+        assertThat(Duration.of(60, ChronoUnit.SECONDS)).isEqualTo(Duration.of(1, ChronoUnit.MINUTES));
         // Duration.parse() demo
         assertDuration(Duration.parse("PT1H"), "PT1H", 0, 1, 60, 3600, 0);
         assertDuration(Duration.parse("PT1M"), "PT1M", 0, 0, 1, 60, 0);

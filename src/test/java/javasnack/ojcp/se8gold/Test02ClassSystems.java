@@ -115,6 +115,10 @@ public class Test02ClassSystems {
         abstract String method1();
     }
 
+    // abstract は継承して使うものなので、継承を禁止する final 指定不可 : compile error
+    //static final abstract class AbstractDemo1a {
+    //}
+
     static class AbstractImplementDemo1 extends AbstractDemo1 {
         static String hello = "WORLD";
 
@@ -152,6 +156,10 @@ public class Test02ClassSystems {
         assertThat(o2.hello).isEqualTo("world");
         assertThat(o2.staticMethod1()).isEqualTo("static1");
     }
+
+    // interface も abstract と同様、継承を禁止する final 指定不可 : compile error
+    //static final interface SomeInterface0 {
+    //}
 
     static interface SomeInterface1 {
         static int x = 10; // final 扱い
@@ -330,5 +338,47 @@ public class Test02ClassSystems {
         assertThat(o2.m1()).isEqualTo("dm1b");
         SomeClass4d o3 = new SomeClass4d();
         assertThat(o3.dm1()).isEqualTo("dm1c");
+    }
+
+    /* メソッド名・引数は同じでも返り値の型が異なる interface を両方 implement した 
+     * class を作ろうとすると compile error 
+    static interface SomeInterface5a {
+        String dm1();
+    }
+    
+    static interface SomeInterface5b {
+        void dm1();
+    }
+    
+    static class SomeClass5 implements SomeInterface5a, SomeInterface5b {
+        @Override
+        public String dm1() {
+        }
+        @Override
+        public void dm1() {
+        }
+    }
+    */
+
+    static interface SomeInterface5a {
+        String dm1();
+    }
+
+    static interface SomeInterface5b {
+        String dm1();
+    }
+
+    static class SomeClass5 implements SomeInterface5a, SomeInterface5b {
+        // default メソッドでない、普通の interface method (実質 public abstract) は衝突しても問題ない
+        // @Override も不要。
+        public String dm1() {
+            return "hello";
+        }
+    }
+
+    @Test
+    public void testInterfaceMethodConflictionDemo() {
+        SomeClass5 o1 = new SomeClass5();
+        assertThat(o1.dm1()).isEqualTo("hello");
     }
 }

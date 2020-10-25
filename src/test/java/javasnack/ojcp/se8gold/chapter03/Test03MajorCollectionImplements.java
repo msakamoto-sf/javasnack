@@ -54,7 +54,8 @@ public class Test03MajorCollectionImplements {
         l3.add("gg");
         assertThat(l3).isEqualTo(List.of("aa", "bb", "cc", "dd", "ee", "ff", "gg"));
 
-        // remove(int index) と remove(Object o) のどちらが呼ばれるか分かりづらいケース
+        // Collection.remove(Object o) と List.remove(int index) 
+        // のどちらが呼ばれるか分かりづらいケース
         List<Integer> l4 = new ArrayList<>();
         l4.add(1);
         l4.add(2);
@@ -71,12 +72,15 @@ public class Test03MajorCollectionImplements {
         assertThat(l4.get(1)).isEqualTo(null);
         assertThat(l4.get(2)).isEqualTo(0);
         // -> remove(Object o) ではなく remove(int index) が呼ばれている。
+        // via: List.remove(int index) で引数の型が完全一致するメソッドがある以上、
+        // そちらが最優先で呼ばれ、 auto boxing が必要となる Collection.remove(Object) は呼ばれない。
 
         l4.remove(Integer.valueOf(0));
         assertThat(l4.size()).isEqualTo(2);
         assertThat(l4.get(0)).isEqualTo(2);
         assertThat(l4.get(1)).isEqualTo(null);
         // -> remove(Object o) が呼ばれている。
+        // via: Collection.remove(Object) の方がクラス継承上で完全一致するためそちらが呼ばれる。
     }
 
     /**

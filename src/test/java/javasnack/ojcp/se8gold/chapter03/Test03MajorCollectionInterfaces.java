@@ -50,6 +50,7 @@ public class Test03MajorCollectionInterfaces {
         assertThat(c1.contains("aa")).isTrue();
         assertThat(c1.containsAll(List.of("aa", "cc"))).isTrue();
         assertThat(c1.containsAll(List.of("aa", "zz"))).isFalse();
+        // Collection.remove(Object) は Set などでも使える汎用性がある。
         assertThat(c1.remove("dd")).isTrue();
         assertThat(c1.remove("zz")).isFalse();
         assertThat(c1.removeAll(List.of("aa", "zz"))).isTrue(); // 1つでも削除できればtrue

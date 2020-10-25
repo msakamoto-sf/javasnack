@@ -72,14 +72,22 @@ public class Test01Enums {
         SPADES("black"),
         CLUBS("black"),
         DIAMONDS("red"),
-        HEARTS("red");
+        HEARTS("red"),
+        TRANSPARENT;
         // 列挙型定数以外が続く場合はセミコロン必須(セミコロン無いと compile error)
 
         // instance field/constructor/instance method を定義可能
         private final String color;
 
-        Card2(final String color) {
+        // enum でのconstructorは private か未指定のみ許可される。 public/protected は compile error
+        //public Card2(final String color) {
+        //protected Card2(final String color) {
+        private Card2(final String color) {
             this.color = color;
+        }
+
+        Card2() {
+            this.color = "transparent";
         }
 
         String getColor() {
@@ -87,12 +95,17 @@ public class Test01Enums {
         }
     }
 
+    // enum は実質finalのため継承できない : compile error
+    //static enum Card2b extends Card2 {
+    //}
+
     @Test
     public void testEnumDemo2() {
         assertThat(Card2.SPADES.getColor()).isEqualTo("black");
         assertThat(Card2.CLUBS.getColor()).isEqualTo("black");
         assertThat(Card2.DIAMONDS.getColor()).isEqualTo("red");
         assertThat(Card2.HEARTS.getColor()).isEqualTo("red");
+        assertThat(Card2.TRANSPARENT.getColor()).isEqualTo("transparent");
     }
 
     interface SomeInterface1 {

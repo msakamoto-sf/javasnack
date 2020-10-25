@@ -136,6 +136,18 @@ public class Test05StreamDemo2 {
         assertThat(m1.get(true)).isEqualTo(List.of("aa", "ab"));
         assertThat(m1.get(false)).isEqualTo(List.of("bb", "ba", "cc"));
 
+        // partitionBy は必ず true/false の両キーが作られる。
+        // <> groupingBy はデータに応じてしか作られない。
+        m1 = Stream.of("xx", "yy", "zz")
+                .collect(Collectors.partitioningBy(s -> s.startsWith("a")));
+        assertThat(m1.size()).isEqualTo(2);
+        assertThat(m1.get(true)).hasSize(0);
+        assertThat(m1.get(false)).isEqualTo(List.of("xx", "yy", "zz"));
+        m1 = Stream.of("xx", "yy", "zz")
+                .collect(Collectors.groupingBy(s -> s.startsWith("a")));
+        assertThat(m1.size()).isEqualTo(1);
+        assertThat(m1.get(false)).isEqualTo(List.of("xx", "yy", "zz"));
+
         // partitionBy(classifier, collector)
         Map<Boolean, Set<String>> m2 = Stream.of("bb", "aa", "ab", "ba", "cc")
                 .collect(Collectors.partitioningBy(s -> s.startsWith("a"), Collectors.toSet()));

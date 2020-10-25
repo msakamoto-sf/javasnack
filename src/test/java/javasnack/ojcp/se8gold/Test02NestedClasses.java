@@ -28,7 +28,7 @@ public class Test02NestedClasses {
 
         int m1(int y) {
             // inner-class からは outer-class の instance/static member を参照できる。
-            return x + y + num1 + SNUM1;
+            return x + y + num1 + SNUM1; // outer-class の private member を参照可能
         }
 
         /* constructor も定義できる。
@@ -71,7 +71,7 @@ public class Test02NestedClasses {
             // >#>POINT<#<:
             // static nested class から outer-class の instance member を参照できない(compile error)
             //return x + y + num1 + SNUM1;
-            return x + y + SNUM1;
+            return x + y + SNUM1; // private static member は参照可能
         }
 
         // static nested class では static field/method を定義できる。
@@ -195,6 +195,8 @@ public class Test02NestedClasses {
          * ref: https://docs.oracle.com/javase/tutorial/java/javaOO/localclasses.html
          */
         class LocalClass1 {
+            //static int SNUM4 = 10; // compile error
+            final int num1 = 500; // わざと outer class 側のmember名と衝突させる。
             final int num4;
 
             LocalClass1(int num4) {
@@ -202,7 +204,9 @@ public class Test02NestedClasses {
             }
 
             String m1(int num5) {
-                return "num1=" + num1 // outer class の instance field 参照ok.
+                // outer class 側のmemberを参照するときの方法(メンバ名が衝突していなければ省略可)
+                return "outer.num1=" + Test02NestedClasses.this.num1 // private 参照ok.
+                        + ", num1=" + num1 // local class 自身のmember
                         + ", num2=" + num2 // outer scope の final var 参照ok.
                         + ", num3=" + num3 // outer scope の 実質final参照ok.
                         + ", num4=" + num4
@@ -212,7 +216,7 @@ public class Test02NestedClasses {
         }
         // num3 = 99; // 実質finalを崩す代入を行うと、local classの参照箇所で compile error
         LocalClass1 o1 = new LocalClass1(30);
-        assertThat(o1.m1(40)).isEqualTo("num1=100, num2=10, num3=20, num4=30, num5=40, SNUM1=200");
+        assertThat(o1.m1(40)).isEqualTo("outer.num1=100, num1=500, num2=10, num3=20, num4=30, num5=40, SNUM1=200");
     }
 
     interface SomeInterface1 {

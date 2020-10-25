@@ -56,14 +56,41 @@ public class Test03SomeGenericsDemos {
             this.val2 = val2;
             this.val3 = val3;
         }
+
+        // static method の戻り値/引数には型パラメータを使えない : compile error
+        //static void doSomeStaticMethod(T1 x) {
+        //}
+        //static T1 doSomeStaticMethod() {
+        //}
     }
 
+    static class SomeContainer2<T> {
+        final T val;
+
+        SomeContainer2(final T val) {
+            this.val = val;
+        }
+
+        @Override
+        public String toString() {
+            return val.toString();
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testTypeParameterClassDemo() {
         SomeContainer<String, Integer, File> o1 = new SomeContainer<>("hello", 100, new File("aa"));
         assertThat(o1.val1).isEqualTo("hello");
         assertThat(o1.val2).isEqualTo(100);
         assertThat(o1.val3).isEqualTo(new File("aa"));
+
+        // 普通の書き方
+        assertThat(new SomeContainer2<String>("xx").toString()).isEqualTo("xx");
+        // unchecked, rawtypes の警告が出るが、コンパイルは通る。
+        assertThat(new SomeContainer2(true).toString()).isEqualTo("true");
+        // この書き方だと警告は出ない。
+        assertThat(new SomeContainer2<>(10).toString()).isEqualTo("10");
     }
 
     // 型パラメータを使ったメソッドの例
@@ -84,12 +111,22 @@ public class Test03SomeGenericsDemos {
 
     @Test
     public void testTypeParameterMethodDemo() {
-        List<String> l1 = asList("aa", "bb", "cc"); // diamond 演算子不要
+        // diamond 演算子不要
+        List<String> l1 = asList("aa", "bb", "cc");
         assertThat(l1).isEqualTo(List.of("aa", "bb", "cc"));
         Map<String, Integer> m1 = asMap("aa", 10, "bb", 20);
         assertThat(m1.size()).isEqualTo(2);
         assertThat(m1.get("aa")).isEqualTo(10);
         assertThat(m1.get("bb")).isEqualTo(20);
+
+        // メソッドの型パラメータを指定する例
+        l1 = this.<String>asList("xx", "yy", "zz");
+        // l1 = <String>asList("xx", "yy", "zz"); // compile error
+        assertThat(l1).isEqualTo(List.of("xx", "yy", "zz"));
+        m1 = Test03SomeGenericsDemos.<String, Integer>asMap("xx", 2, "yy", 3);
+        assertThat(m1.size()).isEqualTo(2);
+        assertThat(m1.get("xx")).isEqualTo(2);
+        assertThat(m1.get("yy")).isEqualTo(3);
     }
 
     // interface で generics を使う例
