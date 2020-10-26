@@ -83,11 +83,24 @@ public class Test11JdbcDemo {
             String sql = "SELECT dept_code, dept_name FROM department ORDER BY dept_code ASC";
             rs = stmt.executeQuery(sql);
             assertThat(rs.next()).isTrue();
+            // カラム番号は1始まり
             assertThat(rs.getInt(1)).isEqualTo(1);
             assertThat(rs.getString(2)).isEqualTo("Sales");
+
             assertThat(rs.next()).isTrue();
+            // カラム名で指定することも可能
             assertThat(rs.getInt("dept_code")).isEqualTo(2);
             assertThat(rs.getString("dept_name")).isEqualTo("Engineering");
+
+            // int型のカラムに対しては getString() も可能 
+            assertThat(rs.getString("dept_code")).isEqualTo("2");
+
+            // varchar型のカラムに対しての getInt() は SQLException
+            final ResultSet rsx = rs;
+            assertThatThrownBy(() -> {
+                rsx.getInt("dept_name");
+            }).isInstanceOf(SQLException.class);
+
             assertThat(rs.next()).isTrue();
             assertThat(rs.getInt("dept_code")).isEqualTo(3);
             assertThat(rs.getString("dept_name")).isEqualTo("Development");
@@ -370,6 +383,46 @@ public class Test11JdbcDemo {
             assertThat(rs.getRow()).isEqualTo(0);
             assertThat(rs.isBeforeFirst()).isTrue();
             assertThat(rs.isAfterLast()).isFalse();
+        }
+    }
+
+    @Test
+    public void testResultSetScrollErrorneousDemo() throws SQLException {
+        final String sql = "SELECT dept_name FROM department ORDER BY dept_code DESC";
+        try (final Connection conn = DriverManager.getConnection(CONN_URL, CONN_USER, CONN_PASS);
+                // わざとスクロールオプション未指定でstatement作成
+                final Statement stmt = conn.createStatement();
+                final ResultSet rs = stmt.executeQuery(sql)) {
+
+            // 順方向の移動, プラス相対位置指定の移動や位置判定メソッドは動く。
+            assertThat(rs.next()).isTrue();
+            assertThat(rs.relative(1)).isTrue();
+            assertThat(rs.last()).isTrue();
+            assertThat(rs.isFirst()).isFalse();
+            assertThat(rs.isLast()).isTrue();
+            assertThat(rs.getRow()).isEqualTo(5);
+            // 最終行の次の行に移動 : 戻り値はvoid
+            rs.afterLast();
+            assertThat(rs.getRow()).isEqualTo(0);
+            assertThat(rs.isBeforeFirst()).isFalse();
+            assertThat(rs.isAfterLast()).isTrue();
+
+            // 逆方向の移動と絶対位置指定/マイナス相対位置指定の移動は例外発生
+            assertThatThrownBy(() -> {
+                rs.previous();
+            }).isInstanceOf(SQLException.class);
+            assertThatThrownBy(() -> {
+                rs.first();
+            }).isInstanceOf(SQLException.class);
+            assertThatThrownBy(() -> {
+                rs.absolute(1);
+            }).isInstanceOf(SQLException.class);
+            assertThatThrownBy(() -> {
+                rs.relative(-1);
+            }).isInstanceOf(SQLException.class);
+            assertThatThrownBy(() -> {
+                rs.beforeFirst();
+            }).isInstanceOf(SQLException.class);
         }
     }
 

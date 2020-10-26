@@ -21,6 +21,8 @@ public class Test08SerializeInputOutputs {
      * - https://www.baeldung.com/java-serialization
      */
 
+    static StringBuilder LOG = new StringBuilder();
+
     static class SerDemo1 implements Serializable {
         private static final long serialVersionUID = 518631047790958304L;
 
@@ -44,6 +46,7 @@ public class Test08SerializeInputOutputs {
             this.s2 = s2;
             this.ints = ints;
             this.strings = strings;
+            LOG.append("demo1");
         }
     }
 
@@ -54,7 +57,9 @@ public class Test08SerializeInputOutputs {
     public void testBasicSerializeDemo() throws IOException, ClassNotFoundException {
         File dir = tempDir.toFile();
         File f1 = new File(dir, "data1.bin");
+        LOG = new StringBuilder();
         SerDemo1 o1 = new SerDemo1(10, 20, "hello", "world", new int[] { 1, 2, 3 }, new String[] { "xx", "yy" });
+        assertThat(LOG.toString()).isEqualTo("demo1");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f1));
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f1))) {
             oos.writeObject(o1);
@@ -62,16 +67,21 @@ public class Test08SerializeInputOutputs {
             // この間に static 変数を変更してみる。
             SerDemo1.STATIC_NUM = 999;
             SerDemo1.STATIC_STR = "yyy";
+
+            LOG = new StringBuilder();
+
             SerDemo1 o2 = (SerDemo1) ois.readObject();
+            // デシリアライズではパラメータ無しのコンストラクタは呼ばれない。
+            assertThat(LOG.toString()).isEqualTo("");
             // static 変数はserializeデータから復元されることはない(対象外)
             assertThat(SerDemo1.STATIC_NUM).isEqualTo(999);
             assertThat(SerDemo1.STATIC_STR).isEqualTo("yyy");
             // instance 変数については transient 以外は復元される。
             // transient フィールドについては、未初期化状態の instance field と同じ状態になる。
             assertThat(o2.i1).isEqualTo(10);
-            assertThat(o2.i2).isEqualTo(0);
+            assertThat(o2.i2).isEqualTo(0); // transient field
             assertThat(o2.s1).isEqualTo("hello");
-            assertThat(o2.s2).isNull();
+            assertThat(o2.s2).isNull(); // transient field
             assertThat(o2.ints).isEqualTo(new int[] { 1, 2, 3 });
             assertThat(o2.strings).isEqualTo(new String[] { "xx", "yy" });
         }
@@ -82,10 +92,16 @@ public class Test08SerializeInputOutputs {
         private static final long serialVersionUID = 1L;
         private final int i1;
         private final String s1;
+        private final int i2;
+        {
+            i2 = 1;
+            LOG.append("demo2a");
+        }
 
         public SerDemo2(int i1, String s1) {
             this.i1 = i1;
             this.s1 = s1;
+            LOG.append("demo2b");
         }
     }
 
@@ -93,35 +109,48 @@ public class Test08SerializeInputOutputs {
     public void testSerializeFinalFieldDemo() throws IOException, ClassNotFoundException {
         File dir = tempDir.toFile();
         File f1 = new File(dir, "data1.bin");
+        LOG = new StringBuilder();
         SerDemo2 o1 = new SerDemo2(10, "hello");
+        assertThat(LOG.toString()).isEqualTo("demo2ademo2b");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f1));
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f1))) {
             oos.writeObject(o1);
             oos.flush();
+
+            LOG = new StringBuilder();
+
             SerDemo2 o2 = (SerDemo2) ois.readObject();
+            // デシリアライズではパラメータ付きのコンストラクタも、初期化ブロックも呼ばれていない。
+            assertThat(LOG.toString()).isEqualTo("");
+
             // private final フィールドについてもserializeデータから復元できる。
             assertThat(o2.i1).isEqualTo(10);
             assertThat(o2.s1).isEqualTo("hello");
+            assertThat(o2.i2).isEqualTo(1); // 初期化ブロックで初期化した値
         }
     }
-
-    static StringBuilder LOG = new StringBuilder();
 
     // NOTE: abstract class に Serializable interface を実装可能。
     static abstract class SerDemo3a implements Serializable {
         private static final long serialVersionUID = 1L;
+        {
+            LOG.append("demo3a");
+        }
 
         SerDemo3a() {
-            LOG.append("demo3a");
+            LOG.append("demo3b");
         }
     }
 
     // NOTE: super class が serializable であれば、その派生クラスも serializable となる。
     static class SerDemo3b extends SerDemo3a {
         private static final long serialVersionUID = 1L;
+        {
+            LOG.append("demo3c");
+        }
 
         SerDemo3b() {
-            LOG.append("demo3b");
+            LOG.append("demo3d");
         }
     }
 
@@ -132,7 +161,7 @@ public class Test08SerializeInputOutputs {
         LOG = new StringBuilder();
 
         SerDemo3b o1 = new SerDemo3b();
-        assertThat(LOG.toString()).isEqualTo("demo3ademo3b");
+        assertThat(LOG.toString()).isEqualTo("demo3ademo3bdemo3cdemo3d");
         LOG = new StringBuilder();
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f1));
@@ -141,24 +170,31 @@ public class Test08SerializeInputOutputs {
             oos.flush();
             ois.readObject();
             /* NOTE: super class で Serializable を実装している場合は、
-             * deserialize するときに super class の constructor は呼ばれない。
-             * (そのobject自身の constructor も呼ばれない)
+             * deserialize するときに super class の constructor/initialize block は呼ばれない。
+             * (そのobject自身の constructor/initialize block も呼ばれない)
              */
             assertThat(LOG.toString()).isEqualTo("");
         }
     }
 
     static class SerDemo4a {
-        SerDemo4a() {
+        {
             LOG.append("demo4a");
+        }
+
+        SerDemo4a() {
+            LOG.append("demo4b");
         }
     }
 
     static class SerDemo4b extends SerDemo4a implements Serializable {
         private static final long serialVersionUID = 1L;
+        {
+            LOG.append("demo4c");
+        }
 
         SerDemo4b() {
-            LOG.append("demo4b");
+            LOG.append("demo4d");
         }
     }
 
@@ -169,7 +205,7 @@ public class Test08SerializeInputOutputs {
         LOG = new StringBuilder();
 
         SerDemo4b o1 = new SerDemo4b();
-        assertThat(LOG.toString()).isEqualTo("demo4ademo4b");
+        assertThat(LOG.toString()).isEqualTo("demo4ademo4bdemo4cdemo4d");
         LOG = new StringBuilder();
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f1));
@@ -178,10 +214,10 @@ public class Test08SerializeInputOutputs {
             oos.flush();
             ois.readObject();
             /* NOTE: super class ではなく sub class で Serializable を実装している場合は、
-             * deserialize するときに super class の引数を取らない constructor が呼ばれる。
-             * (そのobject自身の constructor は呼ばれない)
+             * deserialize するときに super class の引数を取らない constructor と initialize block が呼ばれる。
+             * (そのobject自身の constructor/initialize block は呼ばれない)
              */
-            assertThat(LOG.toString()).isEqualTo("demo4a");
+            assertThat(LOG.toString()).isEqualTo("demo4ademo4b");
         }
     }
 }

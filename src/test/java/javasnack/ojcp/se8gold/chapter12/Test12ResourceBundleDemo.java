@@ -20,6 +20,16 @@ public class Test12ResourceBundleDemo {
         final ResourceBundle rb2 = ResourceBundle.getBundle(myres, Locale.ENGLISH);
         assertThat(rb2.getString("send")).isEqualTo("send");
         assertThat(rb2.getString("cancel")).isEqualTo("cancel");
+
+        // "_xx", "_xx_YY" 部分を指定してロードすることもできる。
+        final String myresx = "javasnack.ojcp.se8gold.chapter12.MyResources_xx";
+        final ResourceBundle rbx = ResourceBundle.getBundle(myresx);
+        assertThat(rbx.getString("send")).isEqualTo("sendx");
+        assertThat(rbx.getString("cancel")).isEqualTo("cancelx");
+        final String myresxy = "javasnack.ojcp.se8gold.chapter12.MyResources_xx_YY";
+        final ResourceBundle rbxy = ResourceBundle.getBundle(myresxy);
+        assertThat(rbxy.getString("send")).isEqualTo("sendxy");
+        assertThat(rbxy.getString("cancel")).isEqualTo("cancelxy");
     }
 
     @Test
@@ -31,6 +41,16 @@ public class Test12ResourceBundleDemo {
         final ResourceBundle rb2 = ResourceBundle.getBundle(myres, Locale.ENGLISH);
         assertThat(rb2.getString("send")).isEqualTo("P_send");
         assertThat(rb2.getString("cancel")).isEqualTo("P_cancel");
+
+        // "_xx", "_xx_YY" 部分を指定してロードすることもできる。
+        final String myresx = "javasnack.ojcp.se8gold.chapter12.MyResourcesP_xx";
+        final ResourceBundle rbx = ResourceBundle.getBundle(myresx);
+        assertThat(rbx.getString("send")).isEqualTo("P_sendx");
+        assertThat(rbx.getString("cancel")).isEqualTo("P_cancelx");
+        final String myresxy = "javasnack.ojcp.se8gold.chapter12.MyResourcesP_xx_YY";
+        final ResourceBundle rbxy = ResourceBundle.getBundle(myresxy);
+        assertThat(rbxy.getString("send")).isEqualTo("P_sendxy");
+        assertThat(rbxy.getString("cancel")).isEqualTo("P_cancelxy");
     }
 
     @Test
@@ -42,7 +62,7 @@ public class Test12ResourceBundleDemo {
         assertThat(rb1.containsKey("strx")).isFalse();
 
         System.out.println("--- see console log ---");
-        for (String k : rb1.keySet()) {
+        for (String k : rb1.keySet()) { // stream()/keys() などは無く、keySet() のみ。
             System.out.println(k);
         }
 
@@ -96,9 +116,12 @@ public class Test12ResourceBundleDemo {
         // lang/region 完全マッチ & class base
         ResourceBundle rb0 = ResourceBundle.getBundle(myres, new Locale("z1", "ZA"));
         assertThat(rb0.getString("kx")).isEqualTo("z1-ZA");
+        assertThat(rb0.getString("kx0")).isEqualTo("00-z1-ZA");
         // lang/region 完全マッチ & property file base
         rb0 = ResourceBundle.getBundle(myres, new Locale("z1", "ZB"));
         assertThat(rb0.getString("kx")).isEqualTo("z1-ZB");
+        // 見つからないときは locale 無しのリソースにfallback
+        assertThat(rb0.getString("kx0")).isEqualTo("00-base");
 
         // lang 部分マッチ & class base
         rb0 = ResourceBundle.getBundle(myres, new Locale("z2", "ZX"));
