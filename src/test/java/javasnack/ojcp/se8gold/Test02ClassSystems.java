@@ -113,6 +113,8 @@ public class Test02ClassSystems {
         // static abstract method は定義できない(visibility は public or protected だけと compile error)
         //public static abstract String staticMethod2();
         abstract String method1();
+        // private abstract method は定義できない(visibility は public or protected だけと compile error)
+        //private abstract String methodx();
     }
 
     // abstract は継承して使うものなので、継承を禁止する final 指定不可 : compile error
@@ -265,7 +267,7 @@ public class Test02ClassSystems {
         assertThat(o1b.dm2()).isEqualTo("DM2");
 
         SomeInterface3 o1c = o1b;
-        // interface 型で受けても、通常のメソッド同様、実態としてのimplementsクラス側のメソッドを参照する。
+        // interface 型で受けても、通常のメソッド同様、実体としてのimplementsクラス側のメソッドを参照する。
         assertThat(o1c.dm1()).isEqualTo("DM1");
         assertThat(o1c.dm2()).isEqualTo("DM2");
     }

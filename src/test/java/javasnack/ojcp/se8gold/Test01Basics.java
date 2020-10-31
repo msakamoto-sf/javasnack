@@ -18,7 +18,7 @@ public class Test01Basics {
 
     // JavaBeans 例
     static class JavaBeanDemo {
-        // メンバヘンスは private
+        // メンバ変数は private
         private String name = "";
         private int age = 0;
         private boolean student = false;
@@ -195,9 +195,12 @@ public class Test01Basics {
         int i3;
         final int i4;
         final int i5;
+        int i6;
         {
             i1 = 10;
             i2 = 20;
+            i6 = 160;
+            System.out.println("Baz initialize block:1");
         }
         static int si1;
         static int si2;
@@ -205,24 +208,32 @@ public class Test01Basics {
         static {
             si1 = 100;
             si2 = 200;
+            System.out.println("Baz static initialize block:1");
         }
         {
             i2 = 21;
             i3 = 31;
+            i6 = 161;
+            System.out.println("Baz initialize block:2");
         }
         static {
             si2 = 201;
             si3 = 300;
+            System.out.println("Baz static initialize block:2");
         }
 
         Baz() {
             i4 = 40;
             i5 = 50;
+            i6 = 162;
+            System.out.println("Baz constructor(default)");
         }
 
         Baz(int x) {
             i4 = x;
             i5 = x;
+            i6 = x;
+            System.out.println("Baz constructor(args)");
         }
     }
 
@@ -237,6 +248,7 @@ public class Test01Basics {
         assertThat(b1.i3).isEqualTo(31);
         assertThat(b1.i4).isEqualTo(40);
         assertThat(b1.i5).isEqualTo(50);
+        assertThat(b1.i6).isEqualTo(162); // constructor が最後に呼ばれる。
 
         Baz b2 = new Baz(60);
         assertThat(b2.i1).isEqualTo(10);
@@ -244,6 +256,7 @@ public class Test01Basics {
         assertThat(b2.i3).isEqualTo(31);
         assertThat(b2.i4).isEqualTo(60);
         assertThat(b2.i5).isEqualTo(60);
+        assertThat(b2.i6).isEqualTo(60); // constructor が最後に呼ばれる。
     }
 
     // デザインパターンの例 : singleton
