@@ -349,41 +349,81 @@ public class Test03QueueAndDeques {
         /* Deque は head or tail 片方だけの操作ではLIFO(a.k.a Stack)動作になる。
          * tail に追加した要素を head から取り出すとすれば、FIFO(Queue)動作になる。
          * このため、Deque interface およびその実装クラスは Queue interface から拡張されてる。
+         * 
+         * Queueと同等のDeque操作:
+         * Queue#add()/offer() = Deque#addLast()/offerLast()
+         * Queue#remove()/poll() = Deque#removeFirst()/pollFirst()
+         * Queue#element()/peek() = Deque#getFirst()/peekFirst()
          */
         Deque<String> q1 = new LinkedBlockingDeque<>(4);
         // Queue のメソッドが使える : addLast()/offerLast() と同等
         q1.add("aa");
         q1.offer("bb");
         // Deque のメソッドも使える。
-        q1.addLast("cc");
-        q1.offerLast("dd");
+        q1.addLast("cc"); // add()
+        q1.offerLast("dd"); // = offer()
 
         // Queue のメソッドが使える : getFirst()/peekFirst()/removeFirst()/pollFirst() と同等
         assertThat(q1.element()).isEqualTo("aa");
         assertThat(q1.remove()).isEqualTo("aa");
         assertThat(q1.peek()).isEqualTo("bb");
         assertThat(q1.poll()).isEqualTo("bb");
-        assertThat(q1.getFirst()).isEqualTo("cc");
-        assertThat(q1.removeFirst()).isEqualTo("cc");
-        assertThat(q1.peekFirst()).isEqualTo("dd");
-        assertThat(q1.pollFirst()).isEqualTo("dd");
+        assertThat(q1.getFirst()).isEqualTo("cc"); // = element()
+        assertThat(q1.removeFirst()).isEqualTo("cc"); // = remove()
+        assertThat(q1.peekFirst()).isEqualTo("dd"); // = peek()
+        assertThat(q1.pollFirst()).isEqualTo("dd"); // = poll()
     }
 
     @Test
     public void testDequeAsStackDemo() {
         /* Deque は head or tail 片方だけの操作ではLIFO(a.k.a Stack)動作になる。
          * このため、Deque interface およびその実装クラスは Stack としての操作メソッドも提供している。
+         * 
+         * Stackと同等のDeque操作:
+         * Stack#push() = Deque#addFirst()
+         * Stack#pop() = Deque#removeFirst() (空の場合EmptyStackException)
+         * Stack#peek() = Deque#getFirst() (空の場合EmptyStackException)
+         * 
+         * NOTE: 上の説明は javadoc に基づいている。
+         * Lastで揃えても、Stackとして操作する入り口がデフォルトとは反対側になるだけで、動作としては同じになる。
          */
         Deque<String> q1 = new LinkedBlockingDeque<>(2);
         // Stackとしての push() が使える。addFirst()と等価
         q1.push("aa");
-        q1.addFirst("bb");
+        q1.addFirst("bb"); // = Stack#push()
 
         // Stackとしての pop()/peek() が使える。removeFirst()/getFirst() と同等
         assertThat(q1.peek()).isEqualTo("bb");
         assertThat(q1.pop()).isEqualTo("bb");
-        assertThat(q1.getFirst()).isEqualTo("aa");
-        assertThat(q1.removeFirst()).isEqualTo("aa");
+        assertThat(q1.getFirst()).isEqualTo("aa"); // = Stack#peek()
+        assertThat(q1.removeFirst()).isEqualTo("aa"); // = Stack#pop()
+
+        // Queue#add()とStack#push()を混在するとどうなるか
+        q1 = new LinkedBlockingDeque<>();
+        // Queue#add() = Deque#addLast() : FIFOとして動かす
+        q1.add("aa");
+        q1.add("bb");
+        q1.add("cc");
+        // Stack#push() = Deque#addFirst() : LIFOとして動かす
+        q1.push("dd");
+        q1.push("ee");
+        q1.push("ff");
+        // [0] <-- first  --  last --> [N]
+        assertThat(q1.toArray(String[]::new)).isEqualTo(new String[] { "ff", "ee", "dd", "aa", "bb", "cc" });
+        // Queue/Stack とも取り出しは First 側からなので、 Stack として First 側に積んだのがLIFOとして取り出せる。
+        // Stack#peek() = Deque#getFirst() = Queue#element()
+        assertThat(q1.peek()).isEqualTo("ff");
+        assertThat(q1.element()).isEqualTo("ff");
+        assertThat(q1.getFirst()).isEqualTo("ff");
+        // Stack#pop() = Deque#removeFirst() = Queue#remove()
+        assertThat(q1.pop()).isEqualTo("ff");
+        assertThat(q1.remove()).isEqualTo("ee");
+        assertThat(q1.removeFirst()).isEqualTo("dd");
+        // この後、ようやく Queue#add() (= addLast()) したのが First 側として取り出せる。
+        // -> ここからは add() した順で取り出せる。
+        assertThat(q1.pop()).isEqualTo("aa");
+        assertThat(q1.remove()).isEqualTo("bb");
+        assertThat(q1.removeFirst()).isEqualTo("cc");
     }
 
     @Test

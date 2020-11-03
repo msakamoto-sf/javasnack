@@ -383,4 +383,29 @@ public class Test02ClassSystems {
         SomeClass5 o1 = new SomeClass5();
         assertThat(o1.dm1()).isEqualTo("hello");
     }
+
+    // 微妙なケース
+    static class SimpleClassX {
+        final String name;
+
+        SimpleClassX(final String name) {
+            this.name = name;
+        }
+    }
+
+    @Test
+    public void testSimpleClassEquality() {
+        final Object o0a = new Object();
+        final Object o0b = o0a;
+        assertThat(o0a.equals(o0b)).isTrue();
+
+        final SimpleClassX o1 = new SimpleClassX("hello");
+        final SimpleClassX o2 = o1;
+        assertThat(o2.equals(o1)).isTrue();
+        // -> Object#equals() は参照が一緒なら true
+
+        final SimpleClassX o3 = new SimpleClassX("hello");
+        assertThat(o3.equals(o2)).isFalse();
+        // 参照が違う && equals() override無しなら false
+    }
 }

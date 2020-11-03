@@ -602,6 +602,12 @@ public class Test07DateTimeApis {
         // between -> 2020-03-13T02:00:00 と 2020-03-13T03:00:00 は等しくなる。
         assertThat(ChronoUnit.HOURS.between(zdt2, zdt3)).isEqualTo(0);
 
+        // 切り替え前の 01:00 -> +2h -> 時間間隔は2h, 表示は +3h
+        zdt1 = ZonedDateTime.of(LocalDate.of(2016, Month.MARCH, 13), LocalTime.of(1, 00), zi1);
+        zdt2 = zdt1.plusHours(2);
+        assertThat(ChronoUnit.HOURS.between(zdt1, zdt2)).isEqualTo(2);
+        assertThat(zdt2.toString()).isEqualTo("2016-03-13T04:00-07:00[America/Los_Angeles]");
+
         ld1 = LocalDate.of(2016, Month.NOVEMBER, 6);
         lt1 = LocalTime.of(1, 00); // 切り替え中
         lt2 = LocalTime.of(2, 00); // 東部標準時に戻る
@@ -729,9 +735,11 @@ public class Test07DateTimeApis {
         assertThat(p1a.equals(p1c)).isTrue();
         Period p1d = Period.ofDays(30);
         Period p1e = Period.ofMonths(1);
+        // 月は28日 - 31日まで幅があるため、厳密に30日と等しくなることは無い。
         assertThat(p1d.equals(p1e)).isFalse();
         Period p1f = Period.ofDays(365);
         Period p1g = Period.ofYears(1);
+        // 閏年(leap year)により1日ずれがあるため、厳密に365日と等しくなることは無い。
         assertThat(p1f.equals(p1g)).isFalse();
     }
 
@@ -1003,5 +1011,21 @@ public class Test07DateTimeApis {
         Instant is2d = Instant.ofEpochSecond(1).plusSeconds(1).minusSeconds(1);
         assertThat(is2c == is2d).isFalse();
         assertThat(is2c.equals(is2d)).isTrue();
+
+        // Instant.truncate() demo
+        final Instant is3 = LocalDateTime.of(1970, 1, 2, 3, 4, 5).toInstant(ZoneOffset.UTC);
+        assertInstant(is3.truncatedTo(ChronoUnit.MINUTES), "1970-01-02T03:04:00Z", 97_440_000, 97_440, 0);
+        // -> 秒単位が切り捨てられている
+        assertInstant(is3.truncatedTo(ChronoUnit.HOURS), "1970-01-02T03:00:00Z", 97_200_000, 97_200, 0);
+        // -> 分単位が切り捨てられている
+        assertInstant(is3.truncatedTo(ChronoUnit.DAYS), "1970-01-02T00:00:00Z", 86_400_000, 86_400, 0);
+        // -> 時間単位が切り捨てられている
+        // 日単位以上の切り捨ては未サポート
+        assertThatThrownBy(() -> {
+            is3.truncatedTo(ChronoUnit.MONTHS);
+        }).isInstanceOf(UnsupportedTemporalTypeException.class);
+        assertThatThrownBy(() -> {
+            is3.truncatedTo(ChronoUnit.YEARS);
+        }).isInstanceOf(UnsupportedTemporalTypeException.class);
     }
 }
