@@ -182,6 +182,7 @@ public class Test02ClassSystems {
     static class SomeClass implements SomeInterface2 {
     }
 
+    @SuppressWarnings("static-access")
     @Test
     public void testInterfaceWithStaticFieldMethodDemo() {
         assertThat(SomeInterface1.x).isEqualTo(10);
