@@ -16,9 +16,7 @@
 
 package javasnack.regexp.codezinedemo;
 
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,8 +29,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor(staticName = "of")
 public class Nfa {
-    /** transition function : current state, character or empty character -> set of new states */
-    public final BiFunction<Integer, Optional<Character>, Set<Integer>> transition;
+    /** transition function */
+    public final NfaStateTransitFunction transition;
     /** starting state */
     public final int start;
     /** set of acceptable states */
