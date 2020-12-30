@@ -94,21 +94,27 @@ Set<Integer> someNfaStateTransitionFunction(int currentState, Optional<Character
 }
 ```
 
+これをJava8の関数型インターフェイスで表現し、ソースコードを読みやすくする。
+
+```java
+@FunctionalInterface
+public interface NfaStateTransitFunction {
+    Set<Integer> apply(int currentState, Optional<Character> inputCharacter);
+}
+```
+
 連載の元記事のPythonコードを見ると、「イベント x 状態遷移」の組み合わせはこの遷移関数に全て押し込める形になっている。
 よってNFA全体を表現するオブジェクトとしては、遷移関数 + 初期状態 + 受理状態の集合、の3つのパラメータを保持する。
 遷移関数について Java 8 の関数型インターフェイスを活用したのが、以下のJava版 NFA オブジェクトとなる。
 (以下、特に断りなく lombok のアノテーションを使用する)
 
 ```java
-/**
- * Nondeterministic Finite Automaton : NFA representation.
- */
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor(staticName = "of")
 public class Nfa {
-    /** transition function : current state, character or empty character -> set of new states */
-    public final BiFunction<Integer, Optional<Character>, Set<Integer>> transition;
+    /** transition function */
+    public final NfaStateTransitFunction transition;
     /** starting state */
     public final int start;
     /** set of acceptable states */
@@ -141,18 +147,24 @@ int someDfaStateTransitionFunction(int currentState, char inputCharacter) {
 }
 ```
 
+これをJava8の関数型インターフェイスで表現し、ソースコードを読みやすくする。
+
+```java
+@FunctionalInterface
+public interface DfaStateTransitFunction {
+    int apply(int currentState, char inputCharacter);
+}
+```
+
 DFA全体を表現する Java オブジェクトは、NFAと同様に以下のようになり、遷移関数の定義だけが異なる。
 
 ```java
-/**
- * Deterministic Finite Automaton : DFA representation
- */
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor(staticName = "of")
 public class Dfa {
-    /** transition function : current state, character(not empty) -> new state */
-    public final BiFunction<Integer, Character, Integer> transition;
+    /** transition function */
+    public final DfaStateTransitFunction transition;
     /** starting state */
     public final int start;
     /** set of acceptable states */
