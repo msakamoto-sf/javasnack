@@ -24,7 +24,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor(staticName = "of")
 public class Token {
-    public static enum TokenType {
+    public enum TokenType {
         CHARACTER,
         OPE_UNION,
         OPE_STAR,
