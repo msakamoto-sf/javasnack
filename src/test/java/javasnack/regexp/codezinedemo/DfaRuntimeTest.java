@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +28,7 @@ public class DfaRuntimeTest {
 
     @Test
     public void testDfaRuntimeAcceptance() {
-        final BiFunction<Integer, Character, Integer> transition0 = (status, character) -> {
+        final DfaStateTransitFunction transition0 = (final int status, final char character) -> {
             if (status == 1 && character == 'a') {
                 return 2;
             }
