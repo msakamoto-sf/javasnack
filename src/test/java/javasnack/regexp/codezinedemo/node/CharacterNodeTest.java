@@ -16,26 +16,25 @@
 
 package javasnack.regexp.codezinedemo.node;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Optional;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import javasnack.regexp.codezinedemo.Context;
+import javasnack.regexp.codezinedemo.Nfa;
 import javasnack.regexp.codezinedemo.NfaFragment;
 
-public class CharacterNode implements INodeAssembler {
-    private final Optional<Character> character;
-
-    public CharacterNode(final Optional<Character> c) {
-        this.character = c;
-    }
-
-    @Override
-    public NfaFragment assemble(final Context context) {
-        final NfaFragment r = new NfaFragment();
-        final int s1 = context.newState();
-        final int s2 = context.newState();
-        r.connect(s1, character, s2);
-        r.startState = s1;
-        r.acceptableStates.add(s2);
-        return r;
+public class CharacterNodeTest {
+    @Test
+    public void testAssemble() {
+        final INodeAssembler r = new CharacterNode(Optional.of('a'));
+        final NfaFragment f = r.assemble(new Context());
+        final Nfa nfa = f.build();
+        assertThat(nfa.start).isEqualTo(1);
+        assertThat(nfa.accept).isEqualTo(Set.of(2));
+        assertThat(nfa.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
     }
 }
