@@ -30,62 +30,54 @@ public class Parser {
     private final Lexer lexer;
     private Token look = null;
 
+    private void move() {
+        this.look = this.lexer.nextToken();
+    }
+
     public Parser(final Lexer lexer) {
         this.lexer = lexer;
         this.move();
     }
 
-    public void match(final TokenType tag) {
-        if (this.look.type != tag) {
+    private void consume(final TokenType expectedCurrentToken) {
+        if (this.look.type != expectedCurrentToken) {
             throw new RuntimeException("syntax error");
         }
         this.move();
     }
 
-    private void move() {
-        this.look = this.lexer.nextToken();
-    }
-
     /* rules:
      * (A) expression -> subexpr EOF
      * (B) subexpr -> seq '|' subexpr | seq
-     * (C) subseq -> star subseq | star
-     * (D) seq -> subseq | ''
+     * (C) seq -> subseq | ''
+     * (D) subseq -> star subseq | star
      * (E) star -> factor '*' | factor
      * (F) factor -> '(' subexpr ')' | CHARACTER
      */
 
-    public INodeAssembler factor() {
+    private INodeAssembler factor() {
         if (this.look.type == TokenType.LPAREN) {
-            this.match(TokenType.LPAREN);
+            this.consume(TokenType.LPAREN);
             INodeAssembler node = this.subexpr();
-            this.match(TokenType.RPAREN);
+            this.consume(TokenType.RPAREN);
             return node;
         } else {
             INodeAssembler node = new CharacterNode(Optional.of(this.look.value));
-            this.match(TokenType.CHARACTER);
+            this.consume(TokenType.CHARACTER);
             return node;
         }
     }
 
-    public INodeAssembler star() {
+    private INodeAssembler star() {
         INodeAssembler node = this.factor();
         if (this.look.type == TokenType.OPE_STAR) {
-            this.match(TokenType.OPE_STAR);
+            this.consume(TokenType.OPE_STAR);
             node = new StarNode(node);
         }
         return node;
     }
 
-    public INodeAssembler seq() {
-        if (this.look.type == TokenType.LPAREN || this.look.type == TokenType.CHARACTER) {
-            return this.subseq();
-        } else {
-            return new CharacterNode(Optional.empty());
-        }
-    }
-
-    public INodeAssembler subseq() {
+    private INodeAssembler subseq() {
         final INodeAssembler node1 = this.star();
         if (this.look.type == TokenType.LPAREN || this.look.type == TokenType.CHARACTER) {
             final INodeAssembler node2 = this.subseq();
@@ -95,10 +87,18 @@ public class Parser {
         }
     }
 
-    public INodeAssembler subexpr() {
-        INodeAssembler node = this.factor();
+    private INodeAssembler seq() {
+        if (this.look.type == TokenType.LPAREN || this.look.type == TokenType.CHARACTER) {
+            return this.subseq();
+        } else {
+            return new CharacterNode(Optional.empty());
+        }
+    }
+
+    private INodeAssembler subexpr() {
+        INodeAssembler node = this.seq();
         if (this.look.type == TokenType.OPE_UNION) {
-            this.match(TokenType.OPE_UNION);
+            this.consume(TokenType.OPE_UNION);
             INodeAssembler node2 = this.subexpr();
             node = new UnionNode(node, node2);
         }
@@ -107,7 +107,7 @@ public class Parser {
 
     public Nfa expression() {
         final INodeAssembler node = this.subexpr();
-        this.match(TokenType.EOF);
+        this.consume(TokenType.EOF);
         final Context context = new Context();
         final NfaFragment fragment = node.assemble(context);
         return fragment.build();
