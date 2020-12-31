@@ -16,14 +16,16 @@
 
 package javasnack.regexp.codezinedemo;
 
-public class Context {
-    private int stateCount;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    public Context() {
-        this.stateCount = 0;
-    }
+import org.junit.jupiter.api.Test;
 
-    public int newState() {
-        return ++this.stateCount;
+public class ContextTest {
+    @Test
+    public void testNewState() {
+        final Context r = new Context();
+        assertEquals(1, r.newState());
+        assertEquals(2, r.newState());
+        assertEquals(3, r.newState());
     }
 }
