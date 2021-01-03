@@ -53,7 +53,9 @@ public class Nfa2Dfa {
             }
             return nfa.expandEpsilon(setOfNextState);
         };
+        // 元のNFAの初期状態から空文字(ε)遷移可能な状態も集約した集合を初期状態とする。
         final Set<Integer> setOfInitialState = nfa.expandEpsilon(Set.of(nfa.start));
+        // 受理可能状態についてはパフォーマンスを考慮して元のNFAの受理可能状態の集合をそのまま使う。
         return Nfa2Dfa.of(transition0, setOfInitialState, nfa.accept);
     }
 }
