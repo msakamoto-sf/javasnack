@@ -16,6 +16,8 @@
 
 package javasnack.regexp.codezinedemo;
 
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -39,4 +41,19 @@ public class Nfa2Dfa {
     //public final Set<Set<Integer>> accept;
     // なぜ上ではなく下の定義にしたのかについては、同ディレクトリ中の README.md の [4] 参照
     public final Set<Integer> nfaAcceptableStateSet;
+
+    public static Nfa2Dfa from(final Nfa nfa) {
+        final Nfa2DfaStateTransitFunction transition0 = (
+                final Set<Integer> setOfCurrentState,
+                final char character) -> {
+            final Set<Integer> setOfNextState = new HashSet<>();
+            for (int currentState : setOfCurrentState) {
+                final Set<Integer> nfaResult = nfa.transition.apply(currentState, Optional.of(character));
+                setOfNextState.addAll(nfaResult);
+            }
+            return nfa.expandEpsilon(setOfNextState);
+        };
+        final Set<Integer> setOfInitialState = nfa.expandEpsilon(Set.of(nfa.start));
+        return Nfa2Dfa.of(transition0, setOfInitialState, nfa.accept);
+    }
 }
