@@ -24,10 +24,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 public class NfaFragment {
     /* NFA全体ではなく、NFAの一部分としての
      * [初期状態, 状態S x 文字C に対する遷移先状態S'の集合, 受理可能状態の集合]
@@ -40,14 +36,6 @@ public class NfaFragment {
 
     /** set of acceptable states (modifiable) */
     public final Set<Integer> acceptableStates = new HashSet<>();
-
-    @ToString
-    @EqualsAndHashCode
-    @AllArgsConstructor(staticName = "of")
-    private static class StateAndInputCharacter {
-        final int stateFrom;
-        final Optional<Character> inputCharacter;
-    }
 
     /* 状態S x 文字C の組み合わせをキーとして、遷移先状態S'の集合を取り出せるようにしたmap
      * -> NFAの遷移関数の内部マトリクスとしてそのまま利用できる。
@@ -77,7 +65,7 @@ public class NfaFragment {
             final StateAndInputCharacter originalKey = e.getKey();
             // 事故防止のため、値コピーしたkey値を使う。
             final StateAndInputCharacter deepCopiedKey = StateAndInputCharacter.of(
-                    originalKey.stateFrom,
+                    originalKey.currentState,
                     originalKey.inputCharacter);
             r.stateTransitionMatrix.put(deepCopiedKey, new HashSet<>(e.getValue()));
         }
@@ -97,7 +85,7 @@ public class NfaFragment {
             final StateAndInputCharacter originalKey = e.getKey();
             // 事故防止のため、値コピーしたkey値を使う。
             final StateAndInputCharacter deepCopiedKey = StateAndInputCharacter.of(
-                    originalKey.stateFrom,
+                    originalKey.currentState,
                     originalKey.inputCharacter);
             r.stateTransitionMatrix.put(deepCopiedKey, new HashSet<>(e.getValue()));
         }
