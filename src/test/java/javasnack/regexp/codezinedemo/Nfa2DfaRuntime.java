@@ -20,16 +20,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Nfa2DfaRuntime {
-    private final Nfa2Dfa dfa;
+    private final Nfa2Dfa nfa2dfa;
     private Set<Integer> currentState;
 
     public Nfa2DfaRuntime(final Nfa2Dfa dfa) {
-        this.dfa = dfa;
+        this.nfa2dfa = dfa;
         this.currentState = dfa.start;
     }
 
     private void transit(final char c) {
-        this.currentState = dfa.transition.apply(currentState, c);
+        this.currentState = nfa2dfa.transition.apply(currentState, c);
     }
 
     private boolean isCurrentStatusAcceptable() {
@@ -38,7 +38,7 @@ public class Nfa2DfaRuntime {
          * javaのライブラリの都合で (a) の内容が書き換えられる点に注意。
          * -> 積集合の結果が空でなければ、(a) には (b) のうち1つ以上の要素が含まれているので、受理可能とみなせる。
          */
-        final Set<Integer> copyOfAcceptableStates = new HashSet<>(this.dfa.nfaAcceptableStateSet);
+        final Set<Integer> copyOfAcceptableStates = new HashSet<>(this.nfa2dfa.nfaAcceptableStateSet);
         copyOfAcceptableStates.retainAll(currentState);
         return !copyOfAcceptableStates.isEmpty();
     }
