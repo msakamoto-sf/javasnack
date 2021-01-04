@@ -928,8 +928,8 @@ Javaの場合はNFAであっても内部的にチューニングが積み重ね�
 
 ## [6] NRAランタイムの実装とベンチマーク
 
-NFAランタイムの実装について、元の連載記事ではPythonのサンプルコードに特に言及されていない。
-しかし元の連載記事(6) からDLできるサンプルコードには `dfareg/nfa.py` として収録されている。
+元の連載記事(6) からDLできるサンプルコードには `dfareg/nfa.py` としてNFAのランタイムが収録されている。
+元の連載記事では特に言及されていないが、[著者のblogサイト](https://hiratara.hatenadiary.jp/entry/20081203/1228320654)では簡単な解説も書かれている。
 
 `nfa.py` には以下の2種類のNFAランタイムが含まれている。
 - 幅優先 : 選択しうる状態を集合とし、全ての可能性を保持しつつマッチするまで広げて行く
@@ -1012,6 +1012,15 @@ Java : AdoptOpenJDK(HotSpotVM) 11.0.7+10
 記事中で参照されている参考資料からショートカットとして抜粋、および自身で探して見つかった資料集。
 
 正規表現の全般的な参考資料としては [NOTE.md](../NOTE.md) 参照。 
+
+著者のblogサイトより、公開当時の宣伝&補足解説記事:
+
+- (1) : https://hiratara.hatenadiary.jp/entry/20081105/1225867216
+- (2) : https://hiratara.hatenadiary.jp/entry/20081112/1226494278
+- (3) : https://hiratara.hatenadiary.jp/entry/20081119/1227076587
+- (4) : https://hiratara.hatenadiary.jp/entry/20081126/1227677392
+- (5) : https://hiratara.hatenadiary.jp/entry/20081203/1228320654
+- (6) : https://hiratara.hatenadiary.jp/entry/20081210/1228925761
 
 連載記事(1) より
 
