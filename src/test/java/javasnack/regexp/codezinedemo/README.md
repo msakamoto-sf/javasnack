@@ -926,11 +926,92 @@ NFA2DFAはキャッシュONにしてなんとか `java.util.regex` のオーダ�
 
 Javaの場合はNFAであっても内部的にチューニングが積み重ねられており、そのおかげで高速に動作していることが推測できる。
 
+## [6] NRAランタイムの実装とベンチマーク
 
+NFAランタイムの実装について、元の連載記事ではPythonのサンプルコードに特に言及されていない。
+しかし元の連載記事(6) からDLできるサンプルコードには `dfareg/nfa.py` として収録されている。
+
+`nfa.py` には以下の2種類のNFAランタイムが含まれている。
+- 幅優先 : 選択しうる状態を集合とし、全ての可能性を保持しつつマッチするまで広げて行く
+  - -> 「選択可能な状態の集合」を扱うため、DFAの処理に近い実装コードとなっている。
+- 深さ優先 : 選択肢を適当に選んで失敗するまで潜り、失敗したら戻って別の選択肢をやり直す (バックトラック)
+
+これらを Java コードに変換してみたのが以下の2クラスになる。
+
+- [NfaRuntime](./NfaRuntime.java) : 幅優先
+- [NfaBackTrackRuntime](./NfaBackTrackRuntime.java) : 深さ優先
+
+[Regexp.compileNfa()](./Regexp.java) でオプション引数を追加し、幅優先のNFA/深さ優先のNFAを切り替えられるようにした。
+
+ここで実際にバックトラックが発生するNFAランタイムでどの程度パフォーマンス差が出るか、ベンチマークを計測してみた。
+ベンチマーク対象の正規表現として、正規表現DoS(ReDoS)の典型例である以下の3パターンを採用した。
+
+1. `(a|a)*` (EDA用 : 後述)
+2. `(a*)*` (EDA用 : 後述)
+3. `a*a*`  (IDA用 : 後述)
+
+ReDoSの問題はセキュリティ問題として研究が進んでおり、参考資料[12], [13], [14]を始めとして論文やチェックツールなども公開されている。
+ReDoSが発生しうる状態遷移のパターンとして、以下の2種類がある。
+
+1. EDA : Exponential Degree of Ambiguity
+   - `O(2^N)` などの指数計算時間がかかるパターン。
+   - 例: `(a|a)*`, `(a*)*`
+   - 問題となる文字列例: "aaa...ab"
+2. IDA : Infinite Degree of Amgibuity
+   - "infinite degree polynomial" という表現もある。
+   - `O(n^2)` など多項式計算時間がかかるパターン。
+   - 例: `a*a*`
+   - 問題となる文字列例: "aaa...ab"
+
+そこで、NFA2DFA(cache-off), NFA2DFA(cache-on), NFA(幅優先), NFA(深さ優先:バックトラック), `java.util.regex` の5種類で "ab", "aab", "aaab", "aaa...b" と増やしていき、経過時間をCSV出力するテストコードを作成した。
+
+- [NfaBackTrackPerformanceDemoTest](./NfaBackTrackPerformanceDemoTest.java)
+
+これで `MAX_LENGTH = 60` (aが1文字 - 60文字まで)のマッチ時間を計測した結果が、以下のスプレッドシートとなる。
+
+- [2021-01-04, NFA,NFA2DFA benchmark sample](https://docs.google.com/spreadsheets/d/1-2ZI7WqUyl_cMQMQRsGVI5dYgBUt1crHyuh_2JTsEwk/edit?usp=sharing)
+
+実行環境:
+
+```
+OS : Windows 10 Pro 64bit(1909)
+CPU : Intel Core i7-10510U 1.80GHz -2.30GHz
+Memory: 16GB
+Java : AdoptOpenJDK(HotSpotVM) 11.0.7+10
+```
+
+結果として、今回の計測では指数関数的、あるいは多項式計算時間的なパフォーマンスの劣化は確認できなかった。
+いずれのエンジンについても、1文字 - 60文字の範囲でマッチ時間は線形に増加しているように見える。
+全体傾向としては深さ優先(バックトラック)NFAがパフォーマンスが引く傾向があるものの、これも線形増加に収まっている。
+
+追加検証として、バックトラックが発生したときや分岐点を保存する際にトレースログを出力するよう調整し、上記パターンで10文字程度の"a..."でマッチさせるテストコードを作成してみた。
+
+- [NfaBackTrackTraceDemoTest](./NfaBackTrackTraceDemoTest.java)
+
+-> 多数の分岐点が保存されることを確認できた。
+一方で探索済みの分岐点は除去するようにしているため、もしかしたらこの辺りで O(N) の計算量に収まるようになっている可能性が考えられる。
+
+元の連載記事(6)からDLした `nfa.py` 自体、ある程度最適化がされた状態だった可能性もある。
+詳しい解説も含まれていなかったため、今回はここまでで検証をとどめておく。
+
+## まとめと感想
+
+### まとめ
+
+- CodeZine連載「正規表現エンジンを作ろう」のPythonサンプルコードを Java に変換し、実際に正規表現マッチを動かすことに成功した。
+- 元の連載記事に対して補足説明を試み、「なぜそうなるのか」というところを自分が理解した範囲でじっくり追いかけ、理解を深めることができた。
+- Javaに変換する際はテストコードを作成するようにした。これは不注意に基づくバグの混入を避けるのに貢献したものと思われる。
+- サンプルコード中の深さ優先(バックトラック)NFAランタイムを検証してみたところ、ReDoSを起こすようなケースでも処理時間は線形増加にとどまり、DoS相当の状況を確認できなかった。
+
+### 感想
+
+(TODO)
 
 ## 参考資料
 
 記事中で参照されている参考資料からショートカットとして抜粋、および自身で探して見つかった資料集。
+
+正規表現の全般的な参考資料としては [NOTE.md](../NOTE.md) 参照。 
 
 連載記事(1) より
 
@@ -974,5 +1055,13 @@ Java のコレクションAPIでの集合処理参考
 - [11] `Javaによる集合演算（そしてequalsとhashCodeの理解）のススメ - Qiita`
   - https://qiita.com/SierSetup/items/97b13d78fa11b4483b09
 
+正規表現DoS (ReDoS) 関連資料:
 
+- [12] `[Z-Ⅲ] ReDoSの検出プログラムの作成とOSSへの適用`
+  - https://www.slideshare.net/ssuser9ef9aa/redos
+  - https://www.slideshare.net/ssuser9ef9aa/redososs
+- [13] `The Regular Expression Denial of Service (ReDoS) cheat-sheet | by James Davis | Level Up Coding`
+  - https://levelup.gitconnected.com/the-regular-expression-denial-of-service-redos-cheat-sheet-a78d0ed7d865
+- [14] `GitHub - NicolaasWeideman/RegexStaticAnalysis: A tool to perform static analysis on regexes to determine whether they are vulnerable to ReDoS.`
+  - https://github.com/NicolaasWeideman/RegexStaticAnalysis
 
