@@ -21,11 +21,11 @@ import java.util.List;
 
 public class Regexp {
     public enum RegexpType {
-        NFA, NFA2DFA
+        NFA, NFA_BACKTRACK, NFA2DFA
     }
 
     public enum RegexpOption {
-        DEBUG_LOG, ENABLE_NFA2DFA_TRANSITION_CACHE
+        DEBUG_LOG, ENABLE_NFA2DFA_TRANSITION_CACHE, NFA_BACKTRACK
     }
 
     private final RegexpType type;
@@ -41,6 +41,7 @@ public class Regexp {
     public static Regexp compileNfa(final String regexp, RegexpOption... options) {
         final List<RegexpOption> optionset = Arrays.asList(options);
         final boolean enableDebugLog = optionset.contains(RegexpOption.DEBUG_LOG);
+        final boolean useNfaBackTrack = optionset.contains(RegexpOption.NFA_BACKTRACK);
 
         final Lexer lex0 = new Lexer(regexp);
         final Parser parser0 = new Parser(lex0);
@@ -54,7 +55,7 @@ public class Regexp {
             System.out.println(nfaDumper.dump());
             System.out.println("NFA: initialState=" + nfa0.start + ", setOfAcceptableState=" + nfa0.accept);
         }
-        return new Regexp(RegexpType.NFA, nfa0, null);
+        return new Regexp((useNfaBackTrack ? RegexpType.NFA_BACKTRACK : RegexpType.NFA), nfa0, null);
     }
 
     public static Regexp compileNfa2Dfa(final String regexp, RegexpOption... options) {
@@ -90,6 +91,9 @@ public class Regexp {
         case NFA:
             final NfaRuntime nfaRuntime = new NfaRuntime(nfa);
             return nfaRuntime.accept(str);
+        case NFA_BACKTRACK:
+            final NfaBackTrackRuntime nfaBackTrackRuntime = new NfaBackTrackRuntime(nfa);
+            return nfaBackTrackRuntime.accept(str);
         default:
             throw new UnsupportedOperationException();
         }
