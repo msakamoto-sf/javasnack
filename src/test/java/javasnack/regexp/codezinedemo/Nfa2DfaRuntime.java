@@ -32,15 +32,27 @@ public class Nfa2DfaRuntime {
         this.currentState = nfa2dfa.transition.apply(currentState, c);
     }
 
+    public static <T> Set<T> intersect(final Set<T> a, final Set<T> b) {
+        /* java collections api では積集合が破壊的な処理となっている。
+         * -> 破壊される方の引数についてコピーを作成し、そちらで破壊的な処理を行う。
+         */
+        final Set<T> copyOfA = new HashSet<>(a);
+        copyOfA.retainAll(b);
+        return copyOfA;
+    }
+
+    public static <T> boolean intersectIsEmpty(final Set<T> a, final Set<T> b) {
+        final Set<T> intersected = intersect(a, b);
+        return intersected.isEmpty();
+    }
+
     private boolean isCurrentStatusAcceptable() {
         // 詳細な解説は同ディレクトリ中の README.md の [4] 参照
         /* (a) 現在とり得る状態の集合 と (b) 元のNFAの受理可能状態の集合 の積集合を取る。
          * javaのライブラリの都合で (a) の内容が書き換えられる点に注意。
          * -> 積集合の結果が空でなければ、(a) には (b) のうち1つ以上の要素が含まれているので、受理可能とみなせる。
          */
-        final Set<Integer> copyOfAcceptableStates = new HashSet<>(this.nfa2dfa.nfaAcceptableStateSet);
-        copyOfAcceptableStates.retainAll(currentState);
-        return !copyOfAcceptableStates.isEmpty();
+        return !intersectIsEmpty(this.nfa2dfa.nfaAcceptableStateSet, currentState);
     }
 
     public boolean accept(final String input) {
