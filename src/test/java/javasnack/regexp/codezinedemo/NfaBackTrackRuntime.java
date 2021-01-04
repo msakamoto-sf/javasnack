@@ -65,10 +65,16 @@ public class NfaBackTrackRuntime {
     private String left = null; // エンドマーカ: null
     private final Queue<TrackPoint> branches = new ArrayDeque<>();
     private Set<TrackPoint> alreadyTracedBranches = new HashSet<>();
+    private final boolean enableTraceLog;
 
-    public NfaBackTrackRuntime(final Nfa nfa) {
+    public NfaBackTrackRuntime(final Nfa nfa, final boolean enableTraceLog) {
         this.nfa = nfa;
         this.currentState = nfa.start;
+        this.enableTraceLog = enableTraceLog;
+    }
+
+    public NfaBackTrackRuntime(final Nfa nfa) {
+        this(nfa, false);
     }
 
     private boolean transitSingleChar() {
@@ -114,10 +120,18 @@ public class NfaBackTrackRuntime {
             // 辿るべき次の分岐ポイントを取り出し、状態と残り文字列を復元する。
             final Queue<TrackPoint> queueOfNextCandidateBranch = new ArrayDeque<>(setOfNextCandidateBranch);
             final TrackPoint next = nextTrackPoint(queueOfNextCandidateBranch);
+            if (this.enableTraceLog) {
+                System.out.println("NEXT-TRACKPOINT: " + next);
+            }
             this.currentState = next.state;
             this.left = next.left;
             // 残りの分岐ポイントを、次回以降の分岐ポイント一覧に保存する。
             this.branches.addAll(setOfNextCandidateBranch);
+            if (this.enableTraceLog) {
+                for (TrackPoint dump : this.branches) {
+                    System.out.println("SAVED-TRACKPOINTS: " + dump);
+                }
+            }
         }
         return true;
     }
@@ -138,6 +152,9 @@ public class NfaBackTrackRuntime {
         final TrackPoint nextBranch = nextTrackPoint(this.branches);
         this.currentState = nextBranch.state;
         this.left = nextBranch.left;
+        if (this.enableTraceLog) {
+            System.out.println("##>>BACKTRACK<<##: " + nextBranch);
+        }
         // backtrack発生
         return true;
     }

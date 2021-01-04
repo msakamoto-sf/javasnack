@@ -61,4 +61,27 @@ public class NfaBackTrackRuntimeTest {
         // 念の為確認
         assertThat(acceptableStateSet).isEqualTo(Set.of(3, 5, 8, 9));
     }
+
+    @Test
+    public void testNfaRuntimeAcceptanceWithTraceLog() {
+        final Map<StateAndInputCharacter, Set<Integer>> tbl0 = new HashMap<>();
+        tbl0.put(StateAndInputCharacter.of(0, Optional.of('a')), Set.of(1));
+        tbl0.put(StateAndInputCharacter.of(1, Optional.of('b')), Set.of(3)); // ab
+        tbl0.put(StateAndInputCharacter.of(0, Optional.of('c')), Set.of(4));
+        tbl0.put(StateAndInputCharacter.of(4, Optional.of('d')), Set.of(5)); // cd
+        tbl0.put(StateAndInputCharacter.of(0, Optional.empty()), Set.of(6));
+        tbl0.put(StateAndInputCharacter.of(6, Optional.of('e')), Set.of(7));
+        tbl0.put(StateAndInputCharacter.of(7, Optional.of('f')), Set.of(8)); // ef
+        tbl0.put(StateAndInputCharacter.of(7, Optional.empty()), Set.of(9)); // e = ef*
+
+        final NfaStateTransitFunction f0 = (int start, Optional<Character> input) -> {
+            return tbl0.getOrDefault(StateAndInputCharacter.of(start, input), Collections.emptySet());
+        };
+
+        final Nfa nfa0 = Nfa.of(f0, 0, Set.of(3, 5, 8, 9));
+        System.out.println(">>>> NFA runtime trace log demo");
+        var runtime0 = new NfaBackTrackRuntime(nfa0, true);
+        assertTrue(runtime0.accept("e"));
+        System.out.println("<<<<");
+    }
 }

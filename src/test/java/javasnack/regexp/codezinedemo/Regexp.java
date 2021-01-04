@@ -31,11 +31,14 @@ public class Regexp {
     private final RegexpType type;
     private final Nfa nfa;
     private final Nfa2Dfa nfa2dfa;
+    private final boolean enableNfaBackTrackRuntimeTraceLog;
 
-    private Regexp(final RegexpType type, final Nfa nfa, final Nfa2Dfa nfa2dfa) {
+    private Regexp(final RegexpType type, final Nfa nfa, final Nfa2Dfa nfa2dfa,
+            final boolean enableNfaBackTrackRuntimeTraceLog) {
         this.type = type;
         this.nfa = nfa;
         this.nfa2dfa = nfa2dfa;
+        this.enableNfaBackTrackRuntimeTraceLog = enableNfaBackTrackRuntimeTraceLog;
     }
 
     public static Regexp compileNfa(final String regexp, RegexpOption... options) {
@@ -55,7 +58,7 @@ public class Regexp {
             System.out.println(nfaDumper.dump());
             System.out.println("NFA: initialState=" + nfa0.start + ", setOfAcceptableState=" + nfa0.accept);
         }
-        return new Regexp((useNfaBackTrack ? RegexpType.NFA_BACKTRACK : RegexpType.NFA), nfa0, null);
+        return new Regexp((useNfaBackTrack ? RegexpType.NFA_BACKTRACK : RegexpType.NFA), nfa0, null, enableDebugLog);
     }
 
     public static Regexp compileNfa2Dfa(final String regexp, RegexpOption... options) {
@@ -80,7 +83,7 @@ public class Regexp {
             System.out.println("NFA2DFA: setOfInitialState=" + nfa2dfa.start + ", setOfAcceptableState="
                     + nfa2dfa.nfaAcceptableStateSet);
         }
-        return new Regexp(RegexpType.NFA2DFA, null, nfa2dfa);
+        return new Regexp(RegexpType.NFA2DFA, null, nfa2dfa, false);
     }
 
     public boolean match(final String str) {
@@ -92,7 +95,9 @@ public class Regexp {
             final NfaRuntime nfaRuntime = new NfaRuntime(nfa);
             return nfaRuntime.accept(str);
         case NFA_BACKTRACK:
-            final NfaBackTrackRuntime nfaBackTrackRuntime = new NfaBackTrackRuntime(nfa);
+            final NfaBackTrackRuntime nfaBackTrackRuntime = new NfaBackTrackRuntime(
+                    nfa,
+                    enableNfaBackTrackRuntimeTraceLog);
             return nfaBackTrackRuntime.accept(str);
         default:
             throw new UnsupportedOperationException();
