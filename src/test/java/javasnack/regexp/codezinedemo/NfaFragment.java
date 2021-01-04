@@ -17,12 +17,14 @@
 package javasnack.regexp.codezinedemo;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class NfaFragment {
     /* NFA全体ではなく、NFAの一部分としての
@@ -104,5 +106,43 @@ public class NfaFragment {
             return Collections.unmodifiableSet(mapref.getOrDefault(key, Collections.emptySet()));
         };
         return Nfa.of(transition, this.startState, this.acceptableStates);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("----[NFA Fragment]----\n");
+        sb.append("initial state = " + this.startState + "\n");
+        final TreeMap<StateAndInputCharacter, Set<Integer>> m = new TreeMap<>(new Comparator<StateAndInputCharacter>() {
+            @Override
+            public int compare(StateAndInputCharacter o1, StateAndInputCharacter o2) {
+                if (o1.currentState != o2.currentState) {
+                    return o1.currentState - o2.currentState;
+                }
+                if (o1.inputCharacter.isPresent() && o2.inputCharacter.isPresent()) {
+                    return o1.inputCharacter.get().charValue() - o2.inputCharacter.get().charValue();
+                }
+                if (o1.inputCharacter.isPresent()) {
+                    return 1;
+                } else {
+                    if (o2.inputCharacter.isPresent()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+        });
+        m.putAll(this.stateTransitionMatrix);
+        for (Entry<StateAndInputCharacter, Set<Integer>> e : m.entrySet()) {
+            final StateAndInputCharacter key = e.getKey();
+            final int currentState = key.currentState;
+            final Optional<Character> input = key.inputCharacter;
+            final Set<Integer> r = e.getValue();
+            sb.append("[ " + currentState + ", " + (input.isPresent() ? "'" + input.get() + "'" : "(ε)") + " -> " + r
+                    + " ]\n");
+        }
+        sb.append("set of acceptable state = " + this.acceptableStates + "\n");
+        return sb.toString();
     }
 }

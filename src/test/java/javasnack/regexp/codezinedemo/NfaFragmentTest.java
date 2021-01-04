@@ -29,6 +29,10 @@ public class NfaFragmentTest {
         final NfaFragment r = new NfaFragment();
         assertThat(r.startState).isEqualTo(0);
         assertThat(r.acceptableStates).isEmpty();
+        assertThat(r.toString()).isEqualTo(
+                "----[NFA Fragment]----\n"
+                        + "initial state = 0\n"
+                        + "set of acceptable state = []\n");
 
         final Nfa nfa = r.build();
         assertThat(nfa.start).isEqualTo(0);
@@ -44,6 +48,12 @@ public class NfaFragmentTest {
         r.connect(128, Optional.empty(), 130);
         r.acceptableStates.add(3);
         r.acceptableStates.add(129);
+        assertThat(r.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 1\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "[ 2, 'b' -> [128, 3] ]\n"
+                + "[ 128, (ε) -> [129, 130] ]\n"
+                + "set of acceptable state = [129, 3]\n");
 
         final Nfa nfa2 = r.build();
         assertThat(nfa2.start).isEqualTo(1);
