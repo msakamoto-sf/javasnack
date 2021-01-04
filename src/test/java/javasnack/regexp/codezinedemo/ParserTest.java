@@ -38,7 +38,12 @@ public class ParserTest {
         // subexpr -> seq(neither '(' or character)  -> CharacterNode
         final var lex0 = new Lexer("");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 1\n"
+                + "[ 1, (ε) -> [2] ]\n"
+                + "set of acceptable state = [2]\n");
         assertThat(nfa0.start).isEqualTo(1);
         assertThat(nfa0.accept).isEqualTo(Set.of(2));
         assertThat(nfa0.transition.apply(1, Optional.empty())).isEqualTo(Set.of(2));
@@ -49,7 +54,12 @@ public class ParserTest {
         // subexpr -> seq(character) -> subseq -> star -> factor(character) -> CharacterNode
         final var lex0 = new Lexer("a");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 1\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "set of acceptable state = [2]\n");
         assertThat(nfa0.start).isEqualTo(1);
         assertThat(nfa0.accept).isEqualTo(Set.of(2));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
@@ -65,7 +75,14 @@ public class ParserTest {
          */
         final var lex0 = new Lexer("a|b");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 5\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "[ 3, 'b' -> [4] ]\n"
+                + "[ 5, (ε) -> [1, 3] ]\n"
+                + "set of acceptable state = [2, 4]\n");
         assertThat(nfa0.start).isEqualTo(5);
         assertThat(nfa0.accept).isEqualTo(Set.of(2, 4));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
@@ -82,7 +99,14 @@ public class ParserTest {
          */
         final var lex0 = new Lexer("ab");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 1\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "[ 2, (ε) -> [3] ]\n"
+                + "[ 3, 'b' -> [4] ]\n"
+                + "set of acceptable state = [4]\n");
         assertThat(nfa0.start).isEqualTo(1);
         assertThat(nfa0.accept).isEqualTo(Set.of(4));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
@@ -95,7 +119,12 @@ public class ParserTest {
         // subexpr -> seq('(') -> subseq(character) -> star -> factor -> '(' + subexpr + ')' -> CharacterNode
         final var lex0 = new Lexer("(a)");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 1\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "set of acceptable state = [2]\n");
         assertThat(nfa0.start).isEqualTo(1);
         assertThat(nfa0.accept).isEqualTo(Set.of(2));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
@@ -109,7 +138,14 @@ public class ParserTest {
          */
         final var lex0 = new Lexer("a*");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 3\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "[ 2, (ε) -> [1] ]\n"
+                + "[ 3, (ε) -> [1] ]\n"
+                + "set of acceptable state = [2, 3]\n");
         assertThat(nfa0.start).isEqualTo(3);
         assertThat(nfa0.accept).isEqualTo(Set.of(2, 3));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
@@ -128,7 +164,15 @@ public class ParserTest {
          */
         final var lex0 = new Lexer("a*b");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 3\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "[ 2, (ε) -> [1, 4] ]\n"
+                + "[ 3, (ε) -> [1, 4] ]\n"
+                + "[ 4, 'b' -> [5] ]\n"
+                + "set of acceptable state = [5]\n");
         assertThat(nfa0.start).isEqualTo(3);
         assertThat(nfa0.accept).isEqualTo(Set.of(5));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
@@ -148,7 +192,17 @@ public class ParserTest {
          */
         final var lex0 = new Lexer("a*(b|c)");
         final var parser0 = new Parser(lex0);
-        final var nfa0 = parser0.expression();
+        final var debugTo = new StringBuilder();
+        final var nfa0 = parser0.expression(debugTo);
+        assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
+                + "initial state = 3\n"
+                + "[ 1, 'a' -> [2] ]\n"
+                + "[ 2, (ε) -> [1, 8] ]\n"
+                + "[ 3, (ε) -> [1, 8] ]\n"
+                + "[ 4, 'b' -> [5] ]\n"
+                + "[ 6, 'c' -> [7] ]\n"
+                + "[ 8, (ε) -> [4, 6] ]\n"
+                + "set of acceptable state = [5, 7]\n");
         assertThat(nfa0.start).isEqualTo(3);
         assertThat(nfa0.accept).isEqualTo(Set.of(5, 7));
         assertThat(nfa0.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));

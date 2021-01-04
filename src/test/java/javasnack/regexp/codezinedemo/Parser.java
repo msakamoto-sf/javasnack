@@ -16,6 +16,7 @@
 
 package javasnack.regexp.codezinedemo;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javasnack.regexp.codezinedemo.Token.TokenType;
@@ -105,11 +106,18 @@ public class Parser {
         return node;
     }
 
-    public Nfa expression() {
+    public Nfa expression(final StringBuilder dumpTo) {
         final INodeAssembler node = this.subexpr();
         this.consume(TokenType.EOF);
         final Context context = new Context();
         final NfaFragment fragment = node.assemble(context);
+        if (Objects.nonNull(dumpTo)) {
+            dumpTo.append(fragment.toString());
+        }
         return fragment.build();
+    }
+
+    public Nfa expression() {
+        return this.expression(null);
     }
 }
