@@ -7,6 +7,9 @@
 
 Javaで書いた場合、命名規約やコーディングの慣習などでPython版から大分変更となったため、一旦著作権は自身のものとしてライセンスも javasnack 全体のAPL2にしています。問題あればご連絡ください。
 
+なお元の連載記事での Python コードは、連載記事 (6) にzipでダウンロードするリンクがある。
+Python コードを確認したい場合は、先に(6)からダウンロードしておくのを推奨する。
+
 以下、Javaで書いた場合の作業ログおよびその他補足メモ：
 
 ## [1] 連載記事(1)
@@ -756,6 +759,174 @@ return runtime.accept("aaaacdddde");
   - クライアントAPI用のクラス。
 - [RegexpTest クラス](./RegexpTest.java)
   - クライアントAPIのテストコードとして、使い方のサンプルを例示。
+
+## [5] 連載記事(6)
+
+元記事URL : https://codezine.jp/article/detail/3188
+
+元の連載記事 (6) では、作成したDFAエンジンを使って以下の実験をしている。
+
+1. DFAエンジンの内部構造をダンプして、動作状況を確認
+2. 標準ライブラリ(元の連載記事は Python なので `re` モジュール)とのベンチマーク
+3. NFAエンジンのパフォーマンス
+
+こちらでも Java 版で同様の実験を行った。
+
+### [5-1] DFAエンジンの内部構造をダンプして、動作状況を確認
+
+ダンプ用のコードについては記事中では掲載されていない。
+そのため、(6)からダウンロードしたサンプルコードを確認し、Java版に変換したのが以下のクラスになる。
+
+- [NfaDumper](./NfaDumper.java)
+- [Nfa2DfaDumper](./Nfa2DfaDumper.java)
+- この他にもデバッグダンプ用に以下のクラスを調整している:
+  - [Nfa2Dfa.from()](./Nfa2Dfa.java) -> トレースログフラグを引数に追加し、遷移関数が呼ばれた時に引数と戻り値を `System.out.println()`
+  - [NfaFragment.toString()](./NfaFragment.java) -> NFAフラグメントの段階で内部構造をダンプする処理を実装
+
+`Regexp` クラスにもダンプ用のオプションを追加し、テストコード中でダンプ出力を確認する。
+
+[ArticleNo6DemoTest.testDebugDump()](./ArticleNo6DemoTest.java) :
+
+```java
+System.out.println(">>>> debug dump demo for https://codezine.jp/article/detail/3188");
+
+Regexp r = Regexp.compileNfa2Dfa("XY*Z", RegexpOption.DEBUG_LOG);
+System.out.println("------------------");
+assertTrue(r.match("XYYYZ"));
+System.out.println("------------------");
+assertFalse(r.match("XYZYZYZ"));
+
+System.out.println("<<<<");
+```
+
+出力結果:
+
+```
+>>>> debug dump demo for https://codezine.jp/article/detail/3188
+----[NFA Fragment]----
+initial state = 1
+[ 1, 'X' -> [2] ]
+[ 2, (ε) -> [5] ]
+[ 3, 'Y' -> [4] ]
+[ 4, (ε) -> [3, 6] ]
+[ 5, (ε) -> [3, 6] ]
+[ 6, 'Z' -> [7] ]
+set of acceptable state = [7]
+
+dump NFA....
+start-state: 1
+    'X' -> 2
+state: 2
+    (ε) -> 5
+state: 5
+    (ε) -> 3
+    (ε) -> 6
+state: 3
+    'Y' -> 4
+state: 6
+    'Z' -> 7
+state: 4
+    (ε) -> 3
+    (ε) -> 6
+acceptable-state: 7
+
+dump NFA2DFA...
+start-state: [1]
+    'X' -> [2, 3, 5, 6]
+state: [2, 3, 5, 6]
+    'Y' -> [3, 4, 6]
+    'Z' -> [7]
+state: [3, 4, 6]
+    'Y' -> [3, 4, 6]
+    'Z' -> [7]
+acceptable-state: [7]
+acceptable-state: [7]
+
+NFA2DFA: setOfInitialState=[1], setOfAcceptableState=[7]
+------------------
+NFA2DFA TRANSITION: ([1], 'X') => [2, 3, 5, 6]
+NFA2DFA TRANSITION: ([2, 3, 5, 6], 'Y') => [3, 4, 6]
+NFA2DFA TRANSITION: ([3, 4, 6], 'Y') => [3, 4, 6]
+NFA2DFA TRANSITION: ([3, 4, 6], 'Y') => [3, 4, 6]
+NFA2DFA TRANSITION: ([3, 4, 6], 'Z') => [7]
+------------------
+NFA2DFA TRANSITION: ([1], 'X') => [2, 3, 5, 6]
+NFA2DFA TRANSITION: ([2, 3, 5, 6], 'Y') => [3, 4, 6]
+NFA2DFA TRANSITION: ([3, 4, 6], 'Z') => [7]
+NFA2DFA TRANSITION: ([7], 'Y') => []
+NFA2DFA TRANSITION: ([], 'Z') => []
+NFA2DFA TRANSITION: ([], 'Y') => []
+NFA2DFA TRANSITION: ([], 'Z') => []
+<<<<
+```
+
+内容としては、元の連載記事(6)に掲載されている結果と同様になっていることを確認できた。
+
+### [5-2] java.util.regex とのベンチマーク
+
+元の連載記事(6)では Python の標準モジュール `re` を使って `"(f|F)(o|O)(o|O)"` という正規表現についてベンチマーク比較をしている。
+今回は Java で実装しているので、 `java.util.regex` パッケージの `Pattern` と `Matcher` クラスを使って比較してみる。
+
+- `java.util.regex`
+  - https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/package-summary.html
+  - -> [NFAベースのマッチングを行っていると明記](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/regex/Pattern.html) されている。
+
+[ArticleNo6DemoTest.testBenchmarkDemo()](./ArticleNo6DemoTest.java) で同様のベンチマークコードを作成し、実行してみた。
+
+```
+>>>> benchmark demo for https://codezine.jp/article/detail/3188?p=2
+NFA2DFA v.s. java.util.regex for regexp=[(f|F)(o|O)(o|O)], match to=[FoO]
+[NFA2DFA total nanos= 42,645,002 ]
+[java.util.regex total nanos= 10,103,912 ]
+<<<<
+```
+
+-> 元の連載記事(6)と同様、標準ライブラリの方が高速で実行されている様子を確認できた。
+
+元の連載記事(6)ではDFAの遷移関数についてメモ化(memoize)を行い、キャッシュを導入した結果も比較している。
+Java版の遷移関数でもキャッシュを導入し、キャッシュ有無でのベンチマークを比較してみた。
+
+[ArticleNo6DemoTest.testBenchmarkDemoCacheOnOff()](./ArticleNo6DemoTest.java) 実行結果:
+
+```
+>>>> benchmark demo for https://codezine.jp/article/detail/3188?p=2
+NFA2DFA(cache-off) v.s. NFA2DFA(cache-on) for regexp=[(f|F)(o|O)(o|O)], match to=[FoO]
+[NFA2DFA(cache-off) total nanos= 12,969,392 ]
+[NFA2DFA(cache-on ) total nanos= 5,477,783 ]
+<<<<
+```
+
+キャッシュONにより、OFF時と比べて50%近く高速に動作していることを確認できた。
+
+### [5-3] NFAエンジンのパフォーマンス
+
+続いて元の連載記事(6)では `"X*X*X*X*X*X*X*X*X*X*XXXXXXXXXX"` という正規表現について、DFA / 標準モジュール `re` のそれぞれで `"XXXXXXXXXX"` に対して1,000回マッチさせている。
+その結果、記事の方では DFA の方が `re` より8倍早く処理が終わっている。
+
+このパターンについて Java 版でも同様に実験してみる。
+NFA2DFAについてはキャッシュON/OFFの2パターンを含めてみた。
+
+[ArticleNo6DemoTest.testBenchmarkHeavyDemo()](./ArticleNo6DemoTest.java) 実行結果:
+
+```
+>>>> benchmark demo for https://codezine.jp/article/detail/3188?p=2
+NFA2DFA v.s. java.util.regex for regexp=[X*X*X*X*X*X*X*X*X*X*XXXXXXXXXX], match to=[XXXXXXXXXX]
+[NFA2DFA(cache-off) total nanos= 233,900,915 ]
+[NFA2DFA(cache-on ) total nanos= 32,331,078 ]
+[java.util.regex total nanos= 22,219,900 ]
+<<<<
+```
+
+Java11での実行結果を見る限りは、やはり `java.util.regex` の方が早い。
+NFA2DFAはキャッシュONにしてなんとか `java.util.regex` のオーダーに近づけたくらい。
+
+元の連載記事(6)では、ここで NFAエンジンのC言語実装を紹介し、ビルド～実行時の様子のトレース結果を確認している。
+それによるとNFAでは繰り返しの `*` で条件分岐が発生し、その探索で処理が遅くなる。
+問題の正規表現では複数の繰返しのマッチングで条件分岐が爆発し、それにより DFAエンジンより遅くなったことが解説されている。
+
+Javaの場合はNFAであっても内部的にチューニングが積み重ねられており、そのおかげで高速に動作していることが推測できる。
+
+
 
 ## 参考資料
 

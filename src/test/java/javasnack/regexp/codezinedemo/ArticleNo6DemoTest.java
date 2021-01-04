@@ -140,4 +140,39 @@ public class ArticleNo6DemoTest {
 
         System.out.println("<<<<");
     }
+
+    @Test
+    public void testBenchmarkHeavyDemo() {
+        System.out.println(">>>> benchmark demo for https://codezine.jp/article/detail/3188?p=2");
+
+        final String regexp = "X*X*X*X*X*X*X*X*X*X*XXXXXXXXXX";
+        final String matchTo = "XXXXXXXXXX";
+        System.out.println("NFA2DFA v.s. java.util.regex for regexp=[" + regexp + "], match to=[" + matchTo + "]");
+
+        final int count = 1000;
+
+        final Regexp nfa2dfa1 = Regexp.compileNfa2Dfa(regexp);
+        final BenchmarkResult r1 = benchmark(() -> {
+            return nfa2dfa1.match(matchTo);
+        }, count);
+        assertThat(r1.matchedCount).isEqualTo(count);
+
+        final Regexp nfa2dfa2 = Regexp.compileNfa2Dfa(regexp, RegexpOption.ENABLE_NFA2DFA_TRANSITION_CACHE);
+        final BenchmarkResult r2 = benchmark(() -> {
+            return nfa2dfa2.match(matchTo);
+        }, count);
+        assertThat(r2.matchedCount).isEqualTo(count);
+
+        final Pattern javaregexp = Pattern.compile(regexp);
+        final BenchmarkResult r3 = benchmark(() -> {
+            return javaregexp.matcher(matchTo).matches();
+        }, count);
+        assertThat(r3.matchedCount).isEqualTo(count);
+
+        System.out.println("[NFA2DFA(cache-off) total nanos= " + r1.fomatTotalNanos() + " ]");
+        System.out.println("[NFA2DFA(cache-on ) total nanos= " + r2.fomatTotalNanos() + " ]");
+        System.out.println("[java.util.regex total nanos= " + r3.fomatTotalNanos() + " ]");
+
+        System.out.println("<<<<");
+    }
 }
