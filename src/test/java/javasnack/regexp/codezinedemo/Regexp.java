@@ -54,8 +54,15 @@ public class Regexp {
         final StringBuilder dumpTo = new StringBuilder();
         final Nfa nfa0 = parser0.expression(dumpTo);
         final Nfa2Dfa nfa2dfa = Nfa2Dfa.from(nfa0, enableDebugLog, enableCache);
+        final Nfa2Dfa nfa2dfaForDump = Nfa2Dfa.from(nfa0, false, false);
         if (enableDebugLog) {
             System.out.println(dumpTo.toString());
+            System.out.println("dump NFA....");
+            final NfaDumper nfaDumper = new NfaDumper(nfa0);
+            System.out.println(nfaDumper.dump());
+            System.out.println("dump NFA2DFA...");
+            final Nfa2DfaDumper nfa2dfaDumper = new Nfa2DfaDumper(nfa2dfaForDump);
+            System.out.println(nfa2dfaDumper.dump());
             System.out.println("NFA2DFA: setOfInitialState=" + nfa2dfa.start + ", setOfAcceptableState="
                     + nfa2dfa.nfaAcceptableStateSet);
         }
