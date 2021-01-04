@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -30,9 +29,6 @@ import org.junit.jupiter.api.Test;
 import com.google.re2j.Pattern;
 
 import javasnack.regexp.codezinedemo.Regexp.RegexpOption;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 public class ArticleNo6DemoTest {
     @Test
@@ -46,20 +42,6 @@ public class ArticleNo6DemoTest {
         assertFalse(r.match("XYZYZYZ"));
 
         System.out.println("<<<<");
-    }
-
-    @ToString
-    @EqualsAndHashCode
-    @AllArgsConstructor(staticName = "of")
-    private static class BenchmarkResult {
-        final long totalNanos;
-        final double avgNanos;
-        final int matchedCount;
-
-        final String fomatTotalNanos() {
-            final NumberFormat fmt = NumberFormat.getNumberInstance();
-            return fmt.format(totalNanos);
-        }
     }
 
     private static BenchmarkResult benchmark(final Supplier<Boolean> regexpTask, final int count) {
