@@ -108,6 +108,10 @@ public class NfaFragment {
         return Nfa.of(transition, this.startState, this.acceptableStates);
     }
 
+    public static String optchar(final Optional<Character> c) {
+        return c.isPresent() ? "'" + c.get() + "'" : "(ε)";
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -139,8 +143,7 @@ public class NfaFragment {
             final int currentState = key.currentState;
             final Optional<Character> input = key.inputCharacter;
             final Set<Integer> r = e.getValue();
-            sb.append("[ " + currentState + ", " + (input.isPresent() ? "'" + input.get() + "'" : "(ε)") + " -> " + r
-                    + " ]\n");
+            sb.append("[ " + currentState + ", " + optchar(input) + " -> " + r + " ]\n");
         }
         sb.append("set of acceptable state = " + this.acceptableStates + "\n");
         return sb.toString();
