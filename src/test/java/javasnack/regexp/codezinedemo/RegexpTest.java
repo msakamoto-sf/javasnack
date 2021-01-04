@@ -92,4 +92,73 @@ public class RegexpTest {
         assertTrue(r.match("cde"));
         assertTrue(r.match("cdabefff"));
     }
+
+    @Test
+    public void testNfa() {
+        Regexp r = Regexp.compileNfa("a");
+        assertFalse(r.match(""));
+        assertTrue(r.match("a"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("ab", RegexpOption.DEBUG_LOG);
+        assertFalse(r.match(""));
+        assertFalse(r.match("a"));
+        assertTrue(r.match("ab"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("ab*");
+        assertFalse(r.match(""));
+        assertTrue(r.match("a"));
+        assertTrue(r.match("ab"));
+        assertTrue(r.match("abb"));
+        assertFalse(r.match("ac"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("ab*c");
+        assertFalse(r.match(""));
+        assertFalse(r.match("a"));
+        assertTrue(r.match("abc"));
+        assertTrue(r.match("abbc"));
+        assertTrue(r.match("ac"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("a|b");
+        assertFalse(r.match(""));
+        assertTrue(r.match("a"));
+        assertTrue(r.match("b"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("ab|cd");
+        assertFalse(r.match(""));
+        assertFalse(r.match("a"));
+        assertTrue(r.match("ab"));
+        assertFalse(r.match("bc"));
+        assertFalse(r.match("c"));
+        assertTrue(r.match("cd"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("(ab*)|(cd*)");
+        assertFalse(r.match(""));
+        assertTrue(r.match("a"));
+        assertTrue(r.match("ab"));
+        assertTrue(r.match("abb"));
+        assertFalse(r.match("bc"));
+        assertTrue(r.match("c"));
+        assertTrue(r.match("cd"));
+        assertTrue(r.match("cdd"));
+        assertFalse(r.match("x"));
+
+        r = Regexp.compileNfa("(ab*|cd*)*ef*");
+        assertFalse(r.match(""));
+        assertTrue(r.match("e"));
+        assertTrue(r.match("abe"));
+        assertTrue(r.match("abbefff"));
+        assertTrue(r.match("abcde"));
+        assertTrue(r.match("abbbcdddde"));
+        assertTrue(r.match("ababe"));
+        assertTrue(r.match("abbbabbbbefff"));
+        assertTrue(r.match("e"));
+        assertTrue(r.match("cde"));
+        assertTrue(r.match("cdabefff"));
+    }
 }

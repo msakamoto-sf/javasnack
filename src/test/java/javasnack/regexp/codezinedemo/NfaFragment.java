@@ -97,15 +97,24 @@ public class NfaFragment {
     /**
      * 状態遷移マトリクスを元に生成した状態遷移関数を持つNFAを作成する。
      * 
+     * @param enableTraceLog トレースログ(System.out.println()) ON/OFF
      * @return
      */
-    public Nfa build() {
+    public Nfa build(final boolean enableTraceLog) {
         final Map<StateAndInputCharacter, Set<Integer>> mapref = this.stateTransitionMatrix;
         final NfaStateTransitFunction transition = (final int currentState, final Optional<Character> input) -> {
             final StateAndInputCharacter key = StateAndInputCharacter.of(currentState, input);
-            return Collections.unmodifiableSet(mapref.getOrDefault(key, Collections.emptySet()));
+            final Set<Integer> r = mapref.getOrDefault(key, Collections.emptySet());
+            if (enableTraceLog) {
+                System.out.println("NFA TRANSITION: (" + currentState + ", " + optchar(input) + ") => " + r);
+            }
+            return Collections.unmodifiableSet(r);
         };
-        return Nfa.of(transition, this.startState, this.acceptableStates);
+        return Nfa.of(transition, this.startState, this.acceptableStates, enableTraceLog);
+    }
+
+    public Nfa build() {
+        return build(false);
     }
 
     public static String optchar(final Optional<Character> c) {

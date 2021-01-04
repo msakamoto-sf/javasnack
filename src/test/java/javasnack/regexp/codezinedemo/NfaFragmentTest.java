@@ -65,6 +65,23 @@ public class NfaFragmentTest {
     }
 
     @Test
+    public void testTraceLog() {
+        final NfaFragment r = new NfaFragment();
+        r.startState = 1;
+        r.connect(1, Optional.of('a'), 2);
+        r.connect(2, Optional.empty(), 3);
+        r.acceptableStates.add(3);
+        final Nfa nfa1 = r.build(false);
+        assertThat(nfa1.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
+        assertThat(nfa1.transition.apply(2, Optional.empty())).isEqualTo(Set.of(3));
+        final Nfa nfa2 = r.build(true);
+        System.out.println(">>>> NFA Transition Function Trace Log ON");
+        assertThat(nfa2.transition.apply(1, Optional.of('a'))).isEqualTo(Set.of(2));
+        assertThat(nfa2.transition.apply(2, Optional.empty())).isEqualTo(Set.of(3));
+        System.out.println("<<<<");
+    }
+
+    @Test
     public void testCreateAndCopyStateTransitionMatrix() {
         NfaFragment r0 = new NfaFragment();
         NfaFragment r1 = r0.createAndCopyStateTransitionMatrix();

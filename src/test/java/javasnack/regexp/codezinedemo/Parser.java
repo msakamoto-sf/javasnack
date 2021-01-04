@@ -106,7 +106,7 @@ public class Parser {
         return node;
     }
 
-    public Nfa expression(final StringBuilder dumpTo) {
+    public Nfa expression(final StringBuilder dumpTo, final boolean enableTraceLog) {
         final INodeAssembler node = this.subexpr();
         this.consume(TokenType.EOF);
         final Context context = new Context();
@@ -114,10 +114,10 @@ public class Parser {
         if (Objects.nonNull(dumpTo)) {
             dumpTo.append(fragment.toString());
         }
-        return fragment.build();
+        return fragment.build(enableTraceLog);
     }
 
     public Nfa expression() {
-        return this.expression(null);
+        return this.expression(null, false);
     }
 }

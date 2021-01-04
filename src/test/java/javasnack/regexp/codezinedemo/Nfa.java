@@ -40,6 +40,12 @@ public class Nfa {
     public final int start;
     /** set of acceptable states */
     public final Set<Integer> accept;
+    /** 展開時に遷移関数を動かすときに、トレースログを区別しやすくするためのマーカを挿入するときはON */
+    public final boolean enableExpandEpsilonTrace;
+
+    public static Nfa of(final NfaStateTransitFunction transition, final int start, final Set<Integer> accept) {
+        return of(transition, start, accept, false);
+    }
 
     /**
      * NFAにおける状態の集合について、各状態から空文字(ε)で遷移可能な状態を集約し、元の集合にマージする。
@@ -68,6 +74,10 @@ public class Nfa {
             // 検査対象の遷移元状態をキューから取り出す
             final int state = queue.remove(); // あえて要素がなければ例外をthrowさせ、異常検知させる。
             // 空文字を入力したときの遷移先状態の集合を取得
+            if (enableExpandEpsilonTrace) {
+                // 展開時に遷移関数を動かすときに、トレースログを区別しやすくするためのマーカを挿入する。
+                System.out.print("##<''>##");
+            }
             final Set<Integer> nextStates = this.transition.apply(state, Optional.empty());
             // 検査対象の遷移元状態を、完了セットに追加 (これは遷移先が空であっても、「検査自体は完了」したので追加する)
             done.add(state);

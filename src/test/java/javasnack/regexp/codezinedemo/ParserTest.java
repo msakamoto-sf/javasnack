@@ -33,13 +33,15 @@ public class ParserTest {
      * 元の連載記事 : https://codezine.jp/article/detail/3158
      */
 
+    private static final boolean TRACELOG = false;
+
     @Test
     public void testEmptyString() {
         // subexpr -> seq(neither '(' or character)  -> CharacterNode
         final var lex0 = new Lexer("");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 1\n"
                 + "[ 1, (ε) -> [2] ]\n"
@@ -55,7 +57,7 @@ public class ParserTest {
         final var lex0 = new Lexer("a");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 1\n"
                 + "[ 1, 'a' -> [2] ]\n"
@@ -76,7 +78,7 @@ public class ParserTest {
         final var lex0 = new Lexer("a|b");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 5\n"
                 + "[ 1, 'a' -> [2] ]\n"
@@ -100,7 +102,7 @@ public class ParserTest {
         final var lex0 = new Lexer("ab");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 1\n"
                 + "[ 1, 'a' -> [2] ]\n"
@@ -120,7 +122,7 @@ public class ParserTest {
         final var lex0 = new Lexer("(a)");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 1\n"
                 + "[ 1, 'a' -> [2] ]\n"
@@ -139,7 +141,7 @@ public class ParserTest {
         final var lex0 = new Lexer("a*");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 3\n"
                 + "[ 1, 'a' -> [2] ]\n"
@@ -165,7 +167,7 @@ public class ParserTest {
         final var lex0 = new Lexer("a*b");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 3\n"
                 + "[ 1, 'a' -> [2] ]\n"
@@ -193,7 +195,7 @@ public class ParserTest {
         final var lex0 = new Lexer("a*(b|c)");
         final var parser0 = new Parser(lex0);
         final var debugTo = new StringBuilder();
-        final var nfa0 = parser0.expression(debugTo);
+        final var nfa0 = parser0.expression(debugTo, TRACELOG);
         assertThat(debugTo.toString()).isEqualTo("----[NFA Fragment]----\n"
                 + "initial state = 3\n"
                 + "[ 1, 'a' -> [2] ]\n"

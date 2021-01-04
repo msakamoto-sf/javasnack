@@ -38,10 +38,22 @@ public class Regexp {
         this.nfa2dfa = nfa2dfa;
     }
 
-    public static Regexp compileNfa(final String regexp) {
+    public static Regexp compileNfa(final String regexp, RegexpOption... options) {
+        final List<RegexpOption> optionset = Arrays.asList(options);
+        final boolean enableDebugLog = optionset.contains(RegexpOption.DEBUG_LOG);
+
         final Lexer lex0 = new Lexer(regexp);
         final Parser parser0 = new Parser(lex0);
-        final Nfa nfa0 = parser0.expression();
+        final StringBuilder dumpTo = new StringBuilder();
+        final Nfa nfa0 = parser0.expression(dumpTo, enableDebugLog);
+        final Nfa nfaForDump = parser0.expression();
+        if (enableDebugLog) {
+            System.out.println(dumpTo.toString());
+            System.out.println("dump NFA....");
+            final NfaDumper nfaDumper = new NfaDumper(nfaForDump);
+            System.out.println(nfaDumper.dump());
+            System.out.println("NFA: initialState=" + nfa0.start + ", setOfAcceptableState=" + nfa0.accept);
+        }
         return new Regexp(RegexpType.NFA, nfa0, null);
     }
 
@@ -49,10 +61,11 @@ public class Regexp {
         final List<RegexpOption> optionset = Arrays.asList(options);
         final boolean enableDebugLog = optionset.contains(RegexpOption.DEBUG_LOG);
         final boolean enableCache = optionset.contains(RegexpOption.ENABLE_NFA2DFA_TRANSITION_CACHE);
+
         final Lexer lex0 = new Lexer(regexp);
         final Parser parser0 = new Parser(lex0);
         final StringBuilder dumpTo = new StringBuilder();
-        final Nfa nfa0 = parser0.expression(dumpTo);
+        final Nfa nfa0 = parser0.expression(dumpTo, false); // NFAの遷移関数のトレースログは不要
         final Nfa2Dfa nfa2dfa = Nfa2Dfa.from(nfa0, enableDebugLog, enableCache);
         final Nfa2Dfa nfa2dfaForDump = Nfa2Dfa.from(nfa0, false, false);
         if (enableDebugLog) {
@@ -72,9 +85,11 @@ public class Regexp {
     public boolean match(final String str) {
         switch (this.type) {
         case NFA2DFA:
-            final Nfa2DfaRuntime runtime0 = new Nfa2DfaRuntime(nfa2dfa);
-            return runtime0.accept(str);
+            final Nfa2DfaRuntime nfa2dfaRuntime = new Nfa2DfaRuntime(nfa2dfa);
+            return nfa2dfaRuntime.accept(str);
         case NFA:
+            final NfaRuntime nfaRuntime = new NfaRuntime(nfa);
+            return nfaRuntime.accept(str);
         default:
             throw new UnsupportedOperationException();
         }
