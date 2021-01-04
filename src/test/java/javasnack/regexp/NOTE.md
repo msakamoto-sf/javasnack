@@ -130,6 +130,8 @@ JavaDoc リファレンス:
 
 チェックツール:
 
+- `GitHub - NicolaasWeideman/RegexStaticAnalysis: A tool to perform static analysis on regexes to determine whether they are vulnerable to ReDoS.`
+  - https://github.com/NicolaasWeideman/RegexStaticAnalysis
 - `GitHub - jagracey/RegEx-DoS: RegEx Denial of Service (ReDos) Scanner`
   - https://github.com/jagracey/RegEx-DoS
 - `GitHub - substack/safe-regex: detect possibly catastrophic, exponential-time regular expressions`
