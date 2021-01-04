@@ -21,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import javasnack.regexp.codezinedemo.Regexp.RegexpOption;
+
 public class RegexpTest {
     @Test
     public void testNfa2Dfa() {
@@ -29,7 +31,7 @@ public class RegexpTest {
         assertTrue(r.match("a"));
         assertFalse(r.match("x"));
 
-        r = Regexp.compileNfa2Dfa("ab");
+        r = Regexp.compileNfa2Dfa("ab", RegexpOption.DEBUG_LOG);
         assertFalse(r.match(""));
         assertFalse(r.match("a"));
         assertTrue(r.match("ab"));

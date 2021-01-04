@@ -16,9 +16,16 @@
 
 package javasnack.regexp.codezinedemo;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Regexp {
     public enum RegexpType {
         NFA, NFA2DFA
+    }
+
+    public enum RegexpOption {
+        DEBUG_LOG, ENABLE_NFA2DFA_TRANSITION_CACHE
     }
 
     private final RegexpType type;
@@ -38,11 +45,21 @@ public class Regexp {
         return new Regexp(RegexpType.NFA, nfa0, null);
     }
 
-    public static Regexp compileNfa2Dfa(final String regexp) {
+    public static Regexp compileNfa2Dfa(final String regexp, RegexpOption... options) {
+        final List<RegexpOption> optionset = Arrays.asList(options);
+        final boolean enableDebugLog = optionset.contains(RegexpOption.DEBUG_LOG);
+        final boolean enableCache = optionset.contains(RegexpOption.ENABLE_NFA2DFA_TRANSITION_CACHE);
         final Lexer lex0 = new Lexer(regexp);
         final Parser parser0 = new Parser(lex0);
-        final Nfa nfa0 = parser0.expression();
-        return new Regexp(RegexpType.NFA2DFA, null, Nfa2Dfa.from(nfa0));
+        final StringBuilder dumpTo = new StringBuilder();
+        final Nfa nfa0 = parser0.expression(dumpTo);
+        final Nfa2Dfa nfa2dfa = Nfa2Dfa.from(nfa0, enableDebugLog, enableCache);
+        if (enableDebugLog) {
+            System.out.println(dumpTo.toString());
+            System.out.println("NFA2DFA: setOfInitialState=" + nfa2dfa.start + ", setOfAcceptableState="
+                    + nfa2dfa.nfaAcceptableStateSet);
+        }
+        return new Regexp(RegexpType.NFA2DFA, null, nfa2dfa);
     }
 
     public boolean match(final String str) {

@@ -66,7 +66,7 @@ public class Nfa2Dfa {
             }
             final Set<Integer> r = nfa.expandEpsilon(setOfNextState);
             if (enableTraceLog) {
-                System.out.println("NFA2DFA: (" + setOfCurrentState + ", '" + character + "') => " + r);
+                System.out.println("NFA2DFA TRANSITION: (" + setOfCurrentState + ", '" + character + "') => " + r);
             }
 
             if (enableTransitionCache) {
