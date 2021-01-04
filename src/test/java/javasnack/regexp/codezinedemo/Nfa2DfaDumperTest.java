@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 public class Nfa2DfaDumperTest {
     @Test
-    public void testNfa2Dfa() {
+    public void testDump() {
         final Map<StateAndInputCharacter, Set<Integer>> tbl0 = new HashMap<>();
         tbl0.put(StateAndInputCharacter.of(0, Optional.of('a')), Set.of(1));
         tbl0.put(StateAndInputCharacter.of(1, Optional.of('b')), Set.of(3)); // ab
