@@ -56,7 +56,12 @@ public class Nfa2Dfa {
             final StateSetAndInputCharacter cacheKey = StateSetAndInputCharacter.of(setOfCurrentState, character);
             if (enableTransitionCache && memocache.containsKey(cacheKey)) {
                 // キャッシュ有効でキャッシュhitしたときは、その値を返す。
-                return memocache.get(cacheKey);
+                final Set<Integer> r = memocache.get(cacheKey);
+                if (enableTraceLog) {
+                    System.out.println("NFA2DFA TRANSITION: (" + setOfCurrentState + ", '" + character + "') => " + r
+                            + " (cached)");
+                }
+                return r;
             }
 
             final Set<Integer> setOfNextState = new HashSet<>();
