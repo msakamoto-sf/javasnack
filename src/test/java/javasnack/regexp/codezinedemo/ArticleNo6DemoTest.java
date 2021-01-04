@@ -20,10 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 import org.junit.jupiter.api.Test;
 
 import com.google.re2j.Pattern;
@@ -44,28 +40,6 @@ public class ArticleNo6DemoTest {
         System.out.println("<<<<");
     }
 
-    private static BenchmarkResult benchmark(final Supplier<Boolean> regexpTask, final int count) {
-        final List<Long> elapsedNanos = new ArrayList<>(count);
-        int matched = 0;
-        for (int i = 0; i < count; i++) {
-            final long started = System.nanoTime();
-            /* JITによる未使用コードの削除を回避するため、マッチ結果の戻り値を使う処理を挿入
-             * -> マッチしたらカウントアップする処理を入れている。
-             */
-            final boolean r = regexpTask.get();
-            final long elapsed = System.nanoTime() - started;
-            elapsedNanos.add(elapsed);
-            if (r) {
-                matched++;
-            }
-        }
-
-        return BenchmarkResult.of(
-                elapsedNanos.stream().mapToLong(x -> x).sum(),
-                elapsedNanos.stream().mapToLong(x -> x).average().getAsDouble(),
-                matched);
-    }
-
     @Test
     public void testBenchmarkDemo() {
         System.out.println(">>>> benchmark demo for https://codezine.jp/article/detail/3188?p=2");
@@ -77,13 +51,13 @@ public class ArticleNo6DemoTest {
         final int count = 1000;
 
         final Regexp nfa2dfa = Regexp.compileNfa2Dfa(regexp);
-        final BenchmarkResult r1 = benchmark(() -> {
+        final BenchmarkResult r1 = BenchmarkResult.benchmark(() -> {
             return nfa2dfa.match(matchTo);
         }, count);
         assertThat(r1.matchedCount).isEqualTo(count);
 
         final Pattern javaregexp = Pattern.compile(regexp);
-        final BenchmarkResult r2 = benchmark(() -> {
+        final BenchmarkResult r2 = BenchmarkResult.benchmark(() -> {
             return javaregexp.matcher(matchTo).matches();
         }, count);
         assertThat(r2.matchedCount).isEqualTo(count);
@@ -106,13 +80,13 @@ public class ArticleNo6DemoTest {
         final int count = 1000;
 
         final Regexp nfa2dfaWithoutCache = Regexp.compileNfa2Dfa(regexp);
-        final BenchmarkResult r1 = benchmark(() -> {
+        final BenchmarkResult r1 = BenchmarkResult.benchmark(() -> {
             return nfa2dfaWithoutCache.match(matchTo);
         }, count);
         assertThat(r1.matchedCount).isEqualTo(count);
 
         final Regexp nfa2dfaWithCache = Regexp.compileNfa2Dfa(regexp, RegexpOption.ENABLE_NFA2DFA_TRANSITION_CACHE);
-        final BenchmarkResult r2 = benchmark(() -> {
+        final BenchmarkResult r2 = BenchmarkResult.benchmark(() -> {
             return nfa2dfaWithCache.match(matchTo);
         }, count);
         assertThat(r2.matchedCount).isEqualTo(count);
@@ -134,19 +108,19 @@ public class ArticleNo6DemoTest {
         final int count = 1000;
 
         final Regexp nfa2dfa1 = Regexp.compileNfa2Dfa(regexp);
-        final BenchmarkResult r1 = benchmark(() -> {
+        final BenchmarkResult r1 = BenchmarkResult.benchmark(() -> {
             return nfa2dfa1.match(matchTo);
         }, count);
         assertThat(r1.matchedCount).isEqualTo(count);
 
         final Regexp nfa2dfa2 = Regexp.compileNfa2Dfa(regexp, RegexpOption.ENABLE_NFA2DFA_TRANSITION_CACHE);
-        final BenchmarkResult r2 = benchmark(() -> {
+        final BenchmarkResult r2 = BenchmarkResult.benchmark(() -> {
             return nfa2dfa2.match(matchTo);
         }, count);
         assertThat(r2.matchedCount).isEqualTo(count);
 
         final Pattern javaregexp = Pattern.compile(regexp);
-        final BenchmarkResult r3 = benchmark(() -> {
+        final BenchmarkResult r3 = BenchmarkResult.benchmark(() -> {
             return javaregexp.matcher(matchTo).matches();
         }, count);
         assertThat(r3.matchedCount).isEqualTo(count);

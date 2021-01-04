@@ -17,6 +17,9 @@
 package javasnack.regexp.codezinedemo;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -33,5 +36,27 @@ public class BenchmarkResult {
     final String fomatTotalNanos() {
         final NumberFormat fmt = NumberFormat.getNumberInstance();
         return fmt.format(totalNanos);
+    }
+
+    public static BenchmarkResult benchmark(final Supplier<Boolean> regexpTask, final int count) {
+        final List<Long> elapsedNanos = new ArrayList<>(count);
+        int matched = 0;
+        for (int i = 0; i < count; i++) {
+            final long started = System.nanoTime();
+            /* JITによる未使用コードの削除を回避するため、マッチ結果の戻り値を使う処理を挿入
+             * -> マッチしたらカウントアップする処理を入れている。
+             */
+            final boolean r = regexpTask.get();
+            final long elapsed = System.nanoTime() - started;
+            elapsedNanos.add(elapsed);
+            if (r) {
+                matched++;
+            }
+        }
+
+        return BenchmarkResult.of(
+                elapsedNanos.stream().mapToLong(x -> x).sum(),
+                elapsedNanos.stream().mapToLong(x -> x).average().getAsDouble(),
+                matched);
     }
 }
