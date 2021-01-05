@@ -190,7 +190,11 @@ public class Test10ThreadBasics {
         decrementThread.start();
         incrementThread.join(10_000);
         decrementThread.join(10_000);
-        assertThat(c0.getCount()).isNotEqualTo(0);
+        /* タイミングによってはピッタリ increment/decrement が一致するときがあるので、
+         * not-equal / equal での assertion を書けない。
+         * -> コンソールに出力するだけに留める。
+         */
+        System.out.println("multi-thread broken counter result: " + c0.getCount() + " (expect 0)");
     }
 
     static class SynchronizedButNotAtomicCounter {
@@ -225,7 +229,12 @@ public class Test10ThreadBasics {
         decrementThread.start();
         incrementThread.join(10_000);
         decrementThread.join(10_000);
-        assertThat(c0.getCount()).isNotEqualTo(0);
+        /* タイミングによってはピッタリ increment/decrement が一致するときがあるので、
+         * not-equal / equal での assertion を書けない。
+         * -> コンソールに出力するだけに留める。
+         */
+        System.out.println("multi-thread synchronized but not atomic counter result: "
+                + c0.getCount() + " (expect 0)");
     }
 
     static class SynchronizedAndAtomicCounter {
