@@ -131,7 +131,7 @@ public class NfaBackTrackRuntime {
             this.currentState = next.state;
             this.left = next.left;
             // 残りの分岐ポイントを、次回以降の分岐ポイント一覧に保存する。
-            this.branches.addAll(setOfNextCandidateBranch);
+            this.branches.addAll(queueOfNextCandidateBranch);
             if (this.enableTraceLog) {
                 for (TrackPoint dump : this.branches) {
                     System.out.println("SAVED-TRACKPOINTS: " + dump);
