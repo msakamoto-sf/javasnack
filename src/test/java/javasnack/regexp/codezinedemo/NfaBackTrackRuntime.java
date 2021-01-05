@@ -66,20 +66,25 @@ public class NfaBackTrackRuntime {
     private final Queue<TrackPoint> branches = new ArrayDeque<>();
     private Set<TrackPoint> alreadyTracedBranches = new HashSet<>();
     private final boolean enableTraceLog;
+    private final boolean enableTracedBackTrackSkipping;
     private int countOfBackTracked = 0;
 
     public int getCountOfBackTracked() {
         return this.countOfBackTracked;
     }
 
-    public NfaBackTrackRuntime(final Nfa nfa, final boolean enableTraceLog) {
+    public NfaBackTrackRuntime(
+            final Nfa nfa,
+            final boolean enableTraceLog,
+            final boolean enableTracedBackTrackSkipping) {
         this.nfa = nfa;
         this.currentState = nfa.start;
         this.enableTraceLog = enableTraceLog;
+        this.enableTracedBackTrackSkipping = enableTracedBackTrackSkipping;
     }
 
     public NfaBackTrackRuntime(final Nfa nfa) {
-        this(nfa, false);
+        this(nfa, false, true);
     }
 
     private boolean transitSingleChar() {
@@ -146,8 +151,25 @@ public class NfaBackTrackRuntime {
 
     private TrackPoint nextTrackPoint(final Queue<TrackPoint> queueOfTrackPoint) {
         final TrackPoint next = queueOfTrackPoint.remove(); // あえて要素がなければ例外をthrowさせ、異常検知させる。
-        // 取り出した分岐ポイントを、トレース済みに移す。
-        this.alreadyTracedBranches.add(next);
+        if (enableTracedBackTrackSkipping) {
+            // 取り出した分岐ポイントを、トレース済みに移す。
+            this.alreadyTracedBranches.add(next);
+            /* これを行わない場合、全ての分岐を試行することになり
+             * 正規表現によっては深刻な性能劣化が発生する。
+             * 
+             * パターン1, EDA : Exponential Degree of Ambiguity
+             * O(2^N) などの指数計算時間がかかるパターン。
+             * 例: (a|a)*, (a*)* など。
+             * 問題となる文字列例: "aaa...ab"
+             * 
+             * パターン2, IDA : Infinite Degree of Amgibuity
+             * "infinite degree polynomial" という表現もある。
+             * O(N^2) など多項式計算時間がかかるパターン。
+             * 例: a*a*a*a*
+             * ( "a*a*" だけなら O(N) だが、それがもう1ペア連結することで O(N^2) となる )
+             * 問題となる文字列例: "aaa...ab"
+             */
+        }
         return next;
     }
 
