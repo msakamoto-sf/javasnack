@@ -121,6 +121,9 @@ public class NfaBackTrackRuntime {
             // これ以上辿るべき分岐ポイントが見つからなかったため、状態や残り文字列にエンドマーカを設定する。
             this.currentState = -1;
             this.left = null;
+            if (this.enableTraceLog) {
+                System.out.println("END-MARKED");
+            }
         } else {
             // 辿るべき次の分岐ポイントを取り出し、状態と残り文字列を復元する。
             final Queue<TrackPoint> queueOfNextCandidateBranch = new ArrayDeque<>(setOfNextCandidateBranch);
