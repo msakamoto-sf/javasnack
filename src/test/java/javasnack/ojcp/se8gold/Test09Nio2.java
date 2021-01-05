@@ -151,7 +151,9 @@ public class Test09Nio2 {
         // normalize() は冗長な表現を削除してくれる。
         assertThat(p0.normalize().toString()).isEqualTo(p("..", "..", "foo", "bar", "baz.txt"));
         // toUri() では冗長な表現や相対パスの調整はしてくれない。(as-is)
-        assertThat(p0.toUri().toString()).isEqualTo(curr.toUri() + "../../foo/./bar/../bar/baz.txt");
+        assertThat(p0.toUri().toString().toLowerCase())
+                .isEqualTo(curr.toUri().toString().toLowerCase() + "../../foo/./bar/../bar/baz.txt");
+        // NOTE: drive-letter がJDKによって大文字・小文字が異なる現象が確認されたため、小文字に揃えて比較
 
         p0 = Paths.get("..").toRealPath();
         // 現在ディレクトリに対して1つ上になるので、subpath() での比較を実施。
@@ -166,7 +168,9 @@ public class Test09Nio2 {
 
         // toAbsolutePath() では最初の相対パスを文字列上で調整するだけなので、存在しないpathでも no error.
         p0 = Paths.get("./foo/../foo/./bar/baz.txt").toAbsolutePath();
-        assertThat(p0.toString()).isEqualTo(p(curr.toString(), ".", "foo", "..", "foo", ".", "bar", "baz.txt"));
+        assertThat(p0.toString().toLowerCase())
+                .isEqualTo(p(curr.toString().toLowerCase(), ".", "foo", "..", "foo", ".", "bar", "baz.txt"));
+        // NOTE: drive-letter がJDKによって大文字・小文字が異なる現象が確認されたため、小文字に揃えて比較
 
         // resolve() では文字列上で結合するだけなので、存在しないpathでも no error.
         Path p1 = Paths.get("../foo/bar/");
