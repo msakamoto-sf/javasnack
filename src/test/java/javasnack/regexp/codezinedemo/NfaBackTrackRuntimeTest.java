@@ -82,6 +82,7 @@ public class NfaBackTrackRuntimeTest {
         System.out.println(">>>> NFA runtime trace log demo");
         var runtime0 = new NfaBackTrackRuntime(nfa0, true);
         assertTrue(runtime0.accept("e"));
+        assertThat(runtime0.getCountOfBackTracked()).isEqualTo(2);
         System.out.println("<<<<");
     }
 }

@@ -66,6 +66,11 @@ public class NfaBackTrackRuntime {
     private final Queue<TrackPoint> branches = new ArrayDeque<>();
     private Set<TrackPoint> alreadyTracedBranches = new HashSet<>();
     private final boolean enableTraceLog;
+    private int countOfBackTracked = 0;
+
+    public int getCountOfBackTracked() {
+        return this.countOfBackTracked;
+    }
 
     public NfaBackTrackRuntime(final Nfa nfa, final boolean enableTraceLog) {
         this.nfa = nfa;
@@ -156,6 +161,7 @@ public class NfaBackTrackRuntime {
             System.out.println("##>>BACKTRACK<<##: " + nextBranch);
         }
         // backtrack発生
+        countOfBackTracked++;
         return true;
     }
 
