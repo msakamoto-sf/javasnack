@@ -119,8 +119,25 @@ public class NfaBackTrackRuntime {
             setOfNextCandidateBranch.add(TrackPoint.of(currentState, null));
         }
 
-        // 今回の遷移で取り出した分岐ポイントの集合から、既にトレースした分岐ポイントを除去する。
-        setOfNextCandidateBranch.removeAll(alreadyTracedBranches);
+        if (enableTracedBackTrackSkipping) {
+            // 今回の遷移で取り出した分岐ポイントの集合から、既にトレースした分岐ポイントを除去する。
+            setOfNextCandidateBranch.removeAll(alreadyTracedBranches);
+            /* これを行わない場合、全ての分岐を試行することになり
+             * 正規表現によっては深刻な性能劣化が発生する。
+             * 
+             * パターン1, EDA : Exponential Degree of Ambiguity
+             * O(2^N) などの指数計算時間がかかるパターン。
+             * 例: (a|a)*, (a*)* など。
+             * 問題となる文字列例: "aaa...ab"
+             * 
+             * パターン2, IDA : Infinite Degree of Amgibuity
+             * "infinite degree polynomial" という表現もある。
+             * O(N^2) など多項式計算時間がかかるパターン。
+             * 例: a*a*a*a*
+             * ( "a*a*" だけなら O(N) だが、それがもう1ペア連結することで O(N^2) となる )
+             * 問題となる文字列例: "aaa...ab"
+             */
+        }
 
         if (setOfNextCandidateBranch.isEmpty()) {
             // これ以上辿るべき分岐ポイントが見つからなかったため、状態や残り文字列にエンドマーカを設定する。
@@ -151,25 +168,8 @@ public class NfaBackTrackRuntime {
 
     private TrackPoint nextTrackPoint(final Queue<TrackPoint> queueOfTrackPoint) {
         final TrackPoint next = queueOfTrackPoint.remove(); // あえて要素がなければ例外をthrowさせ、異常検知させる。
-        if (enableTracedBackTrackSkipping) {
-            // 取り出した分岐ポイントを、トレース済みに移す。
-            this.alreadyTracedBranches.add(next);
-            /* これを行わない場合、全ての分岐を試行することになり
-             * 正規表現によっては深刻な性能劣化が発生する。
-             * 
-             * パターン1, EDA : Exponential Degree of Ambiguity
-             * O(2^N) などの指数計算時間がかかるパターン。
-             * 例: (a|a)*, (a*)* など。
-             * 問題となる文字列例: "aaa...ab"
-             * 
-             * パターン2, IDA : Infinite Degree of Amgibuity
-             * "infinite degree polynomial" という表現もある。
-             * O(N^2) など多項式計算時間がかかるパターン。
-             * 例: a*a*a*a*
-             * ( "a*a*" だけなら O(N) だが、それがもう1ペア連結することで O(N^2) となる )
-             * 問題となる文字列例: "aaa...ab"
-             */
-        }
+        // 取り出した分岐ポイントを、トレース済みに移す。
+        this.alreadyTracedBranches.add(next);
         return next;
     }
 
