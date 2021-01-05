@@ -25,26 +25,33 @@ public class Regexp {
     }
 
     public enum RegexpOption {
-        DEBUG_LOG, ENABLE_NFA2DFA_TRANSITION_CACHE, NFA_BACKTRACK
+        DEBUG_LOG,
+        ENABLE_NFA2DFA_TRANSITION_CACHE,
+        NFA_BACKTRACK,
+        DISABLE_NFA_TRACED_BACKTRACK_SKIPPING
     }
 
     private final RegexpType type;
     private final Nfa nfa;
     private final Nfa2Dfa nfa2dfa;
     private final boolean enableNfaBackTrackRuntimeTraceLog;
+    private final boolean disableNfaTracedBackTrackSkipping;
 
     private Regexp(final RegexpType type, final Nfa nfa, final Nfa2Dfa nfa2dfa,
-            final boolean enableNfaBackTrackRuntimeTraceLog) {
+            final boolean enableNfaBackTrackRuntimeTraceLog,
+            final boolean disableNfaTracedBackTrackSkipping) {
         this.type = type;
         this.nfa = nfa;
         this.nfa2dfa = nfa2dfa;
         this.enableNfaBackTrackRuntimeTraceLog = enableNfaBackTrackRuntimeTraceLog;
+        this.disableNfaTracedBackTrackSkipping = disableNfaTracedBackTrackSkipping;
     }
 
     public static Regexp compileNfa(final String regexp, RegexpOption... options) {
         final List<RegexpOption> optionset = Arrays.asList(options);
         final boolean enableDebugLog = optionset.contains(RegexpOption.DEBUG_LOG);
         final boolean useNfaBackTrack = optionset.contains(RegexpOption.NFA_BACKTRACK);
+        final boolean disableNfaBackSkipping = optionset.contains(RegexpOption.DISABLE_NFA_TRACED_BACKTRACK_SKIPPING);
 
         final Lexer lex0 = new Lexer(regexp);
         final Parser parser0 = new Parser(lex0);
@@ -58,7 +65,12 @@ public class Regexp {
             System.out.println(nfaDumper.dump());
             System.out.println("NFA: initialState=" + nfa0.start + ", setOfAcceptableState=" + nfa0.accept);
         }
-        return new Regexp((useNfaBackTrack ? RegexpType.NFA_BACKTRACK : RegexpType.NFA), nfa0, null, enableDebugLog);
+        return new Regexp(
+                (useNfaBackTrack ? RegexpType.NFA_BACKTRACK : RegexpType.NFA),
+                nfa0,
+                null,
+                enableDebugLog,
+                disableNfaBackSkipping);
     }
 
     public static Regexp compileNfa2Dfa(final String regexp, RegexpOption... options) {
@@ -83,7 +95,7 @@ public class Regexp {
             System.out.println("NFA2DFA: setOfInitialState=" + nfa2dfa.start + ", setOfAcceptableState="
                     + nfa2dfa.nfaAcceptableStateSet);
         }
-        return new Regexp(RegexpType.NFA2DFA, null, nfa2dfa, false);
+        return new Regexp(RegexpType.NFA2DFA, null, nfa2dfa, false, false);
     }
 
     public boolean match(final String str) {
@@ -97,7 +109,8 @@ public class Regexp {
         case NFA_BACKTRACK:
             final NfaBackTrackRuntime nfaBackTrackRuntime = new NfaBackTrackRuntime(
                     nfa,
-                    enableNfaBackTrackRuntimeTraceLog);
+                    enableNfaBackTrackRuntimeTraceLog,
+                    !disableNfaTracedBackTrackSkipping);
             return nfaBackTrackRuntime.accept(str);
         default:
             throw new UnsupportedOperationException();

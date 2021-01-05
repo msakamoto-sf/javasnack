@@ -174,7 +174,10 @@ public class RegexpTest {
         assertFalse(r.match("x"));
 
         System.out.println(">>>> ------------- test NFA with BackTrack");
-        r = Regexp.compileNfa("ab", RegexpOption.DEBUG_LOG, RegexpOption.NFA_BACKTRACK);
+        r = Regexp.compileNfa("ab",
+                RegexpOption.DEBUG_LOG,
+                RegexpOption.NFA_BACKTRACK,
+                RegexpOption.DISABLE_NFA_TRACED_BACKTRACK_SKIPPING);
         assertFalse(r.match(""));
         assertFalse(r.match("a"));
         assertTrue(r.match("ab"));
