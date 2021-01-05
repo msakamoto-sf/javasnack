@@ -16,6 +16,7 @@
 
 package javasnack.regexp.codezinedemo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,6 +39,7 @@ public class RegexpTest {
         assertTrue(r.match("ab"));
         assertFalse(r.match("x"));
         System.out.println("<<<<");
+        assertEquals(r.getCountOfNfaBackTrack(), 0);
 
         r = Regexp.compileNfa2Dfa("ab*");
         assertFalse(r.match(""));
@@ -189,6 +191,7 @@ public class RegexpTest {
         assertTrue(r.match("a"));
         assertTrue(r.match("ab"));
         assertTrue(r.match("abb"));
+        assertEquals(r.getCountOfNfaBackTrack(), 1);
         assertFalse(r.match("ac"));
         assertFalse(r.match("x"));
 

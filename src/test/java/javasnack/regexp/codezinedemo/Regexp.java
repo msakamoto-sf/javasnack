@@ -36,6 +36,7 @@ public class Regexp {
     private final Nfa2Dfa nfa2dfa;
     private final boolean enableNfaBackTrackRuntimeTraceLog;
     private final boolean disableNfaTracedBackTrackSkipping;
+    private int countOfNfaBackTrack;
 
     private Regexp(final RegexpType type, final Nfa nfa, final Nfa2Dfa nfa2dfa,
             final boolean enableNfaBackTrackRuntimeTraceLog,
@@ -111,9 +112,15 @@ public class Regexp {
                     nfa,
                     enableNfaBackTrackRuntimeTraceLog,
                     !disableNfaTracedBackTrackSkipping);
-            return nfaBackTrackRuntime.accept(str);
+            final boolean matched = nfaBackTrackRuntime.accept(str);
+            countOfNfaBackTrack = nfaBackTrackRuntime.getCountOfBackTracked();
+            return matched;
         default:
             throw new UnsupportedOperationException();
         }
+    }
+
+    public int getCountOfNfaBackTrack() {
+        return this.countOfNfaBackTrack;
     }
 }
