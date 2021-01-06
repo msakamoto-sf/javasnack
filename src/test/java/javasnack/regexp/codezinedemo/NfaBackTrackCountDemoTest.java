@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 public class NfaBackTrackCountDemoTest {
 
-    // 実際に試すときは50以上の大きめの値で実験してください。
+    // このテストケースは O(N) での動きになるため、ある程度大きな値で実験してもOK.
     static final int MAX_LENGTH = 10;
 
     static void countup(final String regexp, final boolean countToMatchedResult) {
