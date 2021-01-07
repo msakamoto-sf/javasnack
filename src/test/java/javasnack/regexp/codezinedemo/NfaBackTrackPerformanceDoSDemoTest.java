@@ -72,7 +72,7 @@ public class NfaBackTrackPerformanceDoSDemoTest {
         System.out.println("<<<<");
     }
 
-    @Disabled
+    @Disabled("トレース済み分岐の除去を無効化すると、このパターンで無限ループ発生するためテスト除外")
     @Test
     public void testExponentialDegreeOfAmbiguityDemo2NonMatch() {
         System.out.println(">>>> benchmark demo for EDA : Exponential Degree of Ambiguity(2-not-match)");
@@ -80,7 +80,7 @@ public class NfaBackTrackPerformanceDoSDemoTest {
         System.out.println("<<<<");
     }
 
-    @Disabled
+    @Disabled("トレース済み分岐の除去を無効化すると、このパターンで無限ループ発生するためテスト除外")
     @Test
     public void testExponentialDegreeOfAmbiguityDemo2Match() {
         System.out.println(">>>> benchmark demo for EDA : Exponential Degree of Ambiguity(2-match)");
