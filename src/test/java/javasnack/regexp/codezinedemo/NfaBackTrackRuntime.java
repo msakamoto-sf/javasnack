@@ -226,7 +226,6 @@ public class NfaBackTrackRuntime {
             /* まだ受理可能状態にはなっていないため、バックトラックする
              * = 保存された分岐ポイントの1つに立ち戻り、そこから辿り直す。
              */
-            continue;
         }
     }
 }
