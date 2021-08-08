@@ -17,6 +17,11 @@
 
     <exclude-pattern>.*/make/findbugs/angry/.*</exclude-pattern>
     <exclude-pattern>.*/javasnack/ojcp/.*</exclude-pattern>
+    <!--
+    PMD 6.37.0 で Unicode 識別子を使っているJavaソースで PMDException が発生するため、一旦除外。
+    see: https://github.com/pmd/pmd/issues/3423
+    -->
+    <exclude-pattern>.*/javasnack/json/pojo/EncodePojo.java</exclude-pattern>
     <!-- なぜかわからないが "target/" から始めると eclipse pmd plugin 側で認識されず、 ".*/" で始めると認識された。 -->
     <exclude-pattern>.*/target/generated-.*</exclude-pattern>
 
