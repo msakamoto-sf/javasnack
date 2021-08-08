@@ -17,6 +17,8 @@
 
     <exclude-pattern>.*/make/findbugs/angry/.*</exclude-pattern>
     <exclude-pattern>.*/javasnack/ojcp/.*</exclude-pattern>
+    <!-- "@Provides" アノテーションのデモで作成した private メソッドで UnusedPrivateMethod がレポートされてしまうため、除外 -->
+    <exclude-pattern>.*/javasnack/guice3/TestProvidesInject.java</exclude-pattern>
     <!--
     PMD 6.37.0 で Unicode 識別子を使っているJavaソースで PMDException が発生するため、一旦除外。
     see: https://github.com/pmd/pmd/issues/3423
