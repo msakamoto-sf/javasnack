@@ -48,9 +48,9 @@
     <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.28_custom.xml</checkstyle.config.location>
     <!--
     see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html
-    -> enforce specific version same to what eclipse checkstyle plugin is using at 2020-04.
+    -> enforce specific version same to what eclipse checkstyle plugin is using at 2021-08.
     -->
-    <maven-checkstyle-engine.version>8.31</maven-checkstyle-engine.version>
+    <maven-checkstyle-engine.version>8.44</maven-checkstyle-engine.version>
 
     <!--
     see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html
