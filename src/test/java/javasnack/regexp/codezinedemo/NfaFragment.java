@@ -98,7 +98,7 @@ public class NfaFragment {
      * 状態遷移マトリクスを元に生成した状態遷移関数を持つNFAを作成する。
      * 
      * @param enableTraceLog トレースログ(System.out.println()) ON/OFF
-     * @return
+     * @return 状態遷移マトリクスを元に生成した状態遷移関数を持つNFA
      */
     public Nfa build(final boolean enableTraceLog) {
         final Map<StateAndInputCharacter, Set<Integer>> mapref = this.stateTransitionMatrix;
