@@ -145,10 +145,10 @@
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
       <!--
-      2019-06-29: downgrade to 10.14.2.0
+      2019-06-29: downgrade to 10.17.1.0
       see: https://obataka.com/derby-inmemory-introduction/
       -->
-      <version>10.14.2.0</version>
+      <version>10.17.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
