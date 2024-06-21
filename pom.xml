@@ -239,7 +239,7 @@
     <dependency>
         <groupId>io.github.classgraph</groupId>
         <artifactId>classgraph</artifactId>
-        <version>4.8.62</version>
+        <version>4.8.112</version>
     </dependency>
     <dependency>
       <groupId>com.google.re2j</groupId>
