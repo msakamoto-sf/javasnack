@@ -34,8 +34,8 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -214,11 +214,11 @@ public class TestMockitoExercise01 {
         verify(repo, never()).create(eq("xxx"), anyString(), anyInt(), anyList());
 
         reset(repo);
-        verifyZeroInteractions(repo);
+        verifyNoInteractions(repo);
         verifyNoMoreInteractions(repo);
 
         final PersonRepository repo2 = mock(PersonRepository.class);
-        verifyZeroInteractions(repo2);
+        verifyNoInteractions(repo2);
         verifyNoMoreInteractions(repo2);
     }
 
