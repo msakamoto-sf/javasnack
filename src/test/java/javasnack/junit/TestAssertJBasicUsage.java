@@ -93,9 +93,9 @@ public class TestAssertJBasicUsage {
         assertThat(thrown1).isNull();
 
         // catch specific exception type:
-        FooException textException = catchThrowableOfType(() -> {
+        FooException textException = catchThrowableOfType(FooException.class, () -> {
             throw new FooException("abc def", 1, 2);
-        }, FooException.class);
+        });
         assertThat(textException).hasMessageContaining("abc");
         assertThat(textException).hasMessageContaining("def");
         assertThat(textException).hasMessage("%s %s", "abc", "def");
@@ -103,8 +103,8 @@ public class TestAssertJBasicUsage {
         assertThat(textException.column).isEqualTo(2);
 
         // don't throw:
-        assertThat(catchThrowableOfType(() -> {
-        }, Exception.class)).isNull();
+        assertThat(catchThrowableOfType(Exception.class, () -> {
+        })).isNull();
 
         // throw:
         assertThatThrownBy(() -> {
