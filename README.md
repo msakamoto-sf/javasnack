@@ -3,16 +3,43 @@ javasnack
 
 Tinny Java Excersise, Experimental, Practices Programms.
 
-## for Developers setup (Eclipse/Spring Tool Suite)
+## $ for Developers setup (Eclipse/Spring Tool Suite)
 
-- OpenJDK >= 11
-- Eclipse >= 2025-06 (4.36.x), "Eclipse IDE for Java EE Developers" package
+base requirements:
+
+- OpenJDK >= 21
 - Maven >= 3.9.9 (download automatically by mvnw script. also works by 3.9.x)
 - use UTF-8 for source code and other text files.
 
-to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
-- Eclipse install how-to
-- Clean Up/Formatter configuration
+### $$ setup command line build env
+
+1. install JDK (>= JDK 21)
+   - i.e. Temurin JDK : https://adoptium.net/temurin/releases
+2. install Apache Maven (>= 3.9.9)
+   - https://maven.apache.org/
+
+### $$ setup eclipse env
+
+1. install "Eclipse IDE for Enterprise Java and Web Developers" package
+   - https://www.eclipse.org/downloads/packages/release/2025-06/r/eclipse-ide-enterprise-java-and-web-developers
+   - recommended version: >= 2025-06 (4.36.x)
+2. add JDK (installed at command line build env setup) to Eclipse
+   - `Window -> Preferences -> [Java] -> [Installed JREs] -> Add -> Standard VM`
+3. [setup eclipse workspace environments](./config-files-eclipse/eclipse-workspace-prefs-ja.md)
+4. add lombock plugin
+   1. download lombok jar from: https://projectlombok.org/
+   2. `java -jar lombok.jar`
+   3. select eclipse installed directory and install lombok
+   4. restart eclipse
+5. import this project
+   1. `File -> Import`
+   2. `Maven -> Existing Maven Projects`
+   3. `Root Directory` : select project root directory, import pom.xml.
+6. import and setup linter plugins:
+   1. checkstyle ## TODO
+   2. PMD ## TODO
+   3. Spotbugs ## TODO
+
 - Recommended plugin:
   - [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
   - [SpotBugs Eclipse plugin](https://spotbugs.readthedocs.io/en/latest/eclipse.html)
@@ -89,7 +116,7 @@ PMD reference:
 - https://maven.apache.org/plugins/maven-pmd-plugin/index.html
 - https://github.com/pmd/pmd-eclipse-plugin
 
-## how to build and execute main()
+## $ how to build and execute main()
 
 javasnack demonstrates classloading from jar in resources and referencing project related local repository.
 
@@ -98,7 +125,7 @@ javasnack demonstrates classloading from jar in resources and referencing projec
 3. setup `~/.m2/settings.xml` to refer project related path.
 4. build main project.
 
-### 1. build jar library and install to src/main/resources/.
+### $$ 1. build jar library and install to src/main/resources/.
 
 **(You can skip this step : already pre-built jar has been commited to src/main/resources/JCLDemo/)**
 
@@ -121,7 +148,7 @@ $ popd
 
 These jar files are used for demonstration of https://github.com/kamranzafar/JCL at [JCLDemo](src/main/java/javasnack/snacks/JCLDemo.java), [TestJCLDemoApis](src/test/java/javasnack/langspecs/TestJCLDemoApis.java).
 
-### 2. build jar library and deploy to project related path. (NOT to `~/.m2/repository/`)
+### $$ 2. build jar library and deploy to project related path. (NOT to `~/.m2/repository/`)
 
 **(You can skip this step : already pre-built jar has been commited to repo/subprojects/)**
 
@@ -156,7 +183,7 @@ see:
 - Mavenプロジェクトで3rdパーティJARを扱う方法｜Ouobpo
   - http://ameblo.jp/ouobpo/entry-10051976866.html
 
-### 3. setup `~/.m2/settings.xml` to refer project related path.
+### $$ 3. setup `~/.m2/settings.xml` to refer project related path.
 
 This maven project includes demonstrating maven local file repository.
 Check your `$HOME/.m2/setting.xml` and if `<mirror>` - `<mirrorOf>` setting is `*`, then fix it to `external:*`.
@@ -183,7 +210,7 @@ About `<mirrorOf>` setting, see :
 - http://maven.apache.org/guides/mini/guide-mirror-settings.html
 - http://stackoverflow.com/questions/17019308/maven-setup-another-repository-for-certain-dependency
 
-### 4. build main project.
+### $$ 4. build main project.
 
 ```
 $ cd javasnack/
@@ -201,7 +228,7 @@ or
 $ ./mvnw exec:java
 ```
 
-### 5. test and reports.
+### $$ 5. test and reports.
 
 surefire test only (excluding `@Tag("junit5-tag-filter-2")` and `@MyJUnit5MetaAnnotation2` annotated test cases):
 
@@ -247,7 +274,7 @@ all:
 $ ./mvnw clean integration-test site
 ```
 
-## references
+## $ references
 
 jdk11:
 
