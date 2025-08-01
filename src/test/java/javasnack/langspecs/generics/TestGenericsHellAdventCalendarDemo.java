@@ -529,7 +529,7 @@ public class TestGenericsHellAdventCalendarDemo {
         children2 = parents;
         children2.add(new SomeChild("xx", "yy"));
         children2.add(new SomeGrandChild("xx", "yy", "zz"));
-        assertThat(children2).hasSize(3);
+        assertThat(children2.size()).isEqualTo(3);
 
         // これは "? super SomeChild" に SomeParent 参照を代入しようとしてるのでコンパイルエラー。
         // children2.add(new SomeParent("xx"));

@@ -58,7 +58,7 @@ public class Test05StreamDemo1 {
 
         // toArray(IntFunction) : 配列の要素数を受け取り、T[] を生成する。
         s1 = Arrays.stream(stringarr1);
-        assertThat(s1.toArray(i -> new String[i])).isEqualTo(stringarr1);
+        assertThat(s1.toArray(String[]::new)).isEqualTo(stringarr1);
         // -> T[]::new という表記も可能。
         s1 = Arrays.stream(stringarr1);
         assertThat(s1.toArray(String[]::new)).isEqualTo(stringarr1);
