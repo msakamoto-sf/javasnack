@@ -73,25 +73,30 @@ public class TestTaskAbortion {
             }
         }
 
-        CustomThreadPoolExecutor pool = new CustomThreadPoolExecutor(10, 10, 10, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(10));
-        pool.execute(new AbortTask());
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ignore) {
-        }
-        List<Runnable> remains = pool.shutdownNow();
-        assertEquals(remains.size(), 0);
+        try (CustomThreadPoolExecutor pool = new CustomThreadPoolExecutor(
+            10,
+            10,
+            10,
+            TimeUnit.SECONDS,
+            new ArrayBlockingQueue<Runnable>(10))) {
+            pool.execute(new AbortTask());
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignore) {
+            }
+            List<Runnable> remains = pool.shutdownNow();
+            assertEquals(remains.size(), 0);
 
-        if (null == pool.myT) {
-            fail();
-        } else {
-            assertEquals(NullPointerException.class, pool.myT.getClass());
-            assertEquals("test", pool.myT.getMessage());
-            assertEquals(0, pool.myT.getSuppressed().length);
-            assertEquals(null, pool.myT.getCause());
+            if (null == pool.myT) {
+                fail();
+            } else {
+                assertEquals(NullPointerException.class, pool.myT.getClass());
+                assertEquals("test", pool.myT.getMessage());
+                assertEquals(0, pool.myT.getSuppressed().length);
+                assertEquals(null, pool.myT.getCause());
+            }
+            assertEquals("hello", pool.caughtT.label);
         }
-        assertEquals("hello", pool.caughtT.label);
     }
 
     @Test

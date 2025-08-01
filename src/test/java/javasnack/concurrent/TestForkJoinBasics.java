@@ -69,7 +69,7 @@ public class TestForkJoinBasics {
                 RecursiveTaskSample t1 = new RecursiveTaskSample(this.strings.subList(0, m), this.taskName + "-1");
                 t1.fork();
                 RecursiveTaskSample t2 = new RecursiveTaskSample(this.strings.subList(m, this.strings.size()),
-                        this.taskName + "-2");
+                    this.taskName + "-2");
                 t2.fork();
                 final int r = t1.join() + t2.join();
                 System.out.printf("[%s] - %s fork-join end : %d%n", tname, this.taskName, r);
@@ -84,9 +84,10 @@ public class TestForkJoinBasics {
         for (int i = 0; i < 200; i++) {
             strings.add("abc");
         }
-        ForkJoinPool forkJoin = new ForkJoinPool();
-        int n = forkJoin.invoke(new RecursiveTaskSample(strings));
-        assertEquals(600, n);
+        try (ForkJoinPool forkJoin = new ForkJoinPool()) {
+            int n = forkJoin.invoke(new RecursiveTaskSample(strings));
+            assertEquals(600, n);
+        }
     }
 
     static class RecursiveActionSample extends RecursiveAction {
@@ -135,16 +136,17 @@ public class TestForkJoinBasics {
 
     @Test
     public void testRecursiveActionSample() throws InterruptedException {
-        ForkJoinPool forkJoin = new ForkJoinPool();
-        StringBuffer sb = new StringBuffer(1000);
-        CountDownLatch latch = new CountDownLatch(1);
-        forkJoin.execute(new RecursiveActionSample(sb, 10, latch));
-        latch.await();
-        StringBuilder expected = new StringBuilder(2000);
-        for (int i = 0; i < 258; i++) {
-            expected.append("hello");
+        try (ForkJoinPool forkJoin = new ForkJoinPool()) {
+            StringBuffer sb = new StringBuffer(1000);
+            CountDownLatch latch = new CountDownLatch(1);
+            forkJoin.execute(new RecursiveActionSample(sb, 10, latch));
+            latch.await();
+            StringBuilder expected = new StringBuilder(2000);
+            for (int i = 0; i < 258; i++) {
+                expected.append("hello");
+            }
+            assertEquals(expected.toString().length(), sb.toString().length());
+            assertEquals(expected.toString(), sb.toString());
         }
-        assertEquals(expected.toString().length(), sb.toString().length());
-        assertEquals(expected.toString(), sb.toString());
     }
 }

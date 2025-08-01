@@ -48,7 +48,7 @@ public class TestClassGraphDemo {
         try (ScanResult scanResult = new ClassGraph()
                 .verbose()
                 .enableAllInfo()
-                .whitelistPackages(this.getClass().getPackageName())
+                .acceptPackages(this.getClass().getPackageName())
                 .scan()) {
 
             ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(SomeMark1.class.getName());
