@@ -38,9 +38,9 @@ public class TestStreamTerminalOpDemo {
     @Test
     public void testToArray() {
         assertThat(Stream.of(1, 2, 3, 4, 5)
-                .toArray()).isEqualTo(new int[] { 1, 2, 3, 4, 5 });
+            .toArray()).isEqualTo(new Object[] { 1, 2, 3, 4, 5 });
         assertThat(Stream.of("aaa", "bbb", "ccc", "ddd")
-                .toArray()).isEqualTo(new String[] { "aaa", "bbb", "ccc", "ddd" });
+            .toArray()).isEqualTo(new String[] { "aaa", "bbb", "ccc", "ddd" });
     }
 
     @Test
@@ -65,9 +65,9 @@ public class TestStreamTerminalOpDemo {
         assertThat(Stream.of(1, 2, 3, 4, 5).max(Comparator.naturalOrder()).get()).isEqualTo(5);
         assertThat(Stream.of(1, 2, 3, 4, 5).min(Comparator.naturalOrder()).get()).isEqualTo(1);
         assertThat(Stream.of("a", "bb", "ccc", "dddd", "eeeee")
-                .max(Comparator.comparing(s -> s.length())).get()).isEqualTo("eeeee");
+            .max(Comparator.comparing(s -> s.length())).get()).isEqualTo("eeeee");
         assertThat(Stream.of("a", "bb", "ccc", "dddd", "eeeee")
-                .min(Comparator.comparing(s -> s.length())).get()).isEqualTo("a");
+            .min(Comparator.comparing(s -> s.length())).get()).isEqualTo("a");
     }
 
     @Test
@@ -80,23 +80,23 @@ public class TestStreamTerminalOpDemo {
             }
         };
         assertThat(Stream.generate(sup0)
-                .filter(i -> i > 3)
-                .findFirst()
-                .get()).isEqualTo(4);
+            .filter(i -> i > 3)
+            .findFirst()
+            .get()).isEqualTo(4);
         assertThat(counter.get()).isEqualTo(4);
 
         assertThat(Stream.of(1, 2, 3, 4, 5)
-                .filter(i -> i > 10)
-                .findFirst()
-                .isPresent()).isFalse();
+            .filter(i -> i > 10)
+            .findFirst()
+            .isPresent()).isFalse();
     }
 
     @Test
     public void testFindAny() {
         final String f = Stream.of("aaa", "bbbb", "ccc")
-                .filter(s -> s.length() == 3)
-                .findAny()
-                .get();
+            .filter(s -> s.length() == 3)
+            .findAny()
+            .get();
         assertThat(List.of("aaa", "ccc").contains(f)).isTrue();
     }
 
@@ -114,35 +114,35 @@ public class TestStreamTerminalOpDemo {
     @Test
     public void testReduce() {
         assertThat(Stream.of("aa", "bb", "cc", "dd")
-                .reduce((s1, s2) -> {
-                    return s1 + ":" + s2;
-                }).get()).isEqualTo("aa:bb:cc:dd");
+            .reduce((s1, s2) -> {
+                return s1 + ":" + s2;
+            }).get()).isEqualTo("aa:bb:cc:dd");
         assertThat(Stream.empty()
-                .reduce((s1, s2) -> {
-                    return s1 + ":" + s2;
-                }).isPresent()).isFalse();
+            .reduce((s1, s2) -> {
+                return s1 + ":" + s2;
+            }).isPresent()).isFalse();
 
         assertThat(Stream.of("aa", "bb", "cc", "dd")
-                .reduce("xxx", (s1, s2) -> {
-                    return s1 + ":" + s2;
-                })).isEqualTo("xxx:aa:bb:cc:dd");
+            .reduce("xxx", (s1, s2) -> {
+                return s1 + ":" + s2;
+            })).isEqualTo("xxx:aa:bb:cc:dd");
         assertThat(Stream.empty()
-                .reduce("xxx", (s1, s2) -> {
-                    return s1 + ":" + s2;
-                })).isEqualTo("xxx");
+            .reduce("xxx", (s1, s2) -> {
+                return s1 + ":" + s2;
+            })).isEqualTo("xxx");
 
         assertThat(Stream.of("aa", "bb", "cc", "dd")
-                .reduce("xxx", (s1, s2) -> {
-                    return s1 + ":" + s2;
-                }, (s1, s2) -> {
-                    return s1 + ":" + s2;
-                })).isEqualTo("xxx:aa:bb:cc:dd");
+            .reduce("xxx", (s1, s2) -> {
+                return s1 + ":" + s2;
+            }, (s1, s2) -> {
+                return s1 + ":" + s2;
+            })).isEqualTo("xxx:aa:bb:cc:dd");
         assertThat(Stream.empty()
-                .reduce("xxx", (s1, s2) -> {
-                    return s1 + ":" + s2;
-                }, (s1, s2) -> {
-                    return s1 + ":" + s2;
-                })).isEqualTo("xxx");
+            .reduce("xxx", (s1, s2) -> {
+                return s1 + ":" + s2;
+            }, (s1, s2) -> {
+                return s1 + ":" + s2;
+            })).isEqualTo("xxx");
 
         /* from: https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html#reduce-U-java.util.function.BiFunction-java.util.function.BinaryOperator-
          * The identity value must be an identity for the combiner function.
@@ -173,18 +173,18 @@ public class TestStreamTerminalOpDemo {
         assertThat(combiner1.apply("xxx", accumulator1.apply(identity1, 10))).isEqualTo(accumulator1.apply("xxx", 10));
 
         assertThat(Stream.of(10, 20, 30, 40, 50)
-                .reduce(identity1, accumulator1, combiner1)).isEqualTo("1020304050");
+            .reduce(identity1, accumulator1, combiner1)).isEqualTo("1020304050");
     }
 
     @Test
     public void testCollect() {
         final List<String> l0 = Stream.of("aa", "bb", "cc", "dd")
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         assertThat(l0).isEqualTo(List.of("aa", "bb", "cc", "dd"));
 
         final String s0 = Stream.of("aa", "bb", "cc", "dd")
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString();
+            .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+            .toString();
         assertThat(s0).isEqualTo("aabbccdd");
 
         /* from: https://docs.oracle.com/javase/8/docs/api/java/util/stream/Collector.html
@@ -241,7 +241,7 @@ public class TestStreamTerminalOpDemo {
         assertThat(r1).isEqualTo(r2);
 
         assertThat(Stream.of(10, 20, 30, 40, 50)
-                .collect(Collector.of(supplier1, accumulator1, combiner1, finisher1)))
-                        .isEqualTo(List.of("item10", "item20", "item30", "item40", "item50"));
+            .collect(Collector.of(supplier1, accumulator1, combiner1, finisher1)))
+                .isEqualTo(List.of("item10", "item20", "item30", "item40", "item50"));
     }
 }
