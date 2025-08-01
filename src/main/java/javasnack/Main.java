@@ -52,7 +52,7 @@ public class Main {
         final Map<String, Class<?>> runnableSnackClasses = new TreeMap<>();
         try (ScanResult scanResult = new ClassGraph()
                 .enableClassInfo()
-                .whitelistPackages("javasnack.snacks")
+                .acceptPackages("javasnack.snacks")
                 .scan()) {
             for (final ClassInfo classInfo : scanResult.getClassesImplementing(RunnableSnack.class.getName())) {
                 final Class<?> clazz = classInfo.loadClass();
