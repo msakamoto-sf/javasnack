@@ -416,7 +416,10 @@ public class Test05StreamDemo1 {
                 .toArray(String[]::new)).isEqualTo(new String[] { "AA", "BB", "CC" });
         assertThat(Stream.of("aaa", "bb", "c")
                 .map(s -> s.length())
-                .toArray(Integer[]::new)).isEqualTo(new int[] { 3, 2, 1 });
+                // jdk8-11
+                //.toArray(Integer[]::new)).isEqualTo(new int[] { 3, 2, 1 });
+                // jdk21
+                .toArray(Integer[]::new)).isEqualTo(new Integer[] { 3, 2, 1 });
         assertThat(IntStream.of(1, 2, 3)
                 .map(n -> n * 10)
                 .toArray()).isEqualTo(new int[] { 10, 20, 30 });
@@ -472,7 +475,10 @@ public class Test05StreamDemo1 {
         IntStream is2 = ss3.mapToInt(s -> s.length());
         // IntStream -> Stream<Integer> by boxed()
         Stream<Integer> si2 = is2.boxed();
-        assertThat(si2.toArray(Integer[]::new)).isEqualTo(new int[] { 1, 2, 3 });
+        // jdk8-11
+        // assertThat(si2.toArray(Integer[]::new)).isEqualTo(new int[] { 1, 2, 3 });
+        // jdk21
+        assertThat(si2.toArray(Integer[]::new)).isEqualTo(new Integer[] { 1, 2, 3 });
 
         // Stream<Integer> -> Stream<String>
         Stream<Integer> si3 = Stream.of(1, 2, 3);
@@ -527,13 +533,22 @@ public class Test05StreamDemo1 {
         // {Int|Long|Double}Stream#boxed() -> Stream<{Integer|Long|Double}>
         assertThat(IntStream.of(1, 2, 3)
                 .boxed()
-                .toArray(Integer[]::new)).isEqualTo(new int[] { 1, 2, 3 });
+                // jdk8-11
+                //.toArray(Integer[]::new)).isEqualTo(new int[] { 1, 2, 3 });
+                // jdk21
+                .toArray(Integer[]::new)).isEqualTo(new Integer[] { 1, 2, 3 });
         assertThat(LongStream.of(1L, 2L, 3L)
                 .boxed()
-                .toArray(Long[]::new)).isEqualTo(new long[] { 1L, 2L, 3L });
+                // jdk8-11
+                //.toArray(Long[]::new)).isEqualTo(new long[] { 1L, 2L, 3L });
+                // jdk21
+                .toArray(Long[]::new)).isEqualTo(new Long[] { 1L, 2L, 3L });
         assertThat(DoubleStream.of(1.0, 2.0, 3.0)
                 .boxed()
-                .toArray(Double[]::new)).isEqualTo(new double[] { 1.0, 2.0, 3.0 });
+                // jdk8-11
+                //.toArray(Double[]::new)).isEqualTo(new double[] { 1.0, 2.0, 3.0 });
+                // jdk21
+                .toArray(Double[]::new)).isEqualTo(new Double[] { 1.0, 2.0, 3.0 });
 
         // IntStream#as{Long|Double}Stream() -> {Long|Double}Stream
         assertThat(IntStream.of(1, 2, 3)
