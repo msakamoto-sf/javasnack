@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.stream.Stream;
 
@@ -33,8 +35,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class TestURL {
 
     @Test
-    public void testTypicalGetter() throws MalformedURLException {
-        URL url0 = new URL("http://localhost/");
+    public void testTypicalGetter() throws MalformedURLException, URISyntaxException {
+        URL url0 = new URI("http://localhost/").toURL();
         assertThat(url0.getProtocol()).isEqualTo("http");
         assertThat(url0.getAuthority()).isEqualTo("localhost");
         assertThat(url0.getHost()).isEqualTo("localhost");
@@ -47,7 +49,7 @@ public class TestURL {
         assertThat(url0.getRef()).isEqualTo(null);
         assertThat(url0.toExternalForm()).isEqualTo("http://localhost/");
 
-        url0 = new URL("https://localhost/");
+        url0 = new URI("https://localhost/").toURL();
         assertThat(url0.getProtocol()).isEqualTo("https");
         assertThat(url0.getAuthority()).isEqualTo("localhost");
         assertThat(url0.getHost()).isEqualTo("localhost");
@@ -60,8 +62,9 @@ public class TestURL {
         assertThat(url0.getRef()).isEqualTo(null);
         assertThat(url0.toExternalForm()).isEqualTo("https://localhost/");
 
-        String url2 = "http://username:password@localhost:8080/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg?q1=v1&q2%20%2F=v2#ref123";
-        url0 = new URL(url2);
+        String url2 =
+            "http://username:password@localhost:8080/aaa/bbb;ccc;ddd%20%2Feee.txt;fff=ggg?q1=v1&q2%20%2F=v2#ref123";
+        url0 = new URI(url2).toURL();
         assertThat(url0.getProtocol()).isEqualTo("http");
         assertThat(url0.getAuthority()).isEqualTo("username:password@localhost:8080");
         assertThat(url0.getHost()).isEqualTo("localhost");
@@ -74,7 +77,7 @@ public class TestURL {
         assertThat(url0.getRef()).isEqualTo("ref123");
         assertThat(url0.toExternalForm()).isEqualTo(url2);
 
-        url0 = new URL("ftp://localhost/aaa/bbb/ccc.txt");
+        url0 = new URI("ftp://localhost/aaa/bbb/ccc.txt").toURL();
         assertThat(url0.getProtocol()).isEqualTo("ftp");
         assertThat(url0.getAuthority()).isEqualTo("localhost");
         assertThat(url0.getHost()).isEqualTo("localhost");
@@ -87,7 +90,7 @@ public class TestURL {
         assertThat(url0.getRef()).isEqualTo(null);
         assertThat(url0.toExternalForm()).isEqualTo("ftp://localhost/aaa/bbb/ccc.txt");
 
-        url0 = new URL("file:///aaa/bbb/ccc.txt");
+        url0 = new URI("file:///aaa/bbb/ccc.txt").toURL();
         assertThat(url0.getProtocol()).isEqualTo("file");
         assertThat(url0.getAuthority()).isEqualTo("");
         assertThat(url0.getHost()).isEqualTo("");
@@ -101,7 +104,7 @@ public class TestURL {
         assertThat(url0.toExternalForm()).isEqualTo("file:/aaa/bbb/ccc.txt");
         assertThat(url0.toString()).isEqualTo("file:/aaa/bbb/ccc.txt");
 
-        url0 = new URL("file:/aaa/bbb/ccc.txt");
+        url0 = new URI("file:/aaa/bbb/ccc.txt").toURL();
         assertThat(url0.getProtocol()).isEqualTo("file");
         assertThat(url0.getAuthority()).isEqualTo(null); // NOTE : compare to "file:///" constructor.
         assertThat(url0.getHost()).isEqualTo("");
@@ -116,23 +119,28 @@ public class TestURL {
         assertThat(url0.toString()).isEqualTo("file:/aaa/bbb/ccc.txt");
     }
 
-    static Stream<String> provideMalformedUrls() {
+    static record ExpectedStringAndException(
+            String urlstr,
+            Class<?> expectedExceptionClass) {
+    }
+
+    static Stream<ExpectedStringAndException> provideMalformedUrls() {
         return Stream.of(
         // @formatter:off
-        "",
-        "/",
-        "/aaa/bbb/ccc.html",
-        "C:\\aaa\\bbb\\ccc.html",
-        "xxx://localhost/aaa"
+        new ExpectedStringAndException("", IllegalArgumentException.class),
+        new ExpectedStringAndException("/", IllegalArgumentException.class),
+        new ExpectedStringAndException("/aaa/bbb/ccc.html", IllegalArgumentException.class),
+        new ExpectedStringAndException("C:\\aaa\\bbb\\ccc.html", URISyntaxException.class),
+        new ExpectedStringAndException("xxx://localhost/aaa", MalformedURLException.class)
         // @formatter:on
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideMalformedUrls")
-    public void testMalformedURLExceptionDemo(String urlstr) {
+    public void testMalformedURLExceptionDemo(ExpectedStringAndException expected) {
         assertThatThrownBy(() -> {
-            new URL(urlstr);
-        }).isInstanceOf(MalformedURLException.class);
+            new URI(expected.urlstr).toURL();
+        }).isInstanceOf(expected.expectedExceptionClass);
     }
 }

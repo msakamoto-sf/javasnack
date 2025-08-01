@@ -41,16 +41,16 @@ public class TestCookieManager1 {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
         responseHeaders.put(
-                "Set-Cookie",
-                Arrays.asList(
-                        "Set-Cookie: c1=v1",
-                        "Set-Cookie: c2=v2; path=/aaa",
-                        "Set-Cookie: c3=v3; path=/aaa/bbb",
-                        "Set-Cookie: c4=v4; path=/xxx",
-                        "Set-Cookie: c5=v5; path=/aaa; secure",
-                        "Set-Cookie: c6=v6; path=/aaa/bbb; secure",
-                        "Set-Cookie: c7=v7; path=/xxx; secure",
-                        "Set-Cookie: c8=v8; httpOnly"));
+            "Set-Cookie",
+            Arrays.asList(
+                "Set-Cookie: c1=v1",
+                "Set-Cookie: c2=v2; path=/aaa",
+                "Set-Cookie: c3=v3; path=/aaa/bbb",
+                "Set-Cookie: c4=v4; path=/xxx",
+                "Set-Cookie: c5=v5; path=/aaa; secure",
+                "Set-Cookie: c6=v6; path=/aaa/bbb; secure",
+                "Set-Cookie: c7=v7; path=/xxx; secure",
+                "Set-Cookie: c8=v8; httpOnly"));
         URI srcUri = new URI("https://www.example.com/aaa/bbb/ccc.html");
         ch.put(srcUri, responseHeaders);
 
@@ -58,30 +58,36 @@ public class TestCookieManager1 {
         Map<String, List<String>> retHeaders = ch.get(dstUri, new HashMap<>());
         List<String> retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(4);
-        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v1");
-        assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
-        assertThat(retCookieStrings.get(2)).isEqualTo("c3=v3");
-        assertThat(retCookieStrings.get(3)).isEqualTo("c8=v8");
+        // jdk11 : sequencial
+        // assertThat(retCookieStrings.get(0)).isEqualTo("c1=v1");
+        // assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
+        // assertThat(retCookieStrings.get(2)).isEqualTo("c3=v3");
+        // assertThat(retCookieStrings.get(3)).isEqualTo("c8=v8");
+        // jdk21 : non-sequencial (non-deterministic)
+        assertThat(retCookieStrings.contains("c1=v1")).isTrue();
+        assertThat(retCookieStrings.contains("c2=v2")).isTrue();
+        assertThat(retCookieStrings.contains("c3=v3")).isTrue();
+        assertThat(retCookieStrings.contains("c8=v8")).isTrue();
 
         dstUri = new URI("https://www.example.com/aaa/bbb/ccc/ddd.html");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(6);
-        assertThat(retCookieStrings.get(0)).isEqualTo("c1=v1");
-        assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
-        assertThat(retCookieStrings.get(2)).isEqualTo("c3=v3");
-        assertThat(retCookieStrings.get(3)).isEqualTo("c5=v5");
-        assertThat(retCookieStrings.get(4)).isEqualTo("c6=v6");
-        assertThat(retCookieStrings.get(5)).isEqualTo("c8=v8");
+        assertThat(retCookieStrings.contains("c1=v1")).isTrue();
+        assertThat(retCookieStrings.contains("c2=v2")).isTrue();
+        assertThat(retCookieStrings.contains("c3=v3")).isTrue();
+        assertThat(retCookieStrings.contains("c5=v5")).isTrue();
+        assertThat(retCookieStrings.contains("c6=v6")).isTrue();
+        assertThat(retCookieStrings.contains("c8=v8")).isTrue();
 
         dstUri = new URI("https://www.example.com/aaa/bbb.html");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(4);
-        assertThat(retCookieStrings.get(0)).isEqualTo("c2=v2");
-        assertThat(retCookieStrings.get(1)).isEqualTo("c3=v3");
-        assertThat(retCookieStrings.get(2)).isEqualTo("c5=v5");
-        assertThat(retCookieStrings.get(3)).isEqualTo("c6=v6");
+        assertThat(retCookieStrings.contains("c2=v2")).isTrue();
+        assertThat(retCookieStrings.contains("c3=v3")).isTrue();
+        assertThat(retCookieStrings.contains("c5=v5")).isTrue();
+        assertThat(retCookieStrings.contains("c6=v6")).isTrue();
 
         dstUri = new URI("https://www.example.com/");
         retHeaders = ch.get(dstUri, new HashMap<>());
@@ -102,12 +108,12 @@ public class TestCookieManager1 {
         ch.put(srcUri2, responseHeaders2);
         Map<String, List<String>> responseHeaders3 = new HashMap<>();
         responseHeaders3.put(
-                "Set-Cookie",
-                Arrays.asList(
-                        "Set-Cookie: c3=v3",
-                        "Set-Cookie: c4=v4; domain=example.net",
-                        "Set-Cookie: c5=v5; domain=.example.net",
-                        "Set-Cookie: c6=v6; domain=test.example.net"));
+            "Set-Cookie",
+            Arrays.asList(
+                "Set-Cookie: c3=v3",
+                "Set-Cookie: c4=v4; domain=example.net",
+                "Set-Cookie: c5=v5; domain=.example.net",
+                "Set-Cookie: c6=v6; domain=test.example.net"));
         URI srcUri3 = new URI("https://aaatest.example.net/");
         ch.put(srcUri3, responseHeaders3);
 
@@ -127,23 +133,23 @@ public class TestCookieManager1 {
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(2);
-        assertThat(retCookieStrings.get(0)).isEqualTo("c5=v5");
-        assertThat(retCookieStrings.get(1)).isEqualTo("c2=v2");
+        assertThat(retCookieStrings.contains("c2=v2")).isTrue();
+        assertThat(retCookieStrings.contains("c5=v5")).isTrue();
 
         dstUri = new URI("http://test.example.net/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(2);
-        assertThat(retCookieStrings.get(0)).isEqualTo("c5=v5");
-        assertThat(retCookieStrings.get(1)).isEqualTo("c6=v6");
+        assertThat(retCookieStrings.contains("c5=v5")).isTrue();
+        assertThat(retCookieStrings.contains("c6=v6")).isTrue();
 
         dstUri = new URI("http://aaatest.example.net/");
         retHeaders = ch.get(dstUri, new HashMap<>());
         retCookieStrings = retHeaders.get("Cookie");
         assertThat(retCookieStrings).hasSize(3);
-        assertThat(retCookieStrings.get(0)).isEqualTo("c3=v3");
-        assertThat(retCookieStrings.get(1)).isEqualTo("c5=v5");
-        assertThat(retCookieStrings.get(2)).isEqualTo("c6=v6");
+        assertThat(retCookieStrings.contains("c3=v3")).isTrue();
+        assertThat(retCookieStrings.contains("c5=v5")).isTrue();
+        assertThat(retCookieStrings.contains("c6=v6")).isTrue();
     }
 
     @Test
@@ -190,11 +196,11 @@ public class TestCookieManager1 {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
         responseHeaders.put(
-                "Set-Cookie",
-                Arrays.asList(
-                        "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                        "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                        "Set-Cookie: c3=v3"));
+            "Set-Cookie",
+            Arrays.asList(
+                "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                "Set-Cookie: c3=v3"));
         URI srcUri = new URI("http://localhost/");
         ch.put(srcUri, responseHeaders);
 
@@ -215,11 +221,11 @@ public class TestCookieManager1 {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
         responseHeaders.put(
-                "Set-Cookie",
-                Arrays.asList(
-                        "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                        "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                        "Set-Cookie: c3=v3"));
+            "Set-Cookie",
+            Arrays.asList(
+                "Set-Cookie: c1=v1; expires=" + past0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                "Set-Cookie: c2=v2; expires=" + future0.format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                "Set-Cookie: c3=v3"));
         URI srcUri = new URI("http://localhost/");
         ch.put(srcUri, responseHeaders);
 
@@ -237,12 +243,12 @@ public class TestCookieManager1 {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
         responseHeaders.put(
-                "Set-Cookie",
-                Arrays.asList(
-                        "Set-Cookie: c1=v1; max-age=-1",
-                        "Set-Cookie: c2=v2; max-age=0",
-                        "Set-Cookie: c3=v3; max-age=1",
-                        "Set-Cookie: c4=v4"));
+            "Set-Cookie",
+            Arrays.asList(
+                "Set-Cookie: c1=v1; max-age=-1",
+                "Set-Cookie: c2=v2; max-age=0",
+                "Set-Cookie: c3=v3; max-age=1",
+                "Set-Cookie: c4=v4"));
         URI srcUri = new URI("http://localhost/");
         ch.put(srcUri, responseHeaders);
 
@@ -276,10 +282,10 @@ public class TestCookieManager1 {
         CookieHandler ch = new CookieManager();
         Map<String, List<String>> responseHeaders = new HashMap<>();
         responseHeaders.put(
-                "Set-Cookie",
-                Arrays.asList(
-                        "Set-Cookie: c1%20%2A%2B%2F%3D%3Fx=v1%20%2A%2B%2F%3D%3Fx",
-                        "Set-Cookie: c2%20%2A%2B%2F%3D%3Fx=v2%20%2A%2B%2F%3D%3Fx"));
+            "Set-Cookie",
+            Arrays.asList(
+                "Set-Cookie: c1%20%2A%2B%2F%3D%3Fx=v1%20%2A%2B%2F%3D%3Fx",
+                "Set-Cookie: c2%20%2A%2B%2F%3D%3Fx=v2%20%2A%2B%2F%3D%3Fx"));
         URI srcUri = new URI("http://localhost/");
         ch.put(srcUri, responseHeaders);
 
