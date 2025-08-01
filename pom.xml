@@ -4,7 +4,7 @@
 
   <groupId>javasnack</groupId>
   <artifactId>javasnack</artifactId>
-  <version>1.0-java11-SNAPSHOT</version>
+  <version>SNAPSHOT-java21</version>
   <packaging>jar</packaging>
   <name>javasnack</name>
   <description>Tinny Java (and other libraries) example, demo, excersise sample code.</description>
