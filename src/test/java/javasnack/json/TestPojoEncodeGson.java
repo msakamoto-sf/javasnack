@@ -44,7 +44,7 @@ public class TestPojoEncodeGson {
         // see https://sites.google.com/site/gson/streaming
         Writer out = new StringWriter();
         JsonWriter writer = new JsonWriter(out);
-        writer.setIndent(">>"); // enable pretty print
+        writer.setIndent("  "); // enable pretty print
         writer.beginObject();
         writer.name("message").value("success");
         writer.name("count").value(10);

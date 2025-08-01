@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import javasnack.json.pojo.EncodePojo;
 import javasnack.json.pojo.EncodePojoEnum;
@@ -50,19 +51,19 @@ public class TestPojoEncodeJackson {
 
     @Test
     public void testPojoEncode() throws Exception {
-        final ObjectMapper om = new ObjectMapper();
-
         /* see: https://stackoverflow.com/questions/27577701/jackson-objectmapper-specify-serialization-order-of-object-properties
          * see: https://www.stubbornjava.com/posts/creating-a-somewhat-deterministic-jackson-objectmapper
          */
-        om.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-        om.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        final ObjectMapper om = JsonMapper.builder()
+            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+            .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .build();
 
         assertThat(om.writeValueAsString(new EncodePojo()))
-                .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson.txt"));
+            .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson.txt"));
 
         assertThat(om.writerWithDefaultPrettyPrinter().writeValueAsString(new EncodePojo()))
-                .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-pp.txt"));
+            .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-pp.txt"));
 
         JsonFactory jsonFactory = om.getFactory();
         Writer out = new StringWriter();
@@ -75,30 +76,31 @@ public class TestPojoEncodeJackson {
 
         jg.flush();
         assertThat(out.toString())
-                .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-1.txt"));
+            .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-1.txt"));
 
         jg.writeObject(new EncodePojo());
         jg.flush();
         assertThat(out.toString())
-                .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-2.txt"));
+            .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-2.txt"));
 
         jg.writeObject(new EncodePojo());
         jg.flush();
         assertThat(out.toString())
-                .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-3.txt"));
+            .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-3.txt"));
 
         jg.writeEndArray();
         jg.writeEndObject();
         jg.close();
         assertThat(out.toString())
-                .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-4.txt"));
+            .isEqualToNormalizingNewlines(StreamTool.res2str("json/pojo-encode/jackson-streamout-4.txt"));
     }
 
     @Test
     public void testPojoEncodeWithCustomSerializer() throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        om.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
-        om.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        final ObjectMapper om = JsonMapper.builder()
+            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+            .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
+            .build();
 
         Object pojo = new Object() {
             @SuppressWarnings("unused")
@@ -121,6 +123,6 @@ public class TestPojoEncodeJackson {
             public EncodePojoEnum2 enum2 = EncodePojoEnum2.DEF;
         };
         assertThat(om.writeValueAsString(pojo2))
-                .isEqualTo("{\"enum1\":0,\"enum2\":\"num=[20], name=[def]\",\"intv\":10}");
+            .isEqualTo("{\"enum1\":0,\"enum2\":\"num=[20], name=[def]\",\"intv\":10}");
     }
 }

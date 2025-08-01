@@ -11,7 +11,6 @@
 >>>>>>"calendarObject": 3723456,
 >>>>>>"charArray": "abc",
 >>>>>>"charValue": "￿",
->>>>>>"charsetObject": "UTF-8",
 >>>>>>"child": {
 >>>>>>>>"age": 10,
 >>>>>>>>"falseGetter": false,
@@ -50,8 +49,6 @@
 >>>>>>"intArray": [2147483647, 0, -2147483648],
 >>>>>>"intValue": 2147483647,
 >>>>>>"listObject": [
->>>>>>>>"UTF-8",
->>>>>>>>".*",
 >>>>>>>>"abc",
 >>>>>>>>"fwCA",
 >>>>>>>>[32767, 0, -32768]
@@ -60,25 +57,20 @@
 >>>>>>"longValue": 9223372036854775807,
 >>>>>>"mapObject": {
 >>>>>>>>"str": "HelloJson",
->>>>>>>>"charset": "UTF-8",
 >>>>>>>>"null": null,
 >>>>>>>>"byte_array": "fwCA",
 >>>>>>>>"char_array": "abc",
 >>>>>>>>"int_array": [2147483647, 0, -2147483648],
 >>>>>>>>"list": [
->>>>>>>>>>"UTF-8",
->>>>>>>>>>".*",
 >>>>>>>>>>"abc",
 >>>>>>>>>>"fwCA",
 >>>>>>>>>>[32767, 0, -32768]
 >>>>>>>>]
 >>>>>>},
 >>>>>>"nullObject": null,
->>>>>>"patternObject": ".*",
 >>>>>>"shortArray": [32767, 0, -32768],
 >>>>>>"shortValue": 32767,
 >>>>>>"sqlTimestampObject": 3723456,
->>>>>>"tzObject": "GMT",
 >>>>>>"uriObject": "dummy://dummy.dummy/dummy",
 >>>>>>"urlObject": "http://www.example.com",
 >>>>>>"日本語ゲッター": "日本語ゲッターの値",

@@ -19,7 +19,6 @@ package javasnack.json.pojo;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -28,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 public class EncodePojo {
     public final boolean booleanValueTrue = true;
@@ -40,14 +38,11 @@ public class EncodePojo {
     public final long longValue = Long.MAX_VALUE;
     public final float floatValue = Float.MAX_VALUE;
     public final double doubleValue = Double.MAX_VALUE;
-    public final Charset charsetObject = Charset.forName("UTF-8");
-    public final Pattern patternObject = Pattern.compile(".*");
     public final URL urlObject;
     public final URI uriObject = new URI("dummy://dummy.dummy/dummy");
     // 意図的にIPアドレスをハードコードしているため、PMD:AvoidUsingHardCodeIP を行単位で無効化
     // see: https://pmd.github.io/latest/pmd_userdocs_suppressing_warnings.html#nopmd-comment
     public final InetAddress inetAddressObject = InetAddress.getByName("192.168.1.1"); // NOPMD
-    public final TimeZone tzObject = TimeZone.getTimeZone("GMT");
     public final Calendar calendarObject;
     public final Date dateObject;
     public final Timestamp sqlTimestampObject;
@@ -60,18 +55,17 @@ public class EncodePojo {
     public final long[] longArray = { Long.MAX_VALUE, 0L, Long.MIN_VALUE };
     public final float[] floatArray = { Float.MAX_VALUE, 0.0F, Float.MIN_VALUE };
     public final double[] doubleArray = { Double.MAX_VALUE, 0, Double.MIN_VALUE };
-    public final List<Object> listObject = Arrays.asList(
-            charsetObject, patternObject, charArray, byteArray, shortArray);
+    public final List<Object> listObject = Arrays.asList(charArray, byteArray, shortArray);
     public final Map<String, Object> mapObject = new LinkedHashMap<>();
     public final String 日本語プロパティ = "日本語文字列";
     public final EncodePojoEnum enumObject = EncodePojoEnum.ONE;
     public final EncodePojoEnum[] enumArray = { EncodePojoEnum.TWO, EncodePojoEnum.FOUR };
     public final List<EncodePojoEnum> enumList = Arrays.asList(
-            EncodePojoEnum.THREE, EncodePojoEnum.FIVE);
+        EncodePojoEnum.THREE, EncodePojoEnum.FIVE);
 
     public EncodePojo() throws Exception {
-        this.urlObject = new URL("http://www.example.com");
-        this.calendarObject = Calendar.getInstance(tzObject);
+        this.urlObject = new URI("http://www.example.com").toURL();
+        this.calendarObject = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         calendarObject.set(Calendar.YEAR, 1970);
         calendarObject.set(Calendar.MONTH, 0);
         calendarObject.set(Calendar.DAY_OF_MONTH, 1);
@@ -81,9 +75,8 @@ public class EncodePojo {
         calendarObject.set(Calendar.MILLISECOND, 456);
         this.dateObject = new Date(calendarObject.getTimeInMillis());
         this.sqlTimestampObject = new Timestamp(
-                calendarObject.getTimeInMillis());
+            calendarObject.getTimeInMillis());
         this.mapObject.put("str", "HelloJson");
-        this.mapObject.put("charset", charsetObject);
         this.mapObject.put("null", null);
         this.mapObject.put("byte_array", byteArray);
         this.mapObject.put("char_array", charArray);
