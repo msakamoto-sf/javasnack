@@ -6,9 +6,8 @@ Tinny Java Excersise, Experimental, Practices Programms.
 ## for Developers setup (Eclipse/Spring Tool Suite)
 
 - OpenJDK >= 11
-- Eclipse >= 201903 (v4.10), "Eclipse IDE for Java EE Developers" package
-  - or Spring Tools 4 (STS4 >= 4.2.1)
-- Maven >= 3.6.1 (download automatically by mvnw script. also works by 3.x)
+- Eclipse >= 2025-06 (4.36.x), "Eclipse IDE for Java EE Developers" package
+- Maven >= 3.9.9 (download automatically by mvnw script. also works by 3.9.x)
 - use UTF-8 for source code and other text files.
 
 to setup Eclipse/STS4, see `setup-type2` in https://github.com/msakamoto-sf/howto-eclipse-setup and follow:
