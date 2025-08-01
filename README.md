@@ -3,7 +3,7 @@ javasnack
 
 Tinny Java Excersise, Experimental, Practices Programms.
 
-## $ for Developers setup (Eclipse/Spring Tool Suite)
+## $ setup development env
 
 base requirements:
 
@@ -276,16 +276,14 @@ $ ./mvnw clean integration-test site
 
 ## $ references
 
-jdk11:
+JDK21:
 
-- `JDK 11 Documentation - Home`
-  - https://docs.oracle.com/en/java/javase/11/
-- `JDK 11ドキュメント - ホーム`
-  - https://docs.oracle.com/javase/jp/11/
-- API JavaDoc(en)
-  - https://docs.oracle.com/en/java/javase/11/docs/api/index.html
-- API JavaDoc(ja)
-  - https://docs.oracle.com/javase/jp/11/docs/api/index.html
+- JDK 21 ドキュメント
+  - en: https://docs.oracle.com/en/java/javase/21/
+  - jp: https://docs.oracle.com/javase/jp/21/
+- API JavaDoc
+  - en: https://docs.oracle.com/en/java/javase/21/docs/api/
+  - jp: https://docs.oracle.com/javase/jp/21/docs/api/
 
 javadoc:
 
