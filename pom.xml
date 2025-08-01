@@ -41,7 +41,7 @@
 
     <jmh.version>1.23</jmh.version>
     <junit5.version>5.13.4</junit5.version>
-    <surefire.version>3.0.0-M3</surefire.version>
+    <surefire.version>3.5.3</surefire.version>
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
     <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
@@ -441,7 +441,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.14.0</version>
         <configuration>
           <source>${java.version.source}</source>
           <target>${java.version.target}</target>
@@ -493,7 +493,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -551,7 +551,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
+        <version>3.5.1</version>
         <!--
           ${exec.mainClass} is mainClass property, so we need skip this configuration :)
         <configuration>
@@ -563,7 +563,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>1.20</version>
+        <version>2.6.0</version>
         <executions>
           <execution>
             <id>add-third-party</id>
