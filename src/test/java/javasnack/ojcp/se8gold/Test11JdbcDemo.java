@@ -50,8 +50,8 @@ public class Test11JdbcDemo {
                 + "  field3 TIMESTAMP NOT NULL"
                 + ")";
         final String createTblB = "CREATE TABLE mytableB ("
-                + "  field1 INT(10) NOT NULL,"
-                + "  field2 INT(20) NOT NULL,"
+                + "  field1 INT NOT NULL,"
+                + "  field2 INT NOT NULL,"
                 + "  field3 VARCHAR(20) NOT NULL"
                 + ")";
         retainingConnection = DriverManager.getConnection(CONN_URL, CONN_USER, CONN_PASS);
