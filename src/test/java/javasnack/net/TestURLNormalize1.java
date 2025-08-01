@@ -67,8 +67,6 @@ public class TestURLNormalize1 {
     public void testNormalizeSampleUrls(String ctx, String relative, String expected)
             throws MalformedURLException, URISyntaxException {
         URI ctxUri = new URI(ctx);
-
-        URL ctxUrl = new URI(ctx).toURL();
         URL resolvedUrl = ctxUri.resolve(relative).toURL();
         assertThat(resolvedUrl.toExternalForm()).isEqualTo(expected);
     }

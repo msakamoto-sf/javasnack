@@ -68,11 +68,11 @@ public class TestMessageFormat {
         assertThat(new MessageFormat("{0,date,medium}", l0).format(dates)).isEqualTo("Jan 2, 2010");
         assertThat(new MessageFormat("{0,date,long}", l0).format(dates)).isEqualTo("January 2, 2010");
         assertThat(new MessageFormat("{0,date,full}", l0).format(dates)).isEqualTo("Saturday, January 2, 2010");
-        assertThat(new MessageFormat("{0,time}", l0).format(dates)).isEqualTo("3:04:05 AM");
-        assertThat(new MessageFormat("{0,time,short}", l0).format(dates)).isEqualTo("3:04 AM");
-        assertThat(new MessageFormat("{0,time,medium}", l0).format(dates)).isEqualTo("3:04:05 AM");
-        assertThat(new MessageFormat("{0,time,long}", l0).format(dates)).isEqualTo("3:04:05 AM " + tzs);
-        assertThat(new MessageFormat("{0,time,full}", l0).format(dates)).isEqualTo("3:04:05 AM " + tzl);
+        assertThat(new MessageFormat("{0,time}", l0).format(dates)).isEqualTo("3:04:05 AM");
+        assertThat(new MessageFormat("{0,time,short}", l0).format(dates)).isEqualTo("3:04 AM");
+        assertThat(new MessageFormat("{0,time,medium}", l0).format(dates)).isEqualTo("3:04:05 AM");
+        assertThat(new MessageFormat("{0,time,long}", l0).format(dates)).isEqualTo("3:04:05 AM " + tzs);
+        assertThat(new MessageFormat("{0,time,full}", l0).format(dates)).isEqualTo("3:04:05 AM " + tzl);
 
         assertThat(new MessageFormat("{0,date,YYYY-MM-dd}", l0).format(dates)).isEqualTo("2010-01-02");
         assertThat(new MessageFormat("{0,time,YYYY-MM-dd}", l0).format(dates)).isEqualTo("2010-01-02");

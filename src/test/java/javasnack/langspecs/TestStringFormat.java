@@ -134,7 +134,10 @@ public class TestStringFormat {
         assertThat(String.format(Locale.JAPAN, "%1$tc", odt1)).isEqualTo("土 1月 02 03:04:05 +09:00 2010");
 
         assertThat(String.format(Locale.US, "%1$tr", ldt1)).isEqualTo("03:04:05 AM");
-        assertThat(String.format(Locale.GERMANY, "%1$tr", ldt1)).isEqualTo("03:04:05 VORM.");
+        // jdk11
+        // assertThat(String.format(Locale.GERMANY, "%1$tr", ldt1)).isEqualTo("03:04:05 VORM.");
+        // jdk21
+        assertThat(String.format(Locale.GERMANY, "%1$tr", ldt1)).isEqualTo("03:04:05 AM");
         assertThat(String.format(Locale.JAPAN, "%1$tr", ldt1)).isEqualTo("03:04:05 午前");
     }
 }

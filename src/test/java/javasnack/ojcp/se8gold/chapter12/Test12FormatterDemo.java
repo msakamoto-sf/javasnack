@@ -48,9 +48,9 @@ public class Test12FormatterDemo {
         nf0 = NumberFormat.getInstance(Locale.FRANCE);
         nfc0 = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         nfi0 = NumberFormat.getIntegerInstance(Locale.FRANCE);
-        assertThat(nf0.format(-10_000_000.123)).isEqualTo("-10 000 000,123");
-        assertThat(nfc0.format(10_000_000.123)).isEqualTo("10 000 000,12 €");
-        assertThat(nfi0.format(-10_000_000.123)).isEqualTo("-10 000 000");
+        assertThat(nf0.format(-10_000_000.123)).isEqualTo("-10 000 000,123");
+        assertThat(nfc0.format(10_000_000.123)).isEqualTo("10 000 000,12 €");
+        assertThat(nfi0.format(-10_000_000.123)).isEqualTo("-10 000 000");
 
         nf0 = NumberFormat.getInstance(Locale.US);
         Number n0 = nf0.parse("-10,000.123");
@@ -153,8 +153,8 @@ public class Test12FormatterDemo {
         assertThatThrownBy(() -> {
             dtfmtShortTime(ld1, Locale.US);
         }).isInstanceOf(UnsupportedTemporalTypeException.class);
-        assertThat(dtfmtShortTime(lt1, Locale.US)).isEqualTo("12:34 PM");
-        assertThat(dtfmtShortTime(ldt1, Locale.US)).isEqualTo("12:34 PM");
+        assertThat(dtfmtShortTime(lt1, Locale.US)).isEqualTo("12:34 PM");
+        assertThat(dtfmtShortTime(ldt1, Locale.US)).isEqualTo("12:34 PM");
 
         assertThatThrownBy(() -> {
             dtfmtShortDateTime(ld1, Locale.US);
@@ -162,7 +162,7 @@ public class Test12FormatterDemo {
         assertThatThrownBy(() -> {
             dtfmtShortDateTime(lt1, Locale.US);
         }).isInstanceOf(UnsupportedTemporalTypeException.class);
-        assertThat(dtfmtShortDateTime(ldt1, Locale.US)).isEqualTo("12/31/20, 12:34 PM");
+        assertThat(dtfmtShortDateTime(ldt1, Locale.US)).isEqualTo("12/31/20, 12:34 PM");
 
         // medium : US locale demo
         assertThat(dtfmtMediumDate(ld1, Locale.US)).isEqualTo("Dec 31, 2020");
@@ -174,8 +174,8 @@ public class Test12FormatterDemo {
         assertThatThrownBy(() -> {
             dtfmtMediumTime(ld1, Locale.US);
         }).isInstanceOf(UnsupportedTemporalTypeException.class);
-        assertThat(dtfmtMediumTime(lt1, Locale.US)).isEqualTo("12:34:56 PM");
-        assertThat(dtfmtMediumTime(ldt1, Locale.US)).isEqualTo("12:34:56 PM");
+        assertThat(dtfmtMediumTime(lt1, Locale.US)).isEqualTo("12:34:56 PM");
+        assertThat(dtfmtMediumTime(ldt1, Locale.US)).isEqualTo("12:34:56 PM");
 
         assertThatThrownBy(() -> {
             dtfmtMediumDateTime(ld1, Locale.US);
@@ -183,7 +183,7 @@ public class Test12FormatterDemo {
         assertThatThrownBy(() -> {
             dtfmtMediumDateTime(lt1, Locale.US);
         }).isInstanceOf(UnsupportedTemporalTypeException.class);
-        assertThat(dtfmtMediumDateTime(ldt1, Locale.US)).isEqualTo("Dec 31, 2020, 12:34:56 PM");
+        assertThat(dtfmtMediumDateTime(ldt1, Locale.US)).isEqualTo("Dec 31, 2020, 12:34:56 PM");
 
         // long : US locale demo
         assertThat(dtfmtLongDate(ld1, Locale.US)).isEqualTo("December 31, 2020");
