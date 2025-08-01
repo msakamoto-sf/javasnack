@@ -44,7 +44,7 @@ public class TestRe2jLookAheadBehindNotSupport {
         assertThatThrownBy(() -> {
             Pattern.compile("(?<=xxx) aaa");
         }).isInstanceOf(com.google.re2j.PatternSyntaxException.class)
-                .hasMessage("error parsing regexp: invalid or unsupported Perl syntax: `(?<`");
+                .hasMessage("error parsing regexp: invalid named capture: `(?<=xxx) aaa`");
     }
 
     @Test
@@ -52,6 +52,6 @@ public class TestRe2jLookAheadBehindNotSupport {
         assertThatThrownBy(() -> {
             Pattern.compile("(?<!xxx)");
         }).isInstanceOf(com.google.re2j.PatternSyntaxException.class)
-                .hasMessage("error parsing regexp: invalid or unsupported Perl syntax: `(?<`");
+                .hasMessage("error parsing regexp: invalid named capture: `(?<!xxx)`");
     }
 }
