@@ -306,9 +306,9 @@ public class TestClassMetaInfo {
         ifs = c0.getInterfaces();
         gifs = c0.getGenericInterfaces();
         assertEquals(1, ifs.length);
-        assertEquals("Map", ifs[0].getSimpleName());
+        assertEquals("SequencedMap", ifs[0].getSimpleName());
         assertEquals(1, gifs.length);
-        assertEquals("java.util.Map<K, V>", gifs[0].getTypeName());
+        assertEquals("java.util.SequencedMap<K, V>", gifs[0].getTypeName());
 
         byte[] ba = new byte[] {};
         c0 = ba.getClass();
