@@ -44,13 +44,13 @@
     <surefire.version>3.5.3</surefire.version>
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
-    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
-    <checkstyle.config.location>${project.basedir}/checkstyle-settings/google_checks-8.28_custom.xml</checkstyle.config.location>
+    <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <checkstyle.config.location>${project.basedir}/config-files-linter/checkstyle-google_checks_10_23_1_custom.xml</checkstyle.config.location>
     <!--
     see: http://maven.apache.org/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html
-    -> enforce specific version same to what eclipse checkstyle plugin is using at 2021-08.
+    -> enforce specific version same to what eclipse checkstyle plugin is using at 2025-08.
     -->
-    <maven-checkstyle-engine.version>8.44</maven-checkstyle-engine.version>
+    <maven-checkstyle-engine.version>10.23.1</maven-checkstyle-engine.version>
 
     <!--
     see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/upgrading-PMD-at-runtime.html
@@ -297,7 +297,7 @@
           </dependencies>
           <configuration>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
-            <propertyExpansion>samedir=${project.basedir}/checkstyle-settings</propertyExpansion>
+            <propertyExpansion>samedir=${project.basedir}/config-files-linter</propertyExpansion>
           </configuration>
         </plugin>
 

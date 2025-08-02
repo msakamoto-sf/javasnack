@@ -331,8 +331,8 @@ public class TestJGitHistogramDiffDemo {
                 arguments("aaa\nbbb\nBBB\nCCC\nccc\n", "aaa\nbbb\nccc\n", "aaa\nbbb\nBBB\nCCC\nccc", "aaa\nbbb\n-BBB-\n-CCC-\nccc"),
                 arguments("aaa\nbbb\nAAA\nBBB\nccc\n", "aaa\nbbb\nCCC\nDDD\nccc\n", "aaa\nbbb\n-AAA-\n-BBB-\nccc", "aaa\nbbb\n+CCC+\n+DDD+\nccc"),
                 arguments(
-                        "bbb","AAA\nBBB\nCCC\nbbb",
-                        "-AAA-\n-BBB-\n-CCC-\nbbb","AAA\nBBB\nCCC\nbbb"),
+                        "bbb", "AAA\nBBB\nCCC\nbbb",
+                        "-AAA-\n-BBB-\n-CCC-\nbbb", "AAA\nBBB\nCCC\nbbb"),
                 arguments(
                         "AAA\nBBB\nCCC\nbbb\n", "bbb\n",
                         "AAA\nBBB\nCCC\nbbb", "-AAA-\n-BBB-\n-CCC-\nbbb"),

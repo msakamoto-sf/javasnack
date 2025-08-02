@@ -42,6 +42,9 @@ https://stackoverflow.com/questions/58236549/maven-on-windows-checkstyle-plug-in
   -->
   <suppress checks=".*" files="[/\\]target[/\\]" />
 
+  <!-- JMH公式サンプルコードからそのままコピーしてきたコードについては、メソッド名規約が異なるためチェック除外 -->
+  <suppress checks="MethodNameCheck" files="jmh[/\\]samples[/\\]JmhSamples" />
+
   <!-- JMHサンプルの都合上、読みやすさを考えるとどうしても機械的なcheckstyleチェックを破らざるを得なかった。 -->
   <suppress checks=".*" files="JmhSamples22FalseSharing.java" />
 
