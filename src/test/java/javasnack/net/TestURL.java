@@ -119,7 +119,7 @@ public class TestURL {
         assertThat(url0.toString()).isEqualTo("file:/aaa/bbb/ccc.txt");
     }
 
-    static record ExpectedStringAndException(
+    record ExpectedStringAndException(
             String urlstr,
             Class<?> expectedExceptionClass) {
     }
