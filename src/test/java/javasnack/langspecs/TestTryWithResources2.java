@@ -32,7 +32,11 @@ import org.junit.jupiter.api.Test;
 /* see:
  * http://docs.oracle.com/javase/jp/7/technotes/guides/language/try-with-resources.html
  * http://d.hatena.ne.jp/sardine/20130402
+ * 
+ * テストコードの性質上、宣言しても使わない変数が大量に発生するため、
+ * クラス単位で unused warning を抑制する。
  */
+@SuppressWarnings("unused")
 public class TestTryWithResources2 {
 
     @Test
@@ -49,7 +53,6 @@ public class TestTryWithResources2 {
             }
         }
 
-        @SuppressWarnings("unused")
         int dummy = 0;
         try (Closeable1 c1 = new Closeable1();) {
             if (Math.random() > 1.0) {
@@ -76,7 +79,6 @@ public class TestTryWithResources2 {
             }
         }
 
-        @SuppressWarnings("unused")
         int dummy = 0;
         try (Closeable1 c1 = new Closeable1();) {
             if (Math.random() > 1.0) {

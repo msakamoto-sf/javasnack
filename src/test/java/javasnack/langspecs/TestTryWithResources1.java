@@ -38,7 +38,11 @@ import org.junit.jupiter.api.Test;
  * Advanced Topics (resource leak : not tested)
  * http://qiita.com/nesheep5/items/6a68d862c5902e5994a4
  * http://mike-neck.hatenadiary.com/entry/2015/04/12/210000
+ * 
+ * テストコードの性質上、宣言しても使わない変数が大量に発生するため、
+ * クラス単位で unused warning を抑制する。
  */
+@SuppressWarnings("unused")
 public class TestTryWithResources1 {
 
     @Test
@@ -57,7 +61,6 @@ public class TestTryWithResources1 {
         }
 
         final AtomicInteger ai = new AtomicInteger(0);
-        @SuppressWarnings("unused")
         int dummy = 0;
         try (Closeable1 c1 = new Closeable1(ai)) {
             if (Math.random() > 1.0) {
@@ -85,7 +88,6 @@ public class TestTryWithResources1 {
         }
 
         List<String> messageBox = new ArrayList<>();
-        @SuppressWarnings("unused")
         int dummy = 0;
         try (Closeable1 c1 = new Closeable1("res1", messageBox);
                 Closeable1 c2 = new Closeable1("res2", messageBox);
@@ -116,7 +118,6 @@ public class TestTryWithResources1 {
         }
 
         assertThatThrownBy(() -> {
-            @SuppressWarnings("unused")
             int dummy = 0;
             try (Closeable1 c1 = new Closeable1();) {
                 if (Math.random() > 1.0) {
@@ -141,7 +142,6 @@ public class TestTryWithResources1 {
         }
 
         assertThatThrownBy(() -> {
-            @SuppressWarnings("unused")
             int dummy = 0;
             try (Closeable1 c1 = new Closeable1();) {
                 if (Math.random() > 1.0) {
