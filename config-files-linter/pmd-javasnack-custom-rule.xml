@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<ruleset name="javasnack custom PMD ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+    <!--
+    copied from:
+    https://gitbox.apache.org/repos/asf?p=maven-pmd-plugin.git;a=blob_plain;f=src/main/resources/rulesets/java/maven-pmd-plugin-default.xml;hb=HEAD
+    at 2025-08-02
+    see also: https://maven.apache.org/plugins/maven-pmd-plugin/examples/usingRuleSets.html
+    -->
+
+    <description>
+    javasnack custom PMD ruleset
+    </description>
+
+    <exclude-pattern>.*/make/findbugs/angry/.*</exclude-pattern>
+    <exclude-pattern>.*/javasnack/ojcp/.*</exclude-pattern>
+    <!-- "@Provides" アノテーションのデモで作成した private メソッドで UnusedPrivateMethod がレポートされてしまうため、除外 -->
+    <exclude-pattern>.*/javasnack/guice3/TestProvidesInject.java</exclude-pattern>
+    <!--
+    Unicode 識別子を使っているJavaソースで
+    java.lang.IllegalArgumentException: Bad intersection type component: long in [long, int]
+    が発生するため、一旦除外。
+    -->
+    <exclude-pattern>.*/javasnack/json/pojo/EncodePojo.java</exclude-pattern>
+
+    <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
+    <rule ref="category/java/bestpractices.xml/CheckResultSet" />
+    <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation" />
+    <rule ref="category/java/bestpractices.xml/UnusedFormalParameter" />
+    <rule ref="category/java/bestpractices.xml/UnusedLocalVariable" />
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateField" />
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod" />
+
+    <rule ref="category/java/codestyle.xml/EmptyControlStatement" />
+    <rule ref="category/java/codestyle.xml/ExtendsObject" />
+    <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop" />
+
+    <!--
+    mockitoなど使うと、どうしても import static を大量に使うことになる。
+    mockitoのデモ用テストコードを最大の基準として、それを超える明らかに過剰なものだけに絞り、
+    最大値を30として暫定採用でカスタマイズしている。
+    see: https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#toomanystaticimports
+    -->
+    <rule ref="category/java/codestyle.xml/TooManyStaticImports">
+        <properties>
+            <property name="maximumStaticImports" value="30" />
+        </properties>
+    </rule>
+
+    <!--
+    読みやすさや、サンプルコードとして意図を明確にするためにあえてFQNをつけている箇所もあるため、チェックから除外。
+    <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName" />
+    -->
+    <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryModifier" />
+    <rule ref="category/java/codestyle.xml/UnnecessaryReturn" />
+    <rule ref="category/java/codestyle.xml/UnnecessarySemicolon" />
+    <!--
+    無駄な括弧を指摘してくれるので勉強にはなるが、
+    読みやすさ・わかり易さのために明示的に使っているところが多数あり、
+    区別も難しいためルール全体を無効化しておく。
+    <rule ref="category/java/codestyle.xml/UselessParentheses" />
+    -->
+
+    <rule ref="category/java/codestyle.xml/UselessQualifiedThis" />
+
+    <rule ref="category/java/design.xml/CollapsibleIfStatements" />
+    <rule ref="category/java/design.xml/SimplifiedTernary" />
+    <rule ref="category/java/design.xml/UselessOverridingMethod" />
+
+    <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
+    <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
+    <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
+    <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues" />
+    <rule ref="category/java/errorprone.xml/BrokenNullCheck" />
+    <rule ref="category/java/errorprone.xml/CheckSkipResult" />
+    <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray" />
+    <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
+
+    <!--
+    checkstyle 側で同等のチェックがあるため、PMD側では省略
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
+    -->
+
+    <rule ref="category/java/errorprone.xml/JumbledIncrementer" />
+    <rule ref="category/java/errorprone.xml/MisplacedNullCheck" />
+    <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
+    <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
+    <rule ref="category/java/errorprone.xml/UnconditionalIfStatement" />
+    <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary" />
+    <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals" />
+    <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable" />
+
+    <rule ref="category/java/multithreading.xml/AvoidThreadGroup" />
+    <rule ref="category/java/multithreading.xml/DontCallThreadRun" />
+    <rule ref="category/java/multithreading.xml/DoubleCheckedLocking" />
+
+    <rule ref="category/java/performance.xml/BigIntegerInstantiation" />
+
+</ruleset>
