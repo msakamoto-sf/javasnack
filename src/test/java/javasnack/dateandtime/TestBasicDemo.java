@@ -230,7 +230,7 @@ public class TestBasicDemo {
 
         DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyy'年'MM'月'dd'日 'HH'時'mm'分'ss'秒 'XXX");
         try {
-            ldt1.format(dtf1);
+            ldt1.format(dtf1); // NOPMD : UselessOperationOnImmutable
             fail();
         } catch (DateTimeException e) {
             assertEquals(UnsupportedTemporalTypeException.class, e.getClass());
@@ -261,7 +261,7 @@ public class TestBasicDemo {
     @ParameterizedTest
     @MethodSource("provideFormatShouldSuccessForLocalDate")
     public void formatShouldSuccessForLocalDate(final String s, final DateTimeFormatter dtf) {
-        LocalDate.parse(s, dtf);
+        LocalDate.parse(s, dtf); // NOPMD : UselessOperationOnImmutable
     }
 
     static Stream<Arguments> provideFormatShouldFailureForLocalDate() {
@@ -283,7 +283,7 @@ public class TestBasicDemo {
     @MethodSource("provideFormatShouldFailureForLocalDate")
     public void formatShouldFailureForLocalDate(final String s, final DateTimeFormatter dtf) {
         assertThrows(DateTimeParseException.class, () -> {
-            LocalDate.parse(s, dtf);
+            LocalDate.parse(s, dtf); // NOPMD : UselessOperationOnImmutable
         });
     }
 
@@ -300,7 +300,7 @@ public class TestBasicDemo {
     @ParameterizedTest
     @MethodSource("provideFormatShouldSuccessForLocalTime")
     public void formatShouldSuccessForLocalTime(final String s, final DateTimeFormatter dtf) {
-        LocalTime.parse(s, dtf);
+        LocalTime.parse(s, dtf); // NOPMD : UselessOperationOnImmutable
     }
 
     static Stream<Arguments> provideFormatShouldFailureForLocalTime() {
@@ -318,7 +318,7 @@ public class TestBasicDemo {
     @MethodSource("provideFormatShouldFailureForLocalTime")
     public void formatShouldFailureForLocalTime(final String s, final DateTimeFormatter dtf) {
         assertThrows(DateTimeParseException.class, () -> {
-            LocalTime.parse(s, dtf);
+            LocalTime.parse(s, dtf); // NOPMD : UselessOperationOnImmutable
         });
     }
 
@@ -355,7 +355,7 @@ public class TestBasicDemo {
         assertEquals(1, jdh1.get(ChronoField.YEAR_OF_ERA));
 
         try {
-            JapaneseDate.of(JapaneseEra.HEISEI, 1, 1, 7);
+            JapaneseDate.of(JapaneseEra.HEISEI, 1, 1, 7); // NOPMD : UselessOperationOnImmutable
             fail();
         } catch (DateTimeException e) {
             assertEquals(DateTimeException.class, e.getClass());
