@@ -51,7 +51,7 @@ public class UnsignedByte {
 
     public static byte random() {
         final int r = (int) Math.floor(Math.random() * (0xFF - 1));
-        return UnsignedByte.from(r);
+        return from(r);
     }
 
     public static byte[] random(int size) {
@@ -61,7 +61,7 @@ public class UnsignedByte {
         }
         final byte[] r = new byte[size];
         for (int i = 0; i < size; i++) {
-            r[i] = UnsignedByte.random();
+            r[i] = random();
         }
         return r;
     }
@@ -96,7 +96,7 @@ public class UnsignedByte {
     public static byte[] create0x00to0xFF() {
         final ByteBuffer bf = ByteBuffer.allocate(256);
         for (int d = 0x00; d <= 0xFF; d++) {
-            bf.put(UnsignedByte.from(d));
+            bf.put(from(d));
         }
         bf.flip();
         final byte[] src = new byte[bf.limit()];
