@@ -25,6 +25,8 @@ refs: https://maven.apache.org/plugins/maven-checkstyle-plugin/usage.html
 
 ### Eclipse Checkstyle Plugin configuration
 
+install eclipse plugin: https://checkstyle.org/eclipse-cs/
+
 import checkstyle configuration xml into eclipse:
 
 1. import xml into eclipse global configuration.

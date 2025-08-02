@@ -26,7 +26,7 @@ base requirements:
 2. add JDK (installed at command line build env setup) to Eclipse
    - `Window -> Preferences -> [Java] -> [Installed JREs] -> Add -> Standard VM`
 3. [setup eclipse workspace environments](./config-files-eclipse/eclipse-workspace-prefs-ja.md)
-4. add lombock plugin
+4. add lombok plugin
    1. download lombok jar from: https://projectlombok.org/
    2. `java -jar lombok.jar`
    3. select eclipse installed directory and install lombok
