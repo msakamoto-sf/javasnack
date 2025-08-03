@@ -54,7 +54,7 @@ import javasnack.tool.BlackholeTcpServer;
 public class TestThreadExecutorBasics {
 
     BlackholeTcpServer blackholeTcpServer = null;
-    int blackholeTcpServerPort = 0;
+    volatile int blackholeTcpServerPort = 0;
 
     @BeforeAll
     public void beforeAll() throws IOException {
