@@ -35,86 +35,10 @@ base requirements:
    1. `File -> Import`
    2. `Maven -> Existing Maven Projects`
    3. `Root Directory` : select project root directory, import pom.xml.
-6. import and setup linter plugins:
-   1. checkstyle ## TODO
-   2. PMD ## TODO
-   3. Spotbugs ## TODO
-
-- Recommended plugin:
-  - [Eclipse Checkstyle Plugin](https://checkstyle.org/eclipse-cs/)
-  - [SpotBugs Eclipse plugin](https://spotbugs.readthedocs.io/en/latest/eclipse.html)
-  - [PMD Eclipse Plugin](https://github.com/pmd/pmd-eclipse-plugin)
-
-### Eclipse/STS checkstyle plugin configuration
-
-import checkstyle configuration xml into eclipse:
-
-1. import xml into eclipse global configuration.
-   1. Window -> Preferences -> Checkstyle -> Global Check Configurations : click "New"
-   2. Select: "Project Relative Configuration"
-   3. Location: click "Browse" -> then select project -> select `javasnack/checkstyle-settings/google_checks-8.28_custom.xml`
-   4. Name: set proper name
-   5. Apply and Close
-2. setup project specific setting
-   1. right-click project -> Properties (ALT + Enter)
-   2. Checkstyle -> check "Checkstyle active for this project"
-   3. select imported xml configration
-   4. Apply and Close
-3. run first checkstyle
-   1. right-click project -> Checkstyle -> "Check Code with Checkstyle"
-
-reload updated xml to Eclipse/STS: (unstable way)
-1. some operations in Window -> Preferences -> Checkstyle config then "Apply and Click". (e.g. checkbox on <> off)
-2. project setting -> switch checkstyle activate / deactivate some times.
-3. rebuild project.
-
-### Eclipse/STS SpotBugs plugin configuration
-
-1. import project specific include/exclude filter.
-   1. right-click project -> Properties -> SpotBugs -> check "Enable project specific settings"
-   2. at filter file tab, add "spotbugs-exclude-filter.xml" to exclude filter file, add "spotbugs-include-filter.xml" to include filter file.
-2. SpotBugs plugin setting (see pom.xml configuration)
-   1. set effort (分析力) to "Default"
-   2. set max rank (報告する最小ランク) to 15
-   3. set threshold (レポートする最低の信頼度) to "Medium"
-   4. check below categories (see spotbugs-include-filter.xml)
-      1. "Bad practice"
-      2. "Malicious code vulnerability"
-      3. "Correctness"
-      4. "Performance"
-      5. "Security"
-      6. "Dodgy code"
-      7. "Multithreaded correctness"
-      8. "Internationalization"
-   5. do NOT check "Experimental" category.
-3. run SpotBugs check manually:
-   1. right-click project -> SpotBugs -> click "Find Bugs"
-
-If you edited exclude/include xml filter, then right-click project -> SpotBugs -> clear markers and Find Bugs again.
-
-SpotBugs reference:
-
-- https://spotbugs.github.io/
-- https://spotbugs.github.io/spotbugs-maven-plugin/
-- https://spotbugs.readthedocs.io/en/latest/
-- https://spotbugs.readthedocs.io/ja/latest/
-
-### Eclipse/STS PMD plugin configuration
-
-1. import project specific ruleset xml.
-   1. right-click project -> Properties -> PMD -> check "Enable PMD"
-   2. "Rule source" -> check "Use the ruleset configured in a project file" -> Browse -> select `javasnack-custom-pmd-rule.xml`
-   3. if you asked "The project doesn't contain a ruleset file. Do you want to create a ruleset from the configured properties ?", click "No".
-
-If you edited rule xml, no need to reconfigure. just do PMD -> "Check Code" again.
-
-PMD reference:
-
-- https://pmd.github.io/
-- https://pmd.github.io/latest/
-- https://pmd.github.io/latest/pmd_userdocs_tools_maven.html
-- https://maven.apache.org/plugins/maven-pmd-plugin/index.html
-- https://github.com/pmd/pmd-eclipse-plugin
+6. install linter plugins, then import configuration files:
+   1. [Checkstyle](./config-files-linter/checkstyle-00-README.md)
+   2. [PMD](./config-files-linter/pmd-00-README.md)
+   3. [SpotBugs](./config-files-linter/spotbugs-00-README.md)
 
 ## $ how to build and execute main()
 
