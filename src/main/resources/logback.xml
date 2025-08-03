@@ -1,4 +1,13 @@
-<configuration>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<!--
+logback の設定ファイルはある程度柔軟性を保つため、意図的にDTD/XML schema を提供していない。
+via: https://logback.qos.ch/manual/configuration.html#syntax
+このため暫定として、 configuration element にのみ DOCTYPE をつけておく。
+こうすることで eclipse 側の警告に対処できる。
+via: https://penult.hatenablog.com/entry/20091128/1259416999
+-->
+<configuration debug="true">
 <!--
 動作確認用の最低限度の設定ファイル。
 様々な設定デモを盛り込んだ例については logback-demo/ 以下の XML ファイルを参照。
