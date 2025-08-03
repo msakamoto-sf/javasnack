@@ -11,6 +11,9 @@ public class ConsoleUtil {
     }
 
     public static String readLine(String prompt) {
+        if (Objects.nonNull(prompt)) {
+            System.out.print(prompt);
+        }
         final Console c = System.console();
         if (Objects.nonNull(c)) {
             return c.readLine();
@@ -18,9 +21,6 @@ public class ConsoleUtil {
         String r = "";
         try {
             final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            if (Objects.nonNull(prompt)) {
-                System.out.print(prompt);
-            }
             final String readLine = br.readLine();
             if (Objects.isNull(readLine)) {
                 return "";
