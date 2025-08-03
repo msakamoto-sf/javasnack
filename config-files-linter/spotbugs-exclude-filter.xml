@@ -33,6 +33,13 @@
     <Bug pattern="DMI_EMPTY_DB_PASSWORD" />
   </Match>
 
+  <!--
+  このプロジェクトでは実験/テスト用に Random クラスを扱うため、1度使って終わりのコードが多い。
+  DMI_RANDOM_USED_ONLY_ONCE で警告されてしまうため、指摘パターン自体をまるごと除外しておく。(実プロダクトでは除外すべきではない)
+  -->
+  <Match>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE" />
+  </Match>
 
   <!-- コードの意図として指摘されても問題ないため、以下の指摘は除外する。 -->
   <Match>
