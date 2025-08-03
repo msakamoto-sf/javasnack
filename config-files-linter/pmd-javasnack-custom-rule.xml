@@ -43,6 +43,12 @@ under the License.
     が発生するため、一旦除外。
     -->
     <exclude-pattern>.*/javasnack/json/pojo/EncodePojo.java</exclude-pattern>
+    <!--
+    pmd-eclipse-plugin からだと {main|test}/resources/ 配下の XML ファイルまで check する。
+    テスト/実験用の設定ファイルで多数 check error が出るため、除外
+    -->
+    <exclude-pattern>.*/main/resources/.*</exclude-pattern>
+    <exclude-pattern>.*/test/resources/.*</exclude-pattern>
 
     <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
     <rule ref="category/java/bestpractices.xml/CheckResultSet" />
