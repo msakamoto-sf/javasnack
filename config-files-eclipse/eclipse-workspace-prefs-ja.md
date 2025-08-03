@@ -82,6 +82,15 @@ NOTE: msakamot-sf 個人の好みに基づいた設定です。
   - `Window` メニュー -> `Preferences` -> `[Java]` -> `[Code Style]` -> `[Formatter]` -> `[Import ...]` からインポートする。
   - javasnack用設定ファイル: [javasnack-eclipse-java-formatter.xml](./javasnack-eclipse-java-formatter.xml)
 
+## $ Eclipse の spell check 用カスタム辞書ファイルの登録
+
+- Eclipse では javadoc や xml コメント中の文章に対して spell check を行う機能がある。
+- 便利だけど、扱うライブラリやツールによっては `logback` など普通の辞書には載っていない英単語を使っていて、コメント中に書くとチェックされてしまう。
+- → `config-files-eclipse/text-editors-spelling-custom-dic.txt` に1単語 1行でカスタムの単語を追記した辞書ファイルを用意したので、これを Eclipse の spell check にカスタム辞書として登録する。
+- `Window` menu -> `Preferences` menu -> `[General]` -> `[Editors]` -> `[Text Editors]` -> `Spelling` -> `Dictionaries` -> `User defined dictionary` -> `Browse` で `config-files-eclipse/text-editors-spelling-custom-dic.txt` を選択して登録する。
+
+via: https://stackoverflow.com/questions/23237111/how-to-create-a-user-dictionary-in-eclipse
+
 ## $ EGitからSSHでcloneするときの秘密鍵を指定するには
 
 https://wiki.eclipse.org/EGit/User_Guide/Remote より, `Windows` メニュー -> `Preferences` -> `[General]` -> `[Network Connections]` -> `[SSH2]` で、以下の項目をチェック。
