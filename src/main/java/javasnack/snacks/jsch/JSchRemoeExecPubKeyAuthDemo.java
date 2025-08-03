@@ -34,6 +34,9 @@ import javasnack.tool.ConsoleUtil;
  * https://dev.classmethod.jp/server-side/java/exec_remote_program/
  * http://www.jcraft.com/jsch/examples/Exec.java.html
  * http://www.jcraft.com/jsch/examples/UserAuthPubKey.java.html
+ * 
+ * at 2025-08, move to:
+ * https://github.com/mwiede/jsch
  */
 public class JSchRemoeExecPubKeyAuthDemo implements RunnableSnack {
     @Override

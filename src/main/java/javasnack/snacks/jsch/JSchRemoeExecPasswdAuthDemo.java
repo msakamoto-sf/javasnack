@@ -33,6 +33,9 @@ import javasnack.tool.ConsoleUtil;
  * https://qiita.com/tool-taro/items/ab68353970ee792163c6
  * https://dev.classmethod.jp/server-side/java/exec_remote_program/
  * http://www.jcraft.com/jsch/examples/Exec.java.html
+ * 
+ * at 2025-08, move to:
+ * https://github.com/mwiede/jsch
  */
 public class JSchRemoeExecPasswdAuthDemo implements RunnableSnack {
     @Override
