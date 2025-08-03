@@ -308,7 +308,7 @@
         <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>4.2.3</version>
+          <version>4.9.3.2</version>
           <dependencies>
             <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
             <dependency>
@@ -317,9 +317,9 @@
               <!--
               see: https://spotbugs.readthedocs.io/en/latest/maven.html
               see: https://spotbugs.readthedocs.io/ja/latest/maven.html
-              -> enforce specific version same to what eclipse spotbugs plugin is using at 2020-04.
+              -> enforce specific version same to what eclipse spotbugs plugin is using at 2025-08.
                -->
-              <version>4.0.1</version>
+              <version>4.9.3</version>
             </dependency>
           </dependencies>
           <!--
@@ -332,8 +332,8 @@
             see: https://spotbugs.readthedocs.io/en/latest/filter.html
             see: https://spotbugs.github.io/spotbugs-maven-plugin/usage.html
              -->
-            <excludeFilterFile>${project.basedir}/spotbugs-exclude-filter.xml</excludeFilterFile>
-            <includeFilterFile>${project.basedir}/spotbugs-include-filter.xml</includeFilterFile>
+            <excludeFilterFile>${project.basedir}/config-files-linter/spotbugs-exclude-filter.xml</excludeFilterFile>
+            <includeFilterFile>${project.basedir}/config-files-linter/spotbugs-include-filter.xml</includeFilterFile>
             <!--
             maven plugin ではテストコードがデフォルトでは対象外なので、明示的に対象に含める。
             (eclipse plugin ではデフォルトで対象に含めてくれる。)
