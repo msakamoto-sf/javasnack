@@ -42,6 +42,7 @@
     <jmh.version>1.23</jmh.version>
     <junit5.version>5.13.4</junit5.version>
     <surefire.version>3.5.3</surefire.version>
+    <zxing.version>3.5.3</zxing.version>
 
     <!-- see: http://maven.apache.org/plugins/maven-checkstyle-plugin/ -->
     <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
@@ -240,6 +241,16 @@
       <groupId>com.google.re2j</groupId>
       <artifactId>re2j</artifactId>
       <version>1.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>${zxing.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>${zxing.version}</version>
     </dependency>
 
     <!-- test -->
