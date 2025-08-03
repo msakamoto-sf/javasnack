@@ -385,7 +385,7 @@
           <version>3.27.0</version>
           <configuration>
             <rulesets>
-              <ruleset>${project.basedir}/javasnack-custom-pmd-rule.xml</ruleset>
+              <ruleset>${project.basedir}/config-files-linter/pmd-javasnack-custom-rule.xml</ruleset>
             </rulesets>
             <!--
             maven plugin ではテストコードがデフォルトでは対象外なので、明示的に対象に含める。
@@ -400,7 +400,7 @@
             <execution>
               <!--
               see: https://maven.apache.org/plugins/maven-pmd-plugin/examples/violationChecking.html
-              see: https://pmd.github.io/latest/pmd_userdocs_tools_maven.html#integrated-into-the-build-process
+              see: https://docs.pmd-code.org/latest/pmd_userdocs_tools_maven.html#integrated-into-the-build-process
               -> run in verify phase
               -->
               <goals>
