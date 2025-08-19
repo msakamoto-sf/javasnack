@@ -1,6 +1,8 @@
 # ConfusingCertificate : MITM Proxy の証明書生成で混乱を招きそうな証明書
 
-作業ディレクトリ:
+QUESTION: Where Common Name come from when Burp generates MITM server certificate ?
+
+work directory:
 
 ```
 $ cd javasnack/src/main/resources/jsse/ConfusingCertificate/
@@ -57,11 +59,22 @@ $ cd javasnack/src/main/resources/jsse/ConfusingCertificate/
     Verifying - Enter Export Password:(Enter)
     ```
 
-## run ConfusingCertificateWebServer
+## demo
 
-```
-java -jar (javasnack.jar) ConfusingCertificateWebServer 8081
-or
-java -jar (javasnack.jar) javasnack.Main ConfusingCertificateWebServer 8081
-```
+1. start Burp Proxy at `localhost:8080`
+2. run ConfusingCertificateWebServer at `localhost:8081`
+    ```
+    $ java -jar (javasnack.jar) ConfusingCertificateWebServer 8081
+    ```
+3. run ConfusingCertificateProxiedClient
+    ```
+    $ java -jar (javasnack.jar) ConfusingCertificateProxiedClient localhost 8080 8081
+    cert[0] - Subject: CN=localhost,OU=PortSwigger CA,O=PortSwigger,C=PortSwigger
+    cert[1] - Subject: CN=PortSwigger CA,OU=PortSwigger CA,O=PortSwigger,L=PortSwigger,ST=PortSwigger,C=PortSwigger
+    HTTP/1.1 200 OK
+    Content-Type: text/plain
 
+    Hello from ConfusingCertificateWebServer!
+    ```
+
+CONCLUSION: Burp generate MITM server certificate which CN is taken from `CONNECT` method request line.
