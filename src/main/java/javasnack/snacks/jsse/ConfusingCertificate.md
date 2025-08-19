@@ -70,7 +70,9 @@ $ cd javasnack/src/main/resources/jsse/ConfusingCertificate/
     ```
     $ java -jar (javasnack.jar) ConfusingCertificateProxiedClient localhost 8080 8081
     cert[0] - Subject: CN=localhost,OU=PortSwigger CA,O=PortSwigger,C=PortSwigger
+    cert[0] - Subject Alternative Name[0] is DNS value of: localhost
     cert[1] - Subject: CN=PortSwigger CA,OU=PortSwigger CA,O=PortSwigger,L=PortSwigger,ST=PortSwigger,C=PortSwigger
+    cert[1] - not contains Subject Alternative Names
     HTTP/1.1 200 OK
     Content-Type: text/plain
 
@@ -78,3 +80,4 @@ $ cd javasnack/src/main/resources/jsse/ConfusingCertificate/
     ```
 
 CONCLUSION: Burp generate MITM server certificate which CN is taken from `CONNECT` method request line.
+SAN also comes from same source.

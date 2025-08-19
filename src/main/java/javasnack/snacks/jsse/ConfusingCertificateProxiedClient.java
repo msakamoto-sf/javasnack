@@ -6,7 +6,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
@@ -97,6 +100,30 @@ public class ConfusingCertificateProxiedClient implements RunnableSnack {
                         X509Certificate[] certs = (X509Certificate[]) event.getPeerCertificates();
                         for (int i = 0; i < certs.length; i++) {
                             System.out.println("cert[" + i + "] - Subject: " + certs[i].getSubjectX500Principal().getName());
+                            Collection<List<?>> subjectAltNames = certs[i].getSubjectAlternativeNames();
+                            if (Objects.isNull(subjectAltNames)) {
+                                System.out.println("cert[" + i + "] - not contains Subject Alternative Names");
+                                continue;
+                            }
+                            List<List<?>> generalNames = new ArrayList<>(subjectAltNames);
+                            for (int j = 0; j < generalNames.size(); j++) {
+                                List<?> generalName = generalNames.get(j);
+                                if (generalName.size() != 2) {
+                                    System.err.println("cert[" + i + "] - Subject Alternative Name[" + j + "] is unknown content: " + generalName);
+                                    continue;
+                                }
+                                if (generalName.get(0) instanceof Integer && generalName.get(1) instanceof String) {
+                                    final Integer type = (Integer) generalName.get(0);
+                                    final String value = (String) generalName.get(1);
+                                    if (type == 2) { // DNS name
+                                        System.err.println("cert[" + i + "] - Subject Alternative Name[" + j + "] is DNS value of: " + value);
+                                    } else {
+                                        System.err.println("cert[" + i + "] - Subject Alternative Name[" + j + "] is unknown type: " + type);
+                                    }
+                                } else {
+                                    System.err.println("cert[" + i + "] - Subject Alternative Name[" + j + "] is unknown content: " + generalName);
+                                }
+                            }
                         }
                     } catch (Exception e) {
                         System.err.println("Failed to print server certificates: " + e);
